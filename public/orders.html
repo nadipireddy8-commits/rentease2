@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Orders</title>
+
+  <!-- IMPORTANT FOR MOBILE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f4f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    .navbar {
+      background-color: #1e3c72;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+    }
+
+    .navbar h2 {
+      margin: 0;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .nav-btn:hover {
+      background-color: #2e7d32;
+    }
+
+    /* ================= HEADER ================= */
+
+    .header {
+      background: #1e3c72;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    /* ================= CONTAINER ================= */
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    /* ================= SEARCH BAR ================= */
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .search-bar input {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .search-bar button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #1e3c72;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* ================= ORDER CARD ================= */
+
+    .order-card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .order-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .status {
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .paid {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .failed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .items {
+      margin-top: 10px;
+      padding-left: 10px;
+    }
+
+    .item {
+      margin-bottom: 5px;
+    }
+
+    .total {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    /* ================= MOBILE RESPONSIVE ================= */
+
+    @media (max-width: 768px) {
+
+      .container {
+        margin: 15px;
+        padding: 10px;
+      }
+
+      .navbar{
+        gap: 180px;
+      }
+
+      .nav-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-bar input,
+      .search-bar button {
+        width: 100%;
+      }
+
+      .order-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .items {
+        padding-left: 0;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <h2>RentEase</h2>
+
+    <div class="nav-right">
+      <a href="products.html" class="nav-btn">Products</a>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="header">
+    My Orders
+  </div>
+
+  <div class="container">
+
+    <!-- Search -->
+    <div class="search-bar">
+      <input type="date" id="dateFilter">
+      <button onclick="filterOrders()">Search</button>
+      <button onclick="loadOrders()">Reset</button>
+    </div>
+
+    <!-- Orders -->
+    <div id="ordersContainer"></div>
+
+  </div>
+
+<script>
+
+let allOrders = [];
+
+async function loadOrders() {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch("http://localhost:3000/api/orders", {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  });
+
+  const data = await res.json();
+  allOrders = data;
+  displayOrders(allOrders);
+}
+
+function displayOrders(orders) {
+  const container = document.getElementById("ordersContainer");
+  container.innerHTML = "";
+
+  if (orders.length === 0) {
+    container.innerHTML = "<p>No orders found.</p>";
+    return;
+  }
+
+  orders.forEach(order => {
+
+    const statusClass = order.paymentStatus || "pending";
+
+    const card = document.createElement("div");
+    card.className = "order-card";
+
+    card.innerHTML = `
+      <div class="order-top">
+        <div>
+          <strong>Order ID:</strong> ${order._id}<br>
+          <small>${new Date(order.createdAt).toLocaleString()}</small>
+        </div>
+        <div class="status ${statusClass}">
+          ${statusClass.toUpperCase()}
+        </div>
+      </div>
+
+      <div class="items">
+        ${order.items.map(item => `
+          <div class="item">
+            ${item.product?.name || "Product"} 
+            - Qty: ${item.quantity} 
+            - ₹${item.price}
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="total">
+        Total: ₹${order.totalAmount}
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function filterOrders() {
+  const selectedDate = document.getElementById("dateFilter").value;
+  if (!selectedDate) return;
+
+  const filtered = allOrders.filter(order => {
+    const orderDate = new Date(order.createdAt)
+      .toISOString()
+      .split("T")[0];
+
+    return orderDate === selectedDate;
+  });
+
+  displayOrders(filtered);
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>

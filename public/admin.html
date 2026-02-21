@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h2>Add Product</h2>
+
+<input type="text" id="pName" placeholder="Product Name">
+<input type="text" id="pCategory" placeholder="Category">
+<input type="number" id="pRent" placeholder="Monthly Rent">
+<input type="number" id="pDeposit" placeholder="Deposit">
+<input type="text" id="pImage" placeholder="Image URL">
+<button onclick="addProduct()">Add Product</button>
+<h2>All Rentals</h2>
+<div id="adminRentals"></div>
+
+<h2>Maintenance Requests</h2>
+<div id="adminMaintenance"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
