@@ -94,7 +94,7 @@ async function markOrderPaid() {
   if (!orderId || !token) return;
 
   try {
-    await fetch(`http://localhost:3000/api/payment/confirm-payment/${orderId}`, {
+    await fetch(`https://rentease2-backend.onrender.com/api/payment/confirm-payment/${orderId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
