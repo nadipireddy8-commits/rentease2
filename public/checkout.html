@@ -195,7 +195,7 @@
         console.log("Sending rental data:", item);
         
         // FIRST: Save the rental to your database
-        const rentalResponse = await fetch('/api/rentals', {
+        const rentalResponse = await fetch('https://rentease2-frontend.onrender.com/api/rentals', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
