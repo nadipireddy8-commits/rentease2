@@ -12,7 +12,7 @@ async function register() {
     const email = document.getElementById("regEmail").value;
     const password = document.getElementById("regPassword").value;
 
-    const res = await fetch("/api/users/register", {
+    const res = await fetch("https://rentease3-backend.onrender.com/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password })
