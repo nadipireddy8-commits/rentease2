@@ -1,3 +1,4 @@
+const API_URL = "https://rentease-updated.onrender.com";
 console.log("Script Loded");
 // REGISTER
 function safeParse(key) {
@@ -275,7 +276,7 @@ async function loadRentals() {
     }
 
     try {
-        const response = await fetch(`/api/rentals?userId=${userId}`, {
+        const response = await fetch(`${API_URL}/api/rentals?userId=${userId}`, {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -346,7 +347,7 @@ async function cancelRental(rentalId) {
     const token = localStorage.getItem("token");
     
     try {
-        const response = await fetch(`/api/rentals/${rentalId}`, {
+        const response = await fetch(`${API_URL}/api/rentals/${rentalId}`, {
             method: 'DELETE',
             headers: {
                 "Authorization": "Bearer " + token
@@ -499,7 +500,7 @@ async function clearHistory() {
     }
 
     try {
-        const res = await fetch("/api/rentals/clear-history", {
+        const res = await fetch(`${API_URL}/api/rentals/clear-history`, {
             method: "DELETE",
             headers: {
                 "Authorization": "Bearer " + token,
@@ -536,7 +537,7 @@ async function createRentalsFromCart() {
   if (!cart.length) return;
 
   for (const productId of cart) {
-    await fetch("/api/rentals", {
+    await fetch(`{API_URL}/api/rentals`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

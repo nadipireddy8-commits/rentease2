@@ -145,9 +145,13 @@
   <div class="container" id="products"></div>
 
  <script>
+// 👇 ADD THIS LINE AT THE TOP - your live backend URL
+const API_URL = "https://rentease-project.onrender.com";
+
 async function loadProducts() {
     try {
-        const response = await fetch("/api/products");
+        // 👇 CHANGE this line - add API_URL
+        const response = await fetch(`${API_URL}/api/products`);
         const products = await response.json();
         console.log("Products loaded:", products);
 
@@ -190,8 +194,8 @@ function rentNow(productId) {
         return;
     }
     
-    // Get product details from the page or fetch again
-    fetch("/api/products")
+    // 👇 CHANGE this fetch - add API_URL
+    fetch(`${API_URL}/api/products`)
         .then(res => res.json())
         .then(products => {
             const product = products.find(p => p._id === productId);
@@ -208,7 +212,7 @@ function rentNow(productId) {
                         productId: product._id,
                         productName: product.name,
                         productImage: product.image,
-                        pricePerDay: product.rent,  // Map 'rent' to 'pricePerDay'
+                        pricePerDay: product.rent,
                         days: parseInt(days),
                         totalPrice: totalPrice,
                         userId: userId
