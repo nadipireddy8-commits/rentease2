@@ -1,4 +1,4 @@
-const API_URL = "https://rentease-updated.onrender.com";
+const API_URL = "https://rentease3-backend.onrender.com";
 console.log("Script Loded");
 // REGISTER
 function safeParse(key) {
