@@ -68,8 +68,11 @@ router.post("/create-checkout-session", auth, async (req, res) => {
   }
 });
 
+const Rental = require("../models/Rental");
+
 router.put("/confirm-payment/:orderId", auth, async (req, res) => {
-  console.log("CONFIRM ROUTE HIT")
+  console.log("CONFIRM ROUTE HIT");
+
   try {
     const { orderId } = req.params;
 
@@ -79,10 +82,27 @@ router.put("/confirm-payment/:orderId", auth, async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    // Mark order as paid
     order.paymentStatus = "paid";
     await order.save();
 
-    res.json({ message: "Payment confirmed successfully" });
+    // 🔥 CREATE RENTALS HERE
+    for (let item of order.items) {
+
+      const rental = new Rental({
+        productId: item.product,
+        productName: "Product",   // You are not storing name in order
+        productImage: "",         // You are not storing image in order
+        pricePerDay: item.price,
+        days: item.quantity,
+        totalPrice: item.price * item.quantity,
+        userId: order.user.toString()
+      });
+
+      await rental.save();
+    }
+
+    res.json({ message: "Payment confirmed & rentals created" });
 
   } catch (error) {
     console.error(error);

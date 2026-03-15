@@ -1,21 +1,46 @@
+<!-- rentals.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Rentals</title>
-    <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Rentals</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+      margin: 0;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    #rentalsList {
+      min-height: 200px;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      background: white;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h2>My Active Rentals</h2>
+    <div id="rentalsList">
+      <div class="loading">
+        <p>Loading your rentals...</p>
+      </div>
+    </div>
+  </div>
 
-<h2>My Active Rentals</h2>
-<div id="activeRentals"></div>
-
-<h2>Rental History</h2>
-<button onclick="clearHistory()">Clear History</button>
-<div id="rentalHistory"></div>
-
-
-<script src="script.js"></script>
-
+ 
+  <!-- Add the rentals specific script -->
+  <script src="script.js"></script>
 </body>
 </html>

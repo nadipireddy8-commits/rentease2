@@ -46,6 +46,7 @@ async function login(event) {
         });
 
         const data = await res.json();
+        console.log("login response:", data);
 
         if (res.ok) {
             alert("Login successful");
@@ -53,16 +54,51 @@ async function login(event) {
             // Save token
             localStorage.setItem("token", data.token);
 
-            // Redirect
+            // FIX: Save as "userId" (capital D) not "userid"
+            localStorage.setItem("userId", data.user._id);
+            
+            // Also save email for display purposes
+            localStorage.setItem("userEmail", data.user.email);
+
+            console.log("Saved userId:", data.user._id);
+            console.log("Saved token:", data.token);
+
+            // Redirect to products page
             window.location.href = "products.html";
         } else {
             alert(data.message || "Invalid email or password");
         }
 
     } catch (error) {
-        alert("Server error");
+        console.error("Login error:", error);
+        alert("Server error. Please try again.");
     }
 }
+
+// Optional: Add logout function
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userEmail");
+    window.location.href = "login.html";
+}
+
+// Check login status on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we're on a page that requires login
+    const currentPage = window.location.pathname.split('/').pop();
+    const protectedPages = ['rentals.html', 'cart.html', 'orders.html'];
+    
+    if (protectedPages.includes(currentPage)) {
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+        
+        if (!token || !userId) {
+            console.log('No token or userId found, redirecting to login');
+            window.location.href = 'login.html';
+        }
+    }
+});
 async function loadAllRentals() {
 
     const token = localStorage.getItem("token");
@@ -207,176 +243,157 @@ loadCart();
 // ===============================
 // CHECKOUT
 // ===============================
-async function checkout() {
-    const token = localStorage.getItem("token");
-    const cartIds = JSON.parse(localStorage.getItem("cart")) || [];
 
-    if (!token) {
-        alert("Please login first");
-        return;
-    }
-
-    if (cartIds.length === 0) {
-        alert("Cart is empty");
-        return;
-    }
-
-    try {
-        // Get full product details
-        const response = await fetch("/api/products");
-        const products = await response.json();
-
-        // Convert cart IDs into proper cartItems structure
-        const cartItems = [];
-
-        cartIds.forEach(id => {
-            const product = products.find(p => p._id === id);
-            if (product) {
-                cartItems.push({
-                    _id: product._id,
-                    name: product.name,
-                    price: product.rent,   // IMPORTANT: you are using rent field
-                    quantity: 1
-                });
-            }
-        });
-
-        const res = await fetch("/api/payments/create-checkout-session", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({ cartItems })
-        });
-
-        const data = await res.json();
-
-        if (res.ok && data.id) {
-            const stripe = Stripe("pk_test_51T1VYnEl5zU5gb2fLCMzHZS2PV71rZFiXORD2i89E9v4qPemWAvOhRoxE9U0MZrtWgtesUNOPJ1lmvR1Gh78Nug000Gj0MEM7M"); 
-            await stripe.redirectToCheckout({ sessionId: data.id });
-        } else {
-            console.log(data);
-            alert(data.message || "Payment failed");
-        }
-
-    } catch (error) {
-        console.error("Checkout error:", error);
-        alert("Something went wrong");
-    }
-}
 // LOAD RENTALS
-async function loadRentals() {
-    const token = localStorage.getItem("token");
+// script.js - Complete corrected file
 
-    if (!token) {
-        alert("Please login first");
-        window.location.href = "login.html";
+// scripts/rentals.js
+
+// Wait for DOM to load
+
+// rentals.js content - add this to your rentals.html or in a separate file
+document.addEventListener('DOMContentLoaded', function() {
+    loadRentals();
+});
+
+async function loadRentals() {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+    
+    console.log("Loading rentals for user:", userId);
+    
+    const rentalsList = document.getElementById("rentalsList");
+    
+    if (!userId || !token) {
+        rentalsList.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <p>Please log in to view your rentals.</p>
+                <a href="login.html" style="background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Login</a>
+            </div>
+        `;
         return;
     }
 
     try {
-        const res = await fetch("/api/rentals", {
+        const response = await fetch(`/api/rentals?userId=${userId}`, {
             headers: {
                 "Authorization": "Bearer " + token
             }
         });
 
-        // If unauthorized
-        if (!res.ok) {
-            if (res.status === 401) {
-                alert("Session expired. Please login again.");
-                localStorage.removeItem("token");
-                window.location.href = "login.html";
-                return;
-            }
+        if (!response.ok) {
             throw new Error("Failed to fetch rentals");
         }
 
-        const rentals = await res.json();
-        console.log("Rentals recieved:",rentals);
+        const rentals = await response.json();
+        console.log("Rentals received:", rentals);
 
-        // Make sure it's an array
-        if (!Array.isArray(rentals)) {
-            console.error("Invalid rentals response:", rentals);
+        rentalsList.innerHTML = "";
+
+        if (rentals.length === 0) {
+            rentalsList.innerHTML = `
+                <div style="text-align: center; padding: 40px; background: white; border-radius: 8px;">
+                    <p>No active rentals found.</p>
+                    <a href="products.html" style="background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">
+                        Browse Products
+                    </a>
+                </div>
+            `;
             return;
         }
 
-        const activeDiv = document.getElementById("activeRentals");
-        const historyDiv = document.getElementById("rentalHistory");
-
-        if (!activeDiv || !historyDiv) return;
-
-        activeDiv.innerHTML = "";
-        historyDiv.innerHTML = "";
-
         rentals.forEach(rental => {
-            const card = document.createElement("div");
-            card.className = "card";
-
-            if (rental.status.toLowerCase() === "Active") {
-
-                card.innerHTML = `
-                    <p><strong>Rental ID:</strong> ${rental._id}</p>
-                    <p><strong>Status:</strong> ${rental.status}</p>
-                    <button onclick="returnProduct('${rental._id}')">
-                        Return
-                    </button>
-                `;
-
-                activeDiv.appendChild(card);
-
-            } else {
-
-                card.innerHTML = `
-                    <p><strong>Rental ID:</strong> ${rental._id}</p>
-                    <p><strong>Status:</strong> ${rental.status}</p>
-                    <p><strong>Returned On:</strong> ${
-                        rental.returnDate
-                            ? new Date(rental.returnDate).toDateString()
-                            : "N/A"
-                    }</p>
-                `;
-
-                historyDiv.appendChild(card);
-            }
+            const rentalDiv = document.createElement('div');
+            rentalDiv.style.cssText = `
+                background: white;
+                padding: 20px;
+                margin: 15px 0;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            `;
+            
+            rentalDiv.innerHTML = `
+                <img src="${rental.productImage || 'https://via.placeholder.com/100'}" 
+                     alt="${rental.productName}" 
+                     style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
+                <div style="flex: 1;">
+                    <h3 style="margin: 0 0 10px 0;">${rental.productName}</h3>
+                    <p><strong>Days:</strong> ${rental.days}</p>
+                    <p><strong>Total Price:</strong> ₹${rental.totalPrice}</p>
+                    <p style="color: #666; font-size: 12px;">Rental ID: ${rental._id}</p>
+                </div>
+                <button onclick="cancelRental('${rental._id}')" 
+                        style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                    Cancel
+                </button>
+            `;
+            
+            rentalsList.appendChild(rentalDiv);
         });
 
     } catch (error) {
         console.error("Error loading rentals:", error);
-        alert("Could not load rentals.");
+        rentalsList.innerHTML = `<p style="color: red;">Error loading rentals: ${error.message}</p>`;
     }
 }
 
-async function loadAllRentals() {
-
+async function cancelRental(rentalId) {
+    if (!confirm("Are you sure you want to cancel this rental?")) return;
+    
     const token = localStorage.getItem("token");
-
-    if (!token) return;
-
+    
     try {
-        const res = await fetch("/api/rentals", {
+        const response = await fetch(`/api/rentals/${rentalId}`, {
+            method: 'DELETE',
             headers: {
                 "Authorization": "Bearer " + token
             }
         });
-
-        const rentals = await res.json();
-
-        if (!Array.isArray(rentals)) return;
-
-        const div = document.getElementById("adminRentals");
-        div.innerHTML = "";
-
-        rentals.forEach(r => {
-            div.innerHTML += `<p>${r._id} - ${r.status}</p>`;
-        });
-
-    } catch (err) {
-        console.error(err);
+        
+        if (response.ok) {
+            alert("Rental cancelled");
+            loadRentals();
+        } else {
+            alert("Failed to cancel rental");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Error cancelling rental");
     }
 }
 
+
+// Cancel rental function
+async function cancelRental(rentalId) {
+    if (!confirm("Are you sure you want to cancel this rental?")) {
+        return;
+    }
+    
+    const token = localStorage.getItem("token");
+    
+    try {
+        const response = await fetch(`/api/rentals/${rentalId}`, {
+            method: 'DELETE',
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+        
+        if (response.ok) {
+            alert("Rental cancelled successfully");
+            loadRentals(); // Reload the rentals list
+        } else {
+            const error = await response.json();
+            throw new Error(error.message || "Failed to cancel rental");
+        }
+    } catch (error) {
+        console.error("Error cancelling rental:", error);
+        alert("Error cancelling rental: " + error.message);
+    }
+}
 // ADMIN VIEW MAINTENANCE
 async function loadMaintenance() {
 
@@ -424,7 +441,7 @@ async function loadMaintenance() {
 // AUTO LOAD
 if (document.getElementById("product-list")) loadProducts();
 if (document.getElementById("cartItems")) loadCart();
-if (document.getElementById("activeRentals")) loadRentals();
+
 if (document.getElementById("adminRentals")) loadAllRentals();
 if (document.getElementById("adminMaintenance")) loadMaintenance();
 

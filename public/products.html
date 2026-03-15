@@ -149,6 +149,7 @@ async function loadProducts() {
     try {
         const response = await fetch("/api/products");
         const products = await response.json();
+        console.log("Products loaded:", products);
 
         const container = document.getElementById("products");
         container.innerHTML = "";
@@ -166,8 +167,8 @@ async function loadProducts() {
                     <p>Category: ${product.category}</p>
                     <p class="price">Rent: ₹${product.rent}</p>
                     <p class="deposit">Deposit: ₹${product.deposit}</p>
-                    <button class="btn" onclick="addToCart('${product._id}')">
-                        Add to Cart
+                    <button class="btn" onclick="rentNow('${product._id}')">
+                        Rent Now
                     </button>
                 </div>
             `;
@@ -178,18 +179,75 @@ async function loadProducts() {
     }
 }
 
+// Rent Now function - direct checkout
+function rentNow(productId) {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    
+    if (!token || !userId) {
+        alert("Please login first");
+        window.location.href = "login.html";
+        return;
+    }
+    
+    // Get product details from the page or fetch again
+    fetch("/api/products")
+        .then(res => res.json())
+        .then(products => {
+            const product = products.find(p => p._id === productId);
+            
+            if (product) {
+                // Ask for number of days
+                const days = prompt("Enter number of days to rent:", "3");
+                
+                if (days && !isNaN(days) && days > 0) {
+                    const totalPrice = product.rent * parseInt(days);
+                    
+                    // Create rental object
+                    const rental = {
+                        productId: product._id,
+                        productName: product.name,
+                        productImage: product.image,
+                        pricePerDay: product.rent,  // Map 'rent' to 'pricePerDay'
+                        days: parseInt(days),
+                        totalPrice: totalPrice,
+                        userId: userId
+                    };
+                    
+                    // Save to localStorage for checkout
+                    localStorage.setItem("checkoutItem", JSON.stringify(rental));
+                    
+                    // Go to checkout page
+                    window.location.href = "checkout.html";
+                }
+            }
+        })
+        .catch(err => {
+            console.error("Error fetching product:", err);
+            alert("Error processing request");
+        });
+}
+
+// Keep addToCart if you want cart functionality
 function addToCart(productId) {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+        alert("Please login first");
+        window.location.href = "login.html";
+        return;
+    }
+    
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
     cart.push(productId);
-
     localStorage.setItem("cart", JSON.stringify(cart));
-
+    
     console.log("Cart after adding:", cart);
     alert("Product added to cart");
 }
 
-loadProducts();
+// Load products when page loads
+document.addEventListener('DOMContentLoaded', loadProducts);
 </script>
 </body>
 </html>
