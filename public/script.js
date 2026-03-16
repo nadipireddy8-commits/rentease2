@@ -107,7 +107,7 @@ async function loadAllRentals() {
     if (!token) return;
 
     try {
-        const res = await fetch("/api/rentals", {
+        const res = await fetch("https://rentease3-backend.onrender.com/api/rentals", {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -131,7 +131,7 @@ async function loadAllRentals() {
 // LOAD PRODUCTS WITH FILTER
 // Load products
 async function loadProducts() {
-  const res = await fetch("/api/products");
+  const res = await fetch("https://rentease3-backend.onrender.com/api/products");
   const products = await res.json();
 
   const container = document.getElementById("product-list");
@@ -193,7 +193,7 @@ async function loadCart() {
     }
 
     try {
-        const response = await fetch("/api/products");
+        const response = await fetch("https://rentease3-backend.onrender.com/api/products");
         const products = await response.json();
 
         // count quantities
@@ -376,7 +376,7 @@ async function cancelRental(rentalId) {
     const token = localStorage.getItem("token");
     
     try {
-        const response = await fetch(`/api/rentals/${rentalId}`, {
+        const response = await fetch(`https://rentease3-backend.onrender.com/api/rentals/${rentalId}`, {
             method: 'DELETE',
             headers: {
                 "Authorization": "Bearer " + token
@@ -407,7 +407,7 @@ async function loadMaintenance() {
     }
 
     try {
-        const res = await fetch("/api/maintenance", {
+        const res = await fetch("https://rentease3-backend.onrender.com/api/maintenance", {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -453,7 +453,7 @@ window.addProduct = async function () {
   const deposit = document.getElementById("pDeposit").value;
   const image = document.getElementById("pImage").value;
 
-  const res = await fetch("/api/products", {
+  const res = await fetch("https://rentease3-backend.onrender.com/api/products", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -476,7 +476,7 @@ window.addProduct = async function () {
 };
 
 window.returnProduct = async function(id) {
-  await fetch(`/api/rentals/return/${id}`, {
+  await fetch(`https://rentease3-backend.onrender.com/api/rentals/return/${id}`, {
   method: "PUT",
   headers: {
     "Authorization": localStorage.getItem("token")
@@ -537,7 +537,7 @@ async function createRentalsFromCart() {
   if (!cart.length) return;
 
   for (const productId of cart) {
-    await fetch(`{API_URL}/api/rentals`, {
+    await fetch(`${API_URL}/api/rentals`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
