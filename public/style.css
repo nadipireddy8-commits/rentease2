@@ -149,3 +149,1044 @@ nav a {
     margin-top: 10px;
   }
 }
+/* style.css - Modern Authentication Pages */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Animated Background */
+body::before {
+    content: '';
+    position: absolute;
+    width: 2000px;
+    height: 2000px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    top: -10%;
+    right: -10%;
+    transform: rotate(45deg);
+    animation: float 20s infinite ease-in-out;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    width: 1500px;
+    height: 1500px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    bottom: -10%;
+    left: -10%;
+    transform: rotate(-30deg);
+    animation: float 15s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(45deg); }
+    50% { transform: translate(-30px, 30px) rotate(50deg); }
+}
+
+/* Form Container */
+.form-box {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    z-index: 10;
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form Header */
+.form-box h2 {
+    color: #1a1a1a;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.form-box h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Form Elements */
+.form-box input {
+    width: 100%;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: white;
+    color: #333;
+}
+
+.form-box input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.form-box input::placeholder {
+    color: #999;
+    font-size: 15px;
+}
+
+.form-box input:hover {
+    border-color: #764ba2;
+}
+
+/* Buttons */
+.form-box button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.form-box button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.form-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+.form-box button:hover::before {
+    left: 100%;
+}
+
+.form-box button:active {
+    transform: translateY(0);
+}
+
+/* Links and Additional Text */
+.form-footer {
+    margin-top: 25px;
+    text-align: center;
+    color: #666;
+    font-size: 15px;
+}
+
+.form-footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.form-footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+}
+
+.form-footer a:hover {
+    color: #764ba2;
+}
+
+.form-footer a:hover::after {
+    width: 100%;
+}
+
+/* Error Message */
+.error-message {
+    color: #e74c3c;
+    font-size: 14px;
+    margin: -10px 0 15px;
+    padding: 8px 12px;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Success Message */
+.success-message {
+    color: #27ae60;
+    font-size: 14px;
+    margin: -10px 0 15px;
+    padding: 8px 12px;
+    background: rgba(39, 174, 96, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Password Strength Indicator (Optional) */
+.password-strength {
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin: -10px 0 15px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+/* Loading Spinner */
+.button-loader {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Tablet Responsive */
+@media screen and (max-width: 768px) {
+    .form-box {
+        padding: 35px;
+        max-width: 400px;
+    }
+    
+    .form-box h2 {
+        font-size: 28px;
+        margin-bottom: 25px;
+    }
+    
+    .form-box input {
+        padding: 14px 18px;
+        font-size: 15px;
+    }
+    
+    .form-box button {
+        padding: 14px;
+        font-size: 17px;
+    }
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 15px;
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46a0 100%);
+    }
+    
+    .form-box {
+        padding: 25px 20px;
+        border-radius: 20px;
+    }
+    
+    .form-box h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+    
+    .form-box h2::after {
+        width: 50px;
+        height: 3px;
+    }
+    
+    .form-box input {
+        padding: 12px 16px;
+        font-size: 14px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+    }
+    
+    .form-box button {
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+    
+    .form-footer {
+        font-size: 14px;
+        margin-top: 20px;
+    }
+    
+    body::before, body::after {
+        display: none; /* Remove animations on mobile for better performance */
+    }
+}
+
+/* Small Mobile */
+@media screen and (max-width: 360px) {
+    .form-box {
+        padding: 20px 15px;
+    }
+    
+    .form-box h2 {
+        font-size: 22px;
+    }
+    
+    .form-box input {
+        padding: 10px 14px;
+    }
+    
+    .form-box button {
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+
+/* Landscape Mode */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+    
+    .form-box {
+        margin: 20px auto;
+        padding: 20px;
+    }
+    
+    .form-box h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .form-box input {
+        padding: 10px 14px;
+        margin-bottom: 12px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    .form-box {
+        background: rgba(26, 26, 46, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    
+    .form-box h2 {
+        color: #fff;
+    }
+    
+    .form-box input {
+        background: #1e1e2f;
+        border-color: #2d2d44;
+        color: #fff;
+    }
+    
+    .form-box input::placeholder {
+        color: #6b6b8b;
+    }
+    
+    .form-footer {
+        color: #a0a0c0;
+    }
+}
+
+/* High Contrast Focus Indicators */
+.form-box input:focus-visible,
+.form-box button:focus-visible {
+    outline: 3px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Disable autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #333;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px white;
+}
+
+/* Remove spinner from number inputs */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* style.css - Complete App Styling */
+
+/* ===============================
+   RESET & BASE STYLES
+   =============================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+}
+
+/* ===============================
+   NAVIGATION BAR (for index.html)
+   =============================== */
+#main {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 20px 30px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#main h2 {
+    color: #667eea;
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#main div {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+#main a {
+    color: #4a5568;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+#main a:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* ===============================
+   HERO SECTION (index.html)
+   =============================== */
+.container {
+    background: white;
+    border-radius: 30px;
+    padding: 60px 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+    border-radius: 50%;
+    animation: rotate 20s linear infinite;
+    z-index: 0;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.container h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.container p {
+    font-size: 18px;
+    color: #4a5568;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+    line-height: 1.6;
+}
+
+/* ===============================
+   PAGE TITLES
+   =============================== */
+h2 {
+    color: #1a1a1a;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* ===============================
+   CART PAGE STYLES
+   =============================== */
+#cart-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+}
+
+.product-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #667eea, #764ba2);
+}
+
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.product-card h3 {
+    color: #1a1a1a;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.product-card p {
+    color: #4a5568;
+    margin-bottom: 5px;
+}
+
+.product-card button {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.product-card button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* ===============================
+   CHECKOUT BUTTON
+   =============================== */
+button[onclick="checkout()"] {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 30px auto 0;
+    min-width: 250px;
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+}
+
+button[onclick="checkout()"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(40, 167, 69, 0.4);
+}
+
+/* ===============================
+   RENTALS PAGE STYLES
+   =============================== */
+#rentalsList {
+    min-height: 200px;
+}
+
+.loading {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.loading p {
+    color: #666;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.loading p::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Rental Cards (dynamically created in JS) */
+.rental-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.rental-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(180deg, #667eea, #764ba2);
+}
+
+.rental-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-right: 20px;
+}
+
+.rental-card .content {
+    flex: 1;
+}
+
+.rental-card h3 {
+    color: #1a1a1a;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.rental-card p {
+    color: #4a5568;
+    margin-bottom: 8px;
+}
+
+.rental-card button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rental-card button:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 20px;
+}
+
+.empty-state p {
+    color: #4a5568;
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.empty-state a {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-decoration: none;
+    padding: 15px 35px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.empty-state a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+}
+
+/* ===============================
+   PRODUCTS PAGE (if needed)
+   =============================== */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* ===============================
+   TABLET RESPONSIVE
+   =============================== */
+@media screen and (max-width: 768px) {
+    #main {
+        padding: 15px 20px;
+    }
+    
+    #main h2 {
+        font-size: 24px;
+    }
+    
+    .container {
+        padding: 40px 30px;
+    }
+    
+    .container h1 {
+        font-size: 32px;
+    }
+    
+    h2 {
+        font-size: 28px;
+    }
+    
+    #cart-items {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+}
+
+/* ===============================
+   MOBILE RESPONSIVE
+   =============================== */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+    
+    #main {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    #main div {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    #main a {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .container {
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+    
+    .container h1 {
+        font-size: 26px;
+    }
+    
+    .container p {
+        font-size: 16px;
+    }
+    
+    h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    #cart-items {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-card img {
+        height: 180px;
+    }
+    
+    button[onclick="checkout()"] {
+        width: 100%;
+        padding: 14px;
+        font-size: 16px;
+    }
+    
+    .rental-card {
+        flex-direction: column;
+        align-items: flex-start !important;
+        text-align: left;
+    }
+    
+    .rental-card img {
+        width: 100%;
+        height: 200px;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .rental-card button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* ===============================
+   SMALL MOBILE
+   =============================== */
+@media screen and (max-width: 360px) {
+    .container h1 {
+        font-size: 22px;
+    }
+    
+    .product-card {
+        padding: 15px;
+    }
+    
+    .product-card h3 {
+        font-size: 18px;
+    }
+}
+
+/* ===============================
+   LANDSCAPE MODE
+   =============================== */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    body {
+        padding: 10px;
+    }
+    
+    #main {
+        margin-bottom: 15px;
+    }
+    
+    .container {
+        padding: 20px;
+    }
+}
+
+/* ===============================
+   DARK MODE SUPPORT
+   =============================== */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+    
+    #main, .container, .product-card, .rental-card, .empty-state, .loading {
+        background: #1e1e2f;
+        border-color: #2d2d44;
+    }
+    
+    #main h2 {
+        background: linear-gradient(135deg, #8b9aff, #9f7aea);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    #main a {
+        color: #a0a0c0;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    h2, h3, .container h1, .product-card h3, .rental-card h3 {
+        color: #fff;
+    }
+    
+    .container p, .product-card p, .rental-card p, .empty-state p {
+        color: #a0a0c0;
+    }
+    
+    .loading p {
+        color: #a0a0c0;
+    }
+}
+
+/* ===============================
+   ANIMATIONS
+   =============================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card, .rental-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* ===============================
+   UTILITY CLASSES
+   =============================== */
+.text-center { text-align: center; }
+.mt-2 { margin-top: 20px; }
+.mb-2 { margin-bottom: 20px; }
+.hidden { display: none; }
+
+
+
+

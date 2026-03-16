@@ -1,28 +1,627 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>RentEase</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>RentEase - Home</title>
     <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+    <style>
+        /* ============================================
+   RENTEASE - PROFESSIONAL APP STYLING
+   Optimized for all devices (Mobile, Tablet, Laptop, Desktop)
+   ============================================ */
 
-<nav>
-    <h2>RentEase</h2>
-    <div>
-        <a href="products.html">Products</a>
-        <a href="cart.html">Cart</a>
-        <a href="rentals.html">My Rentals</a>
-        <a href="login.html">Login</a>
-        <a href="register.html">Register</a>
+/* --------------------------------------------
+   1. CSS VARIABLES & THEMING
+   -------------------------------------------- */
+:root {
+    /* Primary Colors */
+    --primary: #4361ee;
+    --primary-dark: #3a56d4;
+    --primary-light: #6c8aff;
+    --secondary: #7209b7;
+    --secondary-light: #9d4edd;
+    --accent: #f72585;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+    --gradient-hover: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    --gradient-hero: linear-gradient(135deg, #4361ee15, #7209b715);
+    
+    /* UI Colors */
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-light: #94a3b8;
+    --border: #e2e8f0;
+    --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 30px;
+    --radius-full: 9999px;
+}
+
+/* Dark mode variables */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0f172a;
+        --surface: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-light: #94a3b8;
+        --border: #334155;
+    }
+}
+
+/* --------------------------------------------
+   2. RESET & BASE STYLES
+   -------------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: var(--space-md);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --------------------------------------------
+   3. LAYOUT & CONTAINERS
+   -------------------------------------------- */
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main content area */
+.main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-lg) 0;
+}
+
+/* Grid layouts */
+.grid {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Flex layouts */
+.flex {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
+/* --------------------------------------------
+   4. NAVIGATION BAR (Using your class names)
+   -------------------------------------------- */
+.nav-header {
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-md) var(--space-lg);
+    margin-bottom: var(--space-xl);
+    border: 1px solid var(--border);
+}
+
+.nav-header h3 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-full);
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.nav-link:hover {
+    background: var(--gradient-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* --------------------------------------------
+   5. HERO SECTION (Using your container1 class)
+   -------------------------------------------- */
+.hero-section {
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    padding: clamp(2rem, 8vw, 4rem);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: var(--gradient-hero);
+    border-radius: 50%;
+    animation: rotate 30s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.hero-section h1 {
+    font-size: clamp(1.8rem, 6vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: var(--space-md);
+    position: relative;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-section p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* --------------------------------------------
+   6. CARD COMPONENTS
+   -------------------------------------------- */
+.card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
+}
+
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+}
+
+.card-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-md);
+}
+
+/* --------------------------------------------
+   7. BUTTONS
+   -------------------------------------------- */
+.btn {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-lg);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+    background: var(--surface);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* --------------------------------------------
+   8. PRODUCTS & CART GRID
+   -------------------------------------------- */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+}
+
+.product-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border);
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.product-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: var(--space-md);
+}
+
+.product-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+}
+
+.product-price {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: var(--space-sm);
+}
+
+/* --------------------------------------------
+   9. RENTALS LIST
+   -------------------------------------------- */
+.rentals-container {
+    margin-top: var(--space-lg);
+}
+
+.rental-item {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.rental-item:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+/* --------------------------------------------
+   10. LOADING SPINNER
+   -------------------------------------------- */
+.loading-spinner {
+    text-align: center;
+    padding: var(--space-xl);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto var(--space-md);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------
+   11. FORM STYLES
+   -------------------------------------------- */
+.form-container {
+    max-width: 400px;
+    margin: var(--space-xl) auto;
+    padding: var(--space-xl);
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+}
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--space-sm);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--background);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* --------------------------------------------
+   12. RESPONSIVE BREAKPOINTS
+   -------------------------------------------- */
+
+/* Tablet (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    :root {
+        --space-lg: 1.5rem;
+        --space-xl: 2rem;
+    }
+    
+    .nav-header {
+        padding: var(--space-md);
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: var(--space-md);
+    }
+}
+
+/* Mobile Landscape (640px - 768px) */
+@media screen and (max-width: 768px) {
+    .nav-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: var(--space-md);
+    }
+    
+    .nav-links {
+        justify-content: center;
+    }
+    
+    .nav-link {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.9rem;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    .hero-section {
+        padding: var(--space-xl) var(--space-md);
+    }
+}
+
+/* Mobile Portrait (480px and below) */
+@media screen and (max-width: 480px) {
+    body {
+        padding: var(--space-sm);
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: var(--space-sm);
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-container {
+        padding: var(--space-lg);
+        margin: var(--space-md) auto;
+    }
+    
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+}
+
+/* Small Mobile (360px and below) */
+@media screen and (max-width: 360px) {
+    .nav-header h3 {
+        font-size: 1.3rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 1.5rem;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+/* iPad Specific (768px - 1024px) */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .nav-header {
+        padding: var(--space-md) var(--space-lg);
+    }
+}
+
+/* Landscape Mode */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+    .nav-header {
+        margin-bottom: var(--space-md);
+    }
+    
+    .hero-section {
+        padding: var(--space-lg) var(--space-md);
+    }
+}
+
+/* --------------------------------------------
+   13. UTILITY CLASSES
+   -------------------------------------------- */
+.text-center { text-align: center; }
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--text-secondary); }
+.bg-surface { background: var(--surface); }
+.mt-1 { margin-top: var(--space-sm); }
+.mt-2 { margin-top: var(--space-md); }
+.mt-3 { margin-top: var(--space-lg); }
+.mb-1 { margin-bottom: var(--space-sm); }
+.mb-2 { margin-bottom: var(--space-md); }
+.mb-3 { margin-bottom: var(--space-lg); }
+.p-1 { padding: var(--space-sm); }
+.p-2 { padding: var(--space-md); }
+.p-3 { padding: var(--space-lg); }
+
+/* --------------------------------------------
+   14. ANIMATIONS
+   -------------------------------------------- */
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+    </style>
+    <div class="app-container">
+        <!-- Navigation Header -->
+        <div class="nav-header flex-between">
+            <h3>RentEase</h3>
+            <div class="nav-links">
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="cart.html" class="nav-link">Cart</a>
+                <a href="rentals.html" class="nav-link">My Rentals</a>
+                <a href="login.html" class="nav-link">Login</a>
+                <a href="register.html" class="nav-link">Register</a>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1>Affordable Furniture & Appliance Rentals</h1>
+            <p>Flexible monthly plans for students & professionals. No long-term commitment, instant delivery.</p>
+        </div>
     </div>
-</nav>
 
-<div class="container">
-    <h1>Affordable Furniture & Appliance Rentals</h1>
-    <p>Flexible monthly plans for students & professionals.</p>
-</div>
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
