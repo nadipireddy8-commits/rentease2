@@ -2,128 +2,762 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Checkout - RentEase</title>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
+        /* ============================================
+           RENTEASE CHECKOUT PAGE - MODERN APP DESIGN
+           Optimized for all devices
+           ============================================ */
+
+        /* --------------------------------------------
+           1. CSS VARIABLES & THEME
+           -------------------------------------------- */
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
         body {
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf3 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        nav {
-            background: #1f2937;
-            color: white;
-            padding: 15px 30px;
+        /* --------------------------------------------
+           2. MODERN NAVIGATION
+           -------------------------------------------- */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        nav a {
-            color: white;
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4158D0, #C850C0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
-            margin-left: 20px;
+            letter-spacing: -0.5px;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
         }
 
+        .nav-links a {
+            color: #4b5563;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover {
+            color: #4158D0;
+        }
+
+        /* --------------------------------------------
+           3. MAIN CONTAINER
+           -------------------------------------------- */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .checkout-wrapper {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* --------------------------------------------
+           4. CHECKOUT CARD
+           -------------------------------------------- */
         .checkout-card {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
         }
 
-        .product-detail {
-            display: flex;
-            gap: 20px;
-            margin: 20px 0;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .product-detail img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .form-group {
-            margin: 15px 0;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group input {
-            padding: 8px;
-            width: 100px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        button {
-            background: #2563eb;
+        /* Card Header */
+        .checkout-header {
+            background: linear-gradient(135deg, #4158D0, #C850C0);
+            padding: 2rem;
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        button:hover {
-            background: #1e40af;
+        .checkout-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .checkout-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .checkout-header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Checkout Content */
+        .checkout-content {
+            padding: 2rem;
+        }
+
+        /* Product Detail Card */
+        .product-detail-card {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(65, 88, 208, 0.1);
+            transition: all 0.3s;
+        }
+
+        .product-detail-card:hover {
+            border-color: #4158D0;
+            box-shadow: 0 10px 25px -5px rgba(65, 88, 208, 0.1);
+        }
+
+        .product-row {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .product-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            display: inline-block;
+            background: linear-gradient(135deg, #4158D0, #C850C0);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Days Input Section */
+        .days-section {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .days-label {
+            display: block;
+            color: #4b5563;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .days-input-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .days-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f3f4f6;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+
+        .days-input-wrapper:focus-within {
+            border-color: #4158D0;
+            box-shadow: 0 0 0 3px rgba(65, 88, 208, 0.1);
+        }
+
+        .days-input-wrapper button {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4158D0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .days-input-wrapper button:hover {
+            background: #4158D0;
+            color: white;
+        }
+
+        .days-input-wrapper input {
+            width: 60px;
+            height: 40px;
+            border: none;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: transparent;
+            color: #1f2937;
+        }
+
+        .days-input-wrapper input:focus {
+            outline: none;
+        }
+
+        .days-hint {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        /* Price Breakdown */
+        .price-breakdown {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+        .price-label {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .price-value {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1.1rem;
+        }
+
+        .total-row {
+            padding: 1rem 0 0;
+            margin-top: 0.5rem;
+            border-top: 2px solid #4158D0;
+        }
+
+        .total-label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .total-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4158D0, #C850C0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4158D0, #C850C0);
+            color: white;
+            box-shadow: 0 8px 20px rgba(65, 88, 208, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(65, 88, 208, 0.4);
         }
 
         .btn-secondary {
-            background: #6c757d;
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
         }
 
         .btn-secondary:hover {
-            background: #5a6268;
+            border-color: #4158D0;
+            color: #4158D0;
         }
 
-        .total {
-            font-size: 20px;
-            font-weight: bold;
-            color: #2563eb;
-            margin: 15px 0;
+        .btn:active {
+            transform: translateY(0);
         }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: #1f2937;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #4158D0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --------------------------------------------
+           5. RESPONSIVE DESIGN
+           -------------------------------------------- */
+
+        /* Tablet */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+
+            .checkout-header {
+                padding: 1.5rem;
+            }
+
+            .checkout-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .checkout-content {
+                padding: 1.5rem;
+            }
+
+            .product-row {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .product-image {
+                width: 150px;
+                height: 150px;
+            }
+
+            .days-input-group {
+                justify-content: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Mobile */
+        @media screen and (max-width: 480px) {
+            .navbar {
+                padding: 0.8rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .nav-links {
+                gap: 0.8rem;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+
+            .checkout-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .checkout-header p {
+                font-size: 0.85rem;
+            }
+
+            .product-info h3 {
+                font-size: 1.3rem;
+            }
+
+            .days-input-wrapper input {
+                width: 50px;
+            }
+
+            .days-hint {
+                width: 100%;
+                text-align: center;
+            }
+
+            .price-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+
+            .total-row {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .total-value {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Small Mobile */
+        @media screen and (max-width: 360px) {
+            .checkout-content {
+                padding: 1rem;
+            }
+
+            .product-detail-card {
+                padding: 1rem;
+            }
+
+            .product-image {
+                width: 120px;
+                height: 120px;
+            }
+
+            .product-info h3 {
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.8rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Landscape Mode */
+        @media screen and (orientation: landscape) and (max-height: 600px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .product-row {
+                flex-direction: row;
+            }
+
+            .product-image {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        /* --------------------------------------------
+           6. DARK MODE SUPPORT
+           -------------------------------------------- */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            }
+
+            .navbar {
+                background: rgba(26, 26, 46, 0.95);
+            }
+
+            .logo {
+                background: linear-gradient(135deg, #8b9aff, #b794f4);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .nav-links a {
+                color: #cbd5e1;
+            }
+
+            .checkout-card {
+                background: #1e1e2f;
+            }
+
+            .product-detail-card,
+            .days-section,
+            .price-breakdown {
+                background: #2d2d44;
+                border-color: #3d3d5c;
+            }
+
+            .product-info h3,
+            .price-label,
+            .days-label {
+                color: #e2e8f0;
+            }
+
+            .price-value {
+                color: #cbd5e1;
+            }
+
+            .days-input-wrapper {
+                background: #1a1a2e;
+                border-color: #3d3d5c;
+            }
+
+            .days-input-wrapper input {
+                color: white;
+            }
+
+            .btn-secondary {
+                background: #2d2d44;
+                color: #cbd5e1;
+                border-color: #3d3d5c;
+            }
+
+            .empty-state h3 {
+                color: #e2e8f0;
+            }
+
+            .empty-state p {
+                color: #94a3b8;
+            }
+        }
+        /* Additional styles for enhanced checkout */
+
+.price-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.subtotal-row, .tax-row {
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+    padding: 0.8rem !important;
+}
+
+.deposit-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: #e8f0fe;
+    padding: 1rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    color: #4158D0;
+    font-size: 0.95rem;
+}
+
+.deposit-icon {
+    font-size: 1.3rem;
+}
+
+.days-btn {
+    background: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #4158D0;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.days-btn:hover {
+    background: #4158D0;
+    color: white;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .subtotal-row, .tax-row {
+        background: #2d2d44;
+    }
+    
+    .deposit-info {
+        background: rgba(65, 88, 208, 0.2);
+        color: #8b9aff;
+    }
+    
+    .days-btn {
+        background: #2d2d44;
+        color: #8b9aff;
+    }
+    
+    .days-btn:hover {
+        background: #4158D0;
+        color: white;
+    }
+}
     </style>
 </head>
 <body>
-    <nav>
-        <h2>RentEase</h2>
-        <div>
-            <a href="products.html">Products</a>
-            <a href="cart.html">Cart</a>
-            <a href="rentals.html">My Rentals</a>
+    <!-- Modern Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">RentEase</a>
+            <div class="nav-links">
+                <a href="products.html">Products</a>
+                <a href="cart.html">Cart</a>
+                <a href="rentals.html">My Rentals</a>
+            </div>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="checkout-card" id="checkoutContainer">
-            <h2>Checkout</h2>
-            <div id="checkoutContent">Loading...</div>
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="checkout-wrapper">
+            <div class="checkout-card">
+                <div class="checkout-header">
+                    <h2>Checkout</h2>
+                    <p>Complete your rental booking</p>
+                </div>
+                
+                <div class="checkout-content" id="checkoutContent">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading checkout details...</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -132,117 +766,301 @@
         loadCheckoutItem();
     });
 
-    function loadCheckoutItem() {
-        const checkoutContent = document.getElementById('checkoutContent');
-        const item = JSON.parse(localStorage.getItem('checkoutItem'));
-        
-        if (!item) {
-            checkoutContent.innerHTML = `
-                <p>No item to checkout.</p>
-                <button onclick="window.location.href='products.html'" class="btn-secondary">Browse Products</button>
-            `;
-            return;
-        }
-        
-        checkoutContent.innerHTML = `
-            <div class="product-detail">
-                <img src="${item.productImage}" alt="${item.productName}">
-                <div>
-                    <h3>${item.productName}</h3>
-                    <p>Price: ₹${item.pricePerDay}/day</p>
-                    <div class="form-group">
-                        <label>Number of days:</label>
-                        <input type="number" id="days" value="${item.days}" min="1" onchange="updateTotal()">
-                    </div>
-                    <p class="total">Total: ₹<span id="totalPrice">${item.totalPrice}</span></p>
-                </div>
-            </div>
-            <button onclick="confirmRental()">Confirm Rental</button>
-            <button onclick="window.location.href='products.html'" class="btn-secondary">Cancel</button>
-        `;
+    // ============================================
+// LOAD CHECKOUT ITEM FUNCTION
+// Handles loading and displaying checkout item
+// ============================================
+
+function loadCheckoutItem() {
+    // Get the checkout container element
+    const checkoutContent = document.getElementById('checkoutContent');
+    
+    // Check if container exists
+    if (!checkoutContent) {
+        console.error('Checkout container not found');
+        return;
     }
 
-    function updateTotal() {
-        const item = JSON.parse(localStorage.getItem('checkoutItem'));
-        const days = document.getElementById('days').value;
-        const newTotal = item.pricePerDay * days;
-        
-        document.getElementById('totalPrice').textContent = newTotal;
-        
-        // Update item in localStorage
-        item.days = parseInt(days);
-        item.totalPrice = newTotal;
-        localStorage.setItem('checkoutItem', JSON.stringify(item));
-    }
-
-    async function confirmRental() {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+    // Get item from localStorage
     const item = JSON.parse(localStorage.getItem('checkoutItem'));
     
-    if (!token || !userId) {
-        alert('Please login first');
-        window.location.href = 'login.html';
-        return;
-    }
-    
+    // Empty state - no item in checkout
     if (!item) {
-        alert('No item to confirm');
+        checkoutContent.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🛒</div>
+                <h3>No item to checkout</h3>
+                <p>Looks like you haven't selected any product to rent yet</p>
+                <button onclick="window.location.href='products.html'" class="btn btn-primary">
+                    <span>🛍️</span> Browse Products
+                </button>
+            </div>
+        `;
         return;
     }
-    
-    try {
-        console.log("Sending rental data:", item);
-        
-        // FIRST: Save the rental to your database
-        const rentalResponse = await fetch("https://rentease3-backend.onrender.com/api/rentals", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify(item)
-        });
-        
-        const rentalData = await rentalResponse.json();
-        console.log("Rental response:", rentalData);
-        
-        if (rentalResponse.ok) {
-            // SECOND: Process payment with Stripe
-            // Create a payment intent or checkout session
-            const paymentResponse = await fetch("https://rentease3-backend.onrender.com/api/payments/create-checkout-session", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify({
-                    cartItems: [{
-                        _id: item.productId,
-                        name: item.productName,
-                        price: item.pricePerDay, // or totalPrice depending on your payment logic
-                        quantity: item.days
-                    }]
-                })
-            });
-            
-            const paymentData = await paymentResponse.json();
-            
-            if (paymentResponse.ok && paymentData.id) {
-                // THIRD: Redirect to Stripe Checkout
-                const stripe = Stripe("pk_test_51T1VYnEl5zU5gb2fLCMzHZS2PV71rZFiXORD2i89E9v4qPemWAvOhRoxE9U0MZrtWgtesUNOPJ1lmvR1Gh78Nug000Gj0MEM7M");
-                await stripe.redirectToCheckout({ sessionId: paymentData.id });
-            } else {
-                alert('Payment failed: ' + (paymentData.message || 'Unknown error'));
+
+    // Validate item has required properties
+    if (!item.productName || !item.pricePerDay || !item.days || !item.totalPrice) {
+        checkoutContent.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">⚠️</div>
+                <h3>Invalid checkout item</h3>
+                <p>The product information is incomplete</p>
+                <button onclick="window.location.href='products.html'" class="btn btn-primary">
+                    <span>🛍️</span> Browse Products
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    // Display checkout item with all details
+    checkoutContent.innerHTML = `
+        <!-- Product Detail Card -->
+        <div class="product-detail-card">
+            <div class="product-row">
+                <div class="product-image">
+                    <img src="${item.productImage || 'https://via.placeholder.com/150'}" 
+                         alt="${item.productName}"
+                         onerror="this.src='https://via.placeholder.com/150'">
+                </div>
+                <div class="product-info">
+                    <h3>${item.productName}</h3>
+                    <span class="product-price">₹${item.pricePerDay}/day</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Days Selection -->
+        <div class="days-section">
+            <label class="days-label">Rental Duration</label>
+            <div class="days-input-group">
+                <div class="days-input-wrapper">
+                    <button onclick="adjustDays(-1)" type="button" class="days-btn">−</button>
+                    <input type="number" id="days" value="${item.days}" min="1" max="30" onchange="updateTotal()">
+                    <button onclick="adjustDays(1)" type="button" class="days-btn">+</button>
+                </div>
+                <span class="days-hint">days (max 30)</span>
+            </div>
+        </div>
+
+        <!-- Price Breakdown -->
+        <div class="price-breakdown">
+            <div class="price-row">
+                <span class="price-label">
+                    <span class="price-icon">💰</span> Price per day
+                </span>
+                <span class="price-value">₹${item.pricePerDay}</span>
+            </div>
+            <div class="price-row">
+                <span class="price-label">
+                    <span class="price-icon">📅</span> Number of days
+                </span>
+                <span class="price-value" id="displayDays">${item.days}</span>
+            </div>
+            <div class="price-row subtotal-row">
+                <span class="price-label">
+                    <span class="price-icon">📊</span> Subtotal
+                </span>
+                <span class="price-value">₹${item.pricePerDay * item.days}</span>
+            </div>
+            <div class="price-row tax-row">
+                <span class="price-label">
+                    <span class="price-icon">🧾</span> Tax (18% GST)
+                </span>
+                <span class="price-value">₹${Math.round(item.pricePerDay * item.days * 0.18)}</span>
+            </div>
+            <div class="price-row total-row">
+                <span class="total-label">
+                    <span class="price-icon">💵</span> Total Amount
+                </span>
+                <span class="total-value" id="totalPrice">₹${item.totalPrice}</span>
+            </div>
+        </div>
+
+        <!-- Security Deposit Info -->
+        <div class="deposit-info">
+            <div class="deposit-icon">🔒</div>
+            <div class="deposit-text">
+                <strong>Security deposit:</strong> ₹${item.deposit || 2000} (refundable)
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button onclick="confirmRental()" class="btn btn-primary" id="confirmBtn">
+                <span>✅</span> Confirm & Pay
+            </button>
+            <button onclick="cancelCheckout()" class="btn btn-secondary">
+                <span>✖️</span> Cancel
+            </button>
+        </div>
+    `;
+
+    // Initialize event listeners for the new elements
+    initializeCheckoutEvents();
+}
+
+// ============================================
+// INITIALIZE CHECKOUT EVENTS
+// ============================================
+function initializeCheckoutEvents() {
+    // Add keyboard support for days input
+    const daysInput = document.getElementById('days');
+    if (daysInput) {
+        daysInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                updateTotal();
             }
-        } else {
-            alert('Error: ' + (rentalData.message || 'Failed to confirm rental'));
-        }
-    } catch (error) {
-        console.error('Checkout error:', error);
-        alert('Server error. Please try again.');
+        });
+    }
+
+    // Update display days initially
+    updateDisplayDays();
+}
+
+// ============================================
+// UPDATE DISPLAY DAYS
+// ============================================
+function updateDisplayDays() {
+    const daysInput = document.getElementById('days');
+    const displayDays = document.getElementById('displayDays');
+    if (daysInput && displayDays) {
+        displayDays.textContent = daysInput.value;
     }
 }
-    </script>
-</body>
-</html>
+
+// ============================================
+// CANCEL CHECKOUT
+// ============================================
+function cancelCheckout() {
+    // Optional: Ask for confirmation
+    if (confirm('Are you sure you want to cancel checkout?')) {
+        // Clear checkout item from localStorage
+        localStorage.removeItem('checkoutItem');
+        // Redirect to products page
+        window.location.href = 'products.html';
+    }
+}
+
+// ============================================
+// ADJUST DAYS FUNCTION
+// ============================================
+function adjustDays(change) {
+    const daysInput = document.getElementById('days');
+    if (!daysInput) return;
+    
+    const currentDays = parseInt(daysInput.value) || 1;
+    const newDays = Math.max(1, Math.min(30, currentDays + change)); // Limit between 1-30 days
+    
+    daysInput.value = newDays;
+    updateTotal();
+}
+
+// ============================================
+// UPDATE TOTAL FUNCTION
+// ============================================
+function updateTotal() {
+    const item = JSON.parse(localStorage.getItem('checkoutItem'));
+    if (!item) return;
+
+    const daysInput = document.getElementById('days');
+    const days = parseInt(daysInput.value) || 1;
+    
+    // Calculate new total
+    const subtotal = item.pricePerDay * days;
+    const tax = Math.round(subtotal * 0.18); // 18% GST
+    const newTotal = subtotal + tax;
+    
+    // Update display
+    document.getElementById('totalPrice').textContent = '₹' + newTotal;
+    document.getElementById('displayDays').textContent = days;
+    
+    // Update price breakdown rows
+    updatePriceBreakdown(subtotal, tax);
+    
+    // Update item in localStorage
+    item.days = days;
+    item.totalPrice = newTotal;
+    localStorage.setItem('checkoutItem', JSON.stringify(item));
+}
+
+// ============================================
+// UPDATE PRICE BREAKDOWN
+// ============================================
+function updatePriceBreakdown(subtotal, tax) {
+    const priceRows = document.querySelectorAll('.price-row');
+    if (priceRows.length >= 4) {
+        // Update subtotal (3rd row)
+        const subtotalRow = priceRows[2];
+        if (subtotalRow) {
+            subtotalRow.querySelector('.price-value').textContent = '₹' + subtotal;
+        }
+        
+        // Update tax (4th row)
+        const taxRow = priceRows[3];
+        if (taxRow) {
+            taxRow.querySelector('.price-value').textContent = '₹' + tax;
+        }
+    }
+}
+
+// ============================================
+// VALIDATE CHECKOUT ITEM
+// ============================================
+function validateCheckoutItem(item) {
+    const requiredFields = ['productId', 'productName', 'pricePerDay', 'days', 'totalPrice', 'userId'];
+    const missingFields = requiredFields.filter(field => !item[field]);
+    
+    if (missingFields.length > 0) {
+        console.error('Missing required fields:', missingFields);
+        return false;
+    }
+    
+    return true;
+}
+
+// ============================================
+// FORMAT CURRENCY
+// ============================================
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(amount).replace('INR', '₹');
+}
+
+// ============================================
+// SAVE CHECKOUT ITEM
+// ============================================
+function saveCheckoutItem(item) {
+    if (!validateCheckoutItem(item)) {
+        throw new Error('Invalid checkout item');
+    }
+    localStorage.setItem('checkoutItem', JSON.stringify(item));
+}
+
+// ============================================
+// CLEAR CHECKOUT
+// ============================================
+function clearCheckout() {
+    localStorage.removeItem('checkoutItem');
+}
+
+// ============================================
+// EXPORT FUNCTIONS (if using modules)
+// ============================================
+// If you're using ES6 modules, uncomment below:
+// export {
+//     loadCheckoutItem,
+//     adjustDays,
+//     updateTotal,
+//     cancelCheckout,
+//     validateCheckoutItem,
+//     saveCheckoutItem,
+//     clearCheckout,
+//     formatCurrency
+// };
