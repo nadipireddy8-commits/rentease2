@@ -497,277 +497,295 @@
   <div class="products-grid" id="products"></div>
 
   <script>
+    // ============================================
+    // RENTEASE PRODUCTS PAGE - COMPLETE SCRIPT
+    // ============================================
+
     // 👇 Live backend URL
     const API_URL = "https://rentease3-backend.onrender.com";
 
-    // Mobile menu toggle
-    function toggleMobileMenu() {
-      // You can implement mobile menu logic here
-      console.log('Mobile menu clicked');
-    }
-
+    // ============================================
+    // LOAD PRODUCTS FUNCTION
+    // ============================================
     async function loadProducts() {
-      try {
-        const container = document.getElementById("products");
-        container.innerHTML = `
-          <div class="loading-state">
-            <div class="loading-spinner"></div>
-            <p>Loading amazing products...</p>
-          </div>
-        `;
-
-        const response = await fetch(`${API_URL}/api/products`);
-        const products = await response.json();
-        
-        console.log("Products loaded:", products);
-
-        container.innerHTML = "";
-
-        if (!products || products.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <h3>No products available</h3>
-            </div>
-          `;
-          return;
-        }
-
-        products.forEach(product => {
-          const productCard = document.createElement('div');
-          productCard.className = 'product-card';
-          
-          // Create a short description (you can customize this)
-          const description = `Perfect for your home or office. High quality and affordable.`;
-          
-          productCard.innerHTML = `
-            <div class="product-image">
-              <img src="${product.image || 'https://via.placeholder.com/300x200?text=Product'}" 
-                   alt="${product.name}"
-                   onerror="this.src='https://via.placeholder.com/300x200?text=Product'">
-              <div class="product-badge">Available</div>
-            </div>
-            <div class="product-details">
-              <div class="product-category">${product.category || 'General'}</div>
-              <h3 class="product-name">${product.name}</h3>
-              <p class="product-description">${description}</p>
-              
-              <div class="product-price-section">
-                <div class="price-row">
-                  <span class="price-label">Rent per day</span>
-                  <span class="price-value rent-price">₹${product.rent}</span>
-                </div>
-                <div class="price-row">
-                  <span class="price-label">Security deposit</span>
-                  <span class="price-value deposit-price">₹${product.deposit || 0}</span>
-                </div>
-              </div>
-              
-              <button class="rent-btn" onclick="rentNow('${product._id}')">
-                <span>📦</span> Rent Now
-              </button>
-            </div>
-          `;
-          
-          container.appendChild(productCard);
-        });
-
-      } catch (error) {
-        console.error("Error loading products:", error);
-        document.getElementById("products").innerHTML = `
-          <div class="empty-state">
-            <h3>Failed to load products. Please try again.</h3>
-          </div>
-        `;
-      }
-    }
-
-    // Rent Now function
-    function rentNow(productId) {
-      const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
-      
-      if (!token || !userId) {
-        alert("Please login first");
-        window.location.href = "login.html";
-        return;
-      }
-      
-      fetch(`${API_URL}/api/products`)
-        .then(res => res.json())
-        .then(products => {
-          const product = products.find(p => p._id === productId);
-          
-          if (product) {
-            const days = prompt("Enter number of days to rent:", "3");
+        try {
+            const container = document.getElementById("products");
+            if (!container) return;
             
-            if (days && !isNaN(days) && days > 0) {
-              const totalPrice = product.rent * parseInt(days);
-              
-              const rental = {
-                productId: product._id,
-                productName: product.name,
-                productImage: product.image,
-                pricePerDay: product.rent,
-                days: parseInt(days),
-                totalPrice: totalPrice,
-                userId: userId
-              };
-              
-              localStorage.setItem("checkoutItem", JSON.stringify(rental));
-              window.location.href = "checkout.html";
+            container.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading amazing products...</p>
+                </div>
+            `;
+
+            const response = await fetch(`${API_URL}/api/products`);
+            const products = await response.json();
+
+            console.log("Products loaded:", products);
+
+            container.innerHTML = "";
+
+            if (!products || products.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No products available</h3>
+                    </div>
+                `;
+                return;
             }
-          }
-        })
-        .catch(err => {
-          console.error("Error fetching product:", err);
-          alert("Error processing request");
-        });
+
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+
+                const description = `Perfect for your home or office. High quality and affordable.`;
+
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image || 'https://via.placeholder.com/300x200?text=Product'}" 
+                             alt="${product.name}"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=Product'">
+                        <div class="product-badge">Available</div>
+                    </div>
+                    <div class="product-details">
+                        <div class="product-category">${product.category || 'General'}</div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${description}</p>
+                        
+                        <div class="product-price-section">
+                            <div class="price-row">
+                                <span class="price-label">Rent per day</span>
+                                <span class="price-value rent-price">₹${product.rent}</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Security deposit</span>
+                                <span class="price-value deposit-price">₹${product.deposit || 0}</span>
+                            </div>
+                        </div>
+                        
+                        <button class="rent-btn" onclick="rentNow('${product._id}')">
+                            <span>📦</span> Rent Now
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(productCard);
+            });
+
+        } catch (error) {
+            console.error("Error loading products:", error);
+            const container = document.getElementById("products");
+            if (container) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Failed to load products. Please try again.</h3>
+                        <button onclick="loadProducts()" class="retry-btn">Try Again</button>
+                    </div>
+                `;
+            }
+        }
     }
 
-    // Add to cart function
+    // ============================================
+    // RENT NOW FUNCTION
+    // ============================================
+    function rentNow(productId) {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
+        if (!token || !userId) {
+            alert("Please login first");
+            window.location.href = "login.html";
+            return;
+        }
+
+        fetch(`${API_URL}/api/products`)
+            .then(res => res.json())
+            .then(products => {
+                const product = products.find(p => p._id === productId);
+
+                if (product) {
+                    const days = prompt("Enter number of days to rent:", "3");
+
+                    if (days && !isNaN(days) && days > 0) {
+                        const totalPrice = product.rent * parseInt(days);
+
+                        const rental = {
+                            productId: product._id,
+                            productName: product.name,
+                            productImage: product.image,
+                            pricePerDay: product.rent,
+                            days: parseInt(days),
+                            totalPrice: totalPrice,
+                            userId: userId
+                        };
+
+                        localStorage.setItem("checkoutItem", JSON.stringify(rental));
+                        window.location.href = "checkout.html";
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching product:", err);
+                alert("Error processing request");
+            });
+    }
+
+    // ============================================
+    // ADD TO CART FUNCTION
+    // ============================================
     function addToCart(productId) {
-      const token = localStorage.getItem("token");
-      
-      if (!token) {
-        alert("Please login first");
-        window.location.href = "login.html";
-        return;
-      }
-      
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.push(productId);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      
-      console.log("Cart after adding:", cart);
-      alert("Product added to cart");
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("Please login first");
+            window.location.href = "login.html";
+            return;
+        }
+
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.push(productId);
+        localStorage.setItem("cart", JSON.stringify(cart));
+
+        console.log("Cart after adding:", cart);
+        alert("Product added to cart");
     }
 
-    // Load products when page loads
-    document.addEventListener('DOMContentLoaded', loadProducts);
+    // ============================================
+    // MOBILE MENU FUNCTIONALITY
+    // ============================================
+    function toggleMobileMenu() {
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (!menuBtn || !navLinks) {
+            console.log('Mobile menu elements not found');
+            return;
+        }
 
-    
-// ============================================
-// MOBILE MENU BUTTON - AUTO CREATE & HANDLE
-// ============================================
+        menuBtn.classList.toggle('active');
+        navLinks.classList.toggle('active');
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Only run on mobile screens
-    if (window.innerWidth > 768) return;
-    
-    // Get navbar
-    const navbar = document.querySelector('.navbar');
-    if (!navbar) return;
-    
-    // Check if menu button already exists
-    if (document.querySelector('.mobile-menu-btn')) return;
-    
-    // Create mobile menu button
-    const menuBtn = document.createElement('button');
-    menuBtn.className = 'mobile-menu-btn';
-    menuBtn.setAttribute('aria-label', 'Menu');
-    menuBtn.innerHTML = `
-        <span></span>
-        <span></span>
-        <span></span>
-    `;
-    
-    // Add button to navbar
-    navbar.appendChild(menuBtn);
-    
-    // Create mobile menu panel
-    const mobileMenu = document.createElement('div');
-    mobileMenu.className = 'mobile-menu-panel';
-    
-    // Get navigation links from nav-right
-    const navRight = document.querySelector('.nav-right');
-    if (navRight) {
-        // Copy links to mobile menu
-        const links = navRight.querySelectorAll('a');
-        links.forEach(link => {
-            const newLink = document.createElement('a');
-            newLink.href = link.href;
-            newLink.className = 'mobile-nav-link';
-            newLink.innerHTML = link.innerHTML;
-            mobileMenu.appendChild(newLink);
-        });
-    } else {
-        // Fallback links
-        mobileMenu.innerHTML = `
-            <a href="products.html" class="mobile-nav-link">Products</a>
-            <a href="cart.html" class="mobile-nav-link">Cart</a>
-            <a href="rentals.html" class="mobile-nav-link">My Rentals</a>
-            <a href="login.html" class="mobile-nav-link">Login</a>
-            <a href="register.html" class="mobile-nav-link">Register</a>
-        `;
-    }
-    
-    // Create overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'mobile-menu-overlay';
-    
-    // Add elements to page
-    document.body.appendChild(mobileMenu);
-    document.body.appendChild(overlay);
-    
-    // Toggle menu function
-    function toggleMenu(show) {
-        if (show === undefined) {
-            menuBtn.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-            overlay.classList.toggle('active');
-        } else if (show) {
-            menuBtn.classList.add('active');
-            mobileMenu.classList.add('active');
-            overlay.classList.add('active');
+        // Animate hamburger to X
+        const spans = menuBtn.querySelectorAll('span');
+        if (menuBtn.classList.contains('active')) {
+            spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+            spans[1].style.opacity = '0';
+            spans[2].style.transform = 'rotate(-45deg) translate(7px, -7px)';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
         } else {
-            menuBtn.classList.remove('active');
-            mobileMenu.classList.remove('active');
-            overlay.classList.remove('active');
+            spans[0].style.transform = 'none';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'none';
+            document.body.style.overflow = ''; // Restore scrolling
         }
         
-        // Prevent body scroll
-        document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        console.log('Menu toggled:', menuBtn.classList.contains('active') ? 'open' : 'closed');
     }
-    
-    // Menu button click
-    menuBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        toggleMenu();
-    });
-    
-    // Overlay click
-    overlay.addEventListener('click', function() {
-        toggleMenu(false);
-    });
-    
-    // Close menu when clicking a link
-    mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function() {
-            toggleMenu(false);
-        });
-    });
-    
-    // Close on escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-            toggleMenu(false);
-        }
-    });
-    
-    // Handle resize
-    let resizeTimer;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-            if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
-                toggleMenu(false);
-            }
-        }, 250);
-    });
-    
-    console.log('✅ Mobile menu created and initialized');
-});
 
-  </script>
+    // ============================================
+    // INITIALIZE MOBILE MENU
+    // ============================================
+    function initMobileMenu() {
+        // Close menu when clicking on a link
+        const navLinks = document.querySelectorAll('.nav-link');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        
+        if (!navLinks.length || !menuBtn) return;
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const navLinksContainer = document.querySelector('.nav-links');
+                if (navLinksContainer?.classList.contains('active')) {
+                    menuBtn.classList.remove('active');
+                    navLinksContainer.classList.remove('active');
+                    
+                    const spans = menuBtn.querySelectorAll('span');
+                    spans[0].style.transform = 'none';
+                    spans[1].style.opacity = '1';
+                    spans[2].style.transform = 'none';
+                    
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const navLinksContainer = document.querySelector('.nav-links');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (!navLinksContainer?.classList.contains('active')) return;
+            
+            if (!e.target.closest('.nav-links') && !e.target.closest('.mobile-menu-btn')) {
+                menuBtn.classList.remove('active');
+                navLinksContainer.classList.remove('active');
+                
+                const spans = menuBtn.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+                
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const navLinksContainer = document.querySelector('.nav-links');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth > 768 && navLinksContainer?.classList.contains('active')) {
+                menuBtn.classList.remove('active');
+                navLinksContainer.classList.remove('active');
+                
+                const spans = menuBtn.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+                
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+            const navLinksContainer = document.querySelector('.nav-links');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (e.key === 'Escape' && navLinksContainer?.classList.contains('active')) {
+                menuBtn.classList.remove('active');
+                navLinksContainer.classList.remove('active');
+                
+                const spans = menuBtn.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+                
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // ============================================
+    // PAGE INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load products
+        loadProducts();
+        
+        // Initialize mobile menu
+        initMobileMenu();
+        
+        console.log('✅ Products page initialized');
+    });
+
+    // Remove the auto-create mobile menu code as it's not needed
+    // The mobile menu button should already be in your HTML
+    
+</script>
 </body>
 </html>
