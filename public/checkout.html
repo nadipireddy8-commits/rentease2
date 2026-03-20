@@ -480,214 +480,215 @@
         </div>
     </div>
 
-    <script>
-    // ============================================
-    // CHECKOUT PAGE - COMPLETE FIXED VERSION
-    // ============================================
+   <script>
+// ============================================
+// CHECKOUT PAGE - COMPLETE FIXED VERSION
+// ============================================
 
-    const API_URL = "https://rentease3-backend.onrender.com";
-    let loadTimeout;
+const API_URL = "https://rentease3-backend.onrender.com";
+let loadTimeout;
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Clear any existing timeout
-        if (loadTimeout) clearTimeout(loadTimeout);
-        
-        // Set timeout for loading (5 seconds)
-        loadTimeout = setTimeout(() => {
-            showError('Loading timeout. Please try again.');
-        }, 5000);
-        
-        loadCheckoutItem();
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear any existing timeout
+    if (loadTimeout) clearTimeout(loadTimeout);
+    
+    // Set timeout for loading (5 seconds)
+    loadTimeout = setTimeout(() => {
+        showError('Loading timeout. Please try again.');
+    }, 5000);
+    
+    loadCheckoutItem();
+});
 
-    // ============================================
-    // LOAD CHECKOUT ITEM
-    // ============================================
-    function loadCheckoutItem() {
-        const checkoutContent = document.getElementById('checkoutContent');
+// ============================================
+// LOAD CHECKOUT ITEM
+// ============================================
+function loadCheckoutItem() {
+    const checkoutContent = document.getElementById('checkoutContent');
+    
+    if (!checkoutContent) {
+        console.error('Checkout container not found');
+        return;
+    }
+
+    // Clear timeout since we're loading
+    if (loadTimeout) clearTimeout(loadTimeout);
+
+    try {
+        // Get item from localStorage
+        const itemJson = localStorage.getItem('checkoutItem');
         
-        if (!checkoutContent) {
-            console.error('Checkout container not found');
+        if (!itemJson) {
+            showEmptyState(checkoutContent);
             return;
         }
 
-        // Clear timeout since we're loading
-        if (loadTimeout) clearTimeout(loadTimeout);
-
-        try {
-            // Get item from localStorage
-            const itemJson = localStorage.getItem('checkoutItem');
-            
-            if (!itemJson) {
-                showEmptyState(checkoutContent);
-                return;
-            }
-
-            const item = JSON.parse(itemJson);
-            
-            // Validate item
-            if (!item || !item.productName || !item.pricePerDay) {
-                showInvalidItemState(checkoutContent);
-                return;
-            }
-
-            // Display checkout item
-            displayCheckoutItem(checkoutContent, item);
-
-        } catch (error) {
-            console.error('Error loading checkout:', error);
-            showError('Failed to load checkout details');
+        const item = JSON.parse(itemJson);
+        
+        // Validate item
+        if (!item || !item.productName || !item.pricePerDay) {
+            showInvalidItemState(checkoutContent);
+            return;
         }
+
+        // Display checkout item
+        displayCheckoutItem(checkoutContent, item);
+
+    } catch (error) {
+        console.error('Error loading checkout:', error);
+        showError('Failed to load checkout details');
     }
+}
 
-    // ============================================
-    // DISPLAY CHECKOUT ITEM
-    // ============================================
-    function displayCheckoutItem(container, item) {
-        const subtotal = item.pricePerDay * item.days;
-        const tax = Math.round(subtotal * 0.18);
-        const total = subtotal + tax;
-
-        container.innerHTML = `
-            <!-- Product Detail Card -->
-            <div class="product-detail-card">
-                <div class="product-row">
-                    <div class="product-image">
-                        <img src="${item.productImage || 'https://via.placeholder.com/150'}" 
-                             alt="${item.productName}"
-                             onerror="this.src='https://via.placeholder.com/150'">
-                    </div>
-                    <div class="product-info">
-                        <h3>${item.productName}</h3>
-                        <span class="product-price">₹${item.pricePerDay}/day</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Days Selection -->
-            <div class="days-section">
-                <label class="days-label">Rental Duration</label>
-                <div class="days-input-group">
-                    <div class="days-input-wrapper">
-                        <button class="days-btn" onclick="adjustDays(-1)">−</button>
-                        <input type="number" id="days" value="${item.days}" min="1" max="30" onchange="updateTotal()">
-                        <button class="days-btn" onclick="adjustDays(1)">+</button>
-                    </div>
-                    <span class="days-hint">days (max 30)</span>
-                </div>
-            </div>
-
-            <!-- Price Breakdown -->
-            <div class="price-breakdown">
-                <div class="price-row">
-                    <span>Price per day</span>
-                    <span>₹${item.pricePerDay}</span>
-                </div>
-                <div class="price-row">
-                    <span>Number of days</span>
-                    <span id="displayDays">${item.days}</span>
-                </div>
-                <div class="price-row">
-                    <span>Subtotal</span>
-                    <span id="subtotal">₹${subtotal}</span>
-                </div>
-                <div class="price-row">
-                    <span>GST (18%)</span>
-                    <span id="tax">₹${tax}</span>
-                </div>
-                <div class="price-row total-row">
-                    <span class="total-label">Total Amount</span>
-                    <span class="total-value" id="totalPrice">₹${total}</span>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button onclick="confirmRental()" class="btn btn-primary">
-                    <span>✅</span> Confirm & Pay
-                </button>
-                <button onclick="cancelCheckout()" class="btn btn-secondary">
-                    <span>✖️</span> Cancel
-                </button>
-            </div>
-        `;
-    }
-
-    // ============================================
-    // EMPTY STATE
-    // ============================================
-    function showEmptyState(container) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">🛒</div>
-                <h3>No item to checkout</h3>
-                <p>Looks like you haven't selected any product to rent yet</p>
-                <button onclick="window.location.href='products.html'" class="btn btn-primary">
-                    Browse Products
-                </button>
-            </div>
-        `;
-    }
-
-    // ============================================
-    // INVALID ITEM STATE
-    // ============================================
-    function showInvalidItemState(container) {
-        container.innerHTML = `
-            <div class="error-state">
-                <div class="error-icon">⚠️</div>
-                <h3>Invalid checkout item</h3>
-                <p>The product information is incomplete</p>
-                <button onclick="window.location.href='products.html'" class="btn btn-primary">
-                    Browse Products
-                </button>
-            </div>
-        `;
-    }
-
-    // ============================================
-    // ERROR STATE
-    // ============================================
-    function showError(message) {
-        const container = document.getElementById('checkoutContent');
-        if (!container) return;
-        
-        container.innerHTML = `
-            <div class="error-state">
-                <div class="error-icon">❌</div>
-                <h3>Something went wrong</h3>
-                <p>${message || 'Failed to load checkout details'}</p>
-                <button onclick="window.location.href='products.html'" class="btn btn-primary">
-                    Back to Products
-                </button>
-            </div>
-        `;
-    }
-
-    // ============================================
-    // ADJUST DAYS
-    // ============================================
-    function adjustDays(change) {
-        const daysInput = document.getElementById('days');
-        if (!daysInput) return;
-        
-        const currentDays = parseInt(daysInput.value) || 1;
-        const newDays = Math.max(1, Math.min(30, currentDays + change));
-        daysInput.value = newDays;
-        updateTotal();
-    }
-
-    // ============================================
-    // UPDATE TOTAL
-    // ============================================
-    // ============================================
-// UPDATE TOTAL FUNCTION - Complete Version
 // ============================================
+// DISPLAY CHECKOUT ITEM
+// ============================================
+function displayCheckoutItem(container, item) {
+    const subtotal = item.pricePerDay * item.days;
+    const tax = Math.round(subtotal * 0.18);
+    const total = subtotal + tax;
 
-/**
- * Updates the total price when days are changed
- * Calculates subtotal, tax, and final total
- */
+    container.innerHTML = `
+        <!-- Product Detail Card -->
+        <div class="product-detail-card">
+            <div class="product-row">
+                <div class="product-image">
+                    <img src="${item.productImage || 'https://via.placeholder.com/150'}" 
+                         alt="${item.productName}"
+                         onerror="this.src='https://via.placeholder.com/150'">
+                </div>
+                <div class="product-info">
+                    <h3>${item.productName}</h3>
+                    <span class="product-price">₹${item.pricePerDay}/day</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Days Selection -->
+        <div class="days-section">
+            <label class="days-label">Rental Duration</label>
+            <div class="days-input-group">
+                <div class="days-input-wrapper">
+                    <button class="days-btn" onclick="adjustDays(-1)">−</button>
+                    <input type="number" id="days" value="${item.days}" min="1" max="30">
+                    <button class="days-btn" onclick="adjustDays(1)">+</button>
+                </div>
+                <span class="days-hint">days (max 30)</span>
+            </div>
+        </div>
+
+        <!-- Price Breakdown -->
+        <div class="price-breakdown">
+            <div class="price-row">
+                <span>Price per day</span>
+                <span id="pricePerDay">₹${item.pricePerDay}</span>
+            </div>
+            <div class="price-row">
+                <span>Number of days</span>
+                <span id="displayDays">${item.days}</span>
+            </div>
+            <div class="price-row">
+                <span>Subtotal</span>
+                <span id="subtotal">₹${subtotal}</span>
+            </div>
+            <div class="price-row">
+                <span>GST (18%)</span>
+                <span id="tax">₹${tax}</span>
+            </div>
+            <div class="price-row total-row">
+                <span class="total-label">Total Amount</span>
+                <span class="total-value" id="totalPrice">₹${total}</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button onclick="confirmRental()" class="btn btn-primary" id="confirmBtn">
+                <span>✅</span> Confirm & Pay
+            </button>
+            <button onclick="cancelCheckout()" class="btn btn-secondary">
+                <span>✖️</span> Cancel
+            </button>
+        </div>
+    `;
+
+    // Initialize days input after HTML is inserted
+    initializeDaysInput();
+    
+    // Set initial total
+    updateTotal();
+}
+
+// ============================================
+// EMPTY STATE
+// ============================================
+function showEmptyState(container) {
+    container.innerHTML = `
+        <div class="empty-state">
+            <div class="empty-icon">🛒</div>
+            <h3>No item to checkout</h3>
+            <p>Looks like you haven't selected any product to rent yet</p>
+            <button onclick="window.location.href='products.html'" class="btn btn-primary">
+                Browse Products
+            </button>
+        </div>
+    `;
+}
+
+// ============================================
+// INVALID ITEM STATE
+// ============================================
+function showInvalidItemState(container) {
+    container.innerHTML = `
+        <div class="error-state">
+            <div class="error-icon">⚠️</div>
+            <h3>Invalid checkout item</h3>
+            <p>The product information is incomplete</p>
+            <button onclick="window.location.href='products.html'" class="btn btn-primary">
+                Browse Products
+            </button>
+        </div>
+    `;
+}
+
+// ============================================
+// ERROR STATE
+// ============================================
+function showError(message) {
+    const container = document.getElementById('checkoutContent');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="error-state">
+            <div class="error-icon">❌</div>
+            <h3>Something went wrong</h3>
+            <p>${message || 'Failed to load checkout details'}</p>
+            <button onclick="window.location.href='products.html'" class="btn btn-primary">
+                Back to Products
+            </button>
+        </div>
+    `;
+}
+
+// ============================================
+// ADJUST DAYS
+// ============================================
+function adjustDays(change) {
+    const daysInput = document.getElementById('days');
+    if (!daysInput) return;
+    
+    const currentDays = parseInt(daysInput.value) || 1;
+    const newDays = Math.max(1, Math.min(30, currentDays + change));
+    daysInput.value = newDays;
+    updateTotal();
+    
+    // Visual feedback
+    highlightDaysInput();
+}
+
+// ============================================
+// UPDATE TOTAL FUNCTION
+// ============================================
 function updateTotal() {
     // Get item from localStorage
     const itemJson = localStorage.getItem('checkoutItem');
@@ -715,7 +716,7 @@ function updateTotal() {
         if (days > 30) {
             days = 30;
             daysInput.value = 30;
-            alert('Maximum rental period is 30 days');
+            showDaysLimitWarning();
         }
 
         // Calculate prices
@@ -724,7 +725,7 @@ function updateTotal() {
         const tax = Math.round(subtotal * 0.18); // 18% GST
         const total = subtotal + tax;
 
-        // Update all display elements
+        // Update display elements
         updateDisplayElements(days, subtotal, tax, total);
 
         // Update localStorage with new values
@@ -742,10 +743,6 @@ function updateTotal() {
 // ============================================
 // UPDATE DISPLAY ELEMENTS
 // ============================================
-
-/**
- * Updates all price display elements on the page
- */
 function updateDisplayElements(days, subtotal, tax, total) {
     // Update days display
     const displayDays = document.getElementById('displayDays');
@@ -770,71 +767,11 @@ function updateDisplayElements(days, subtotal, tax, total) {
     if (totalElement) {
         totalElement.textContent = '₹' + total;
     }
-
-    // Update any additional price rows if they exist
-    updateAdditionalPriceRows(days, subtotal, tax, total);
-}
-
-// ============================================
-// UPDATE ADDITIONAL PRICE ROWS
-// ============================================
-
-/**
- * Updates any additional price rows that might be present
- */
-function updateAdditionalPriceRows(days, subtotal, tax, total) {
-    // Update price per day row if it exists
-    const pricePerDayElement = document.querySelector('.price-per-day-value');
-    if (pricePerDayElement) {
-        const item = JSON.parse(localStorage.getItem('checkoutItem'));
-        if (item) {
-            pricePerDayElement.textContent = '₹' + item.pricePerDay;
-        }
-    }
-
-    // Update days count in multiple places if needed
-    const daysElements = document.querySelectorAll('.days-count');
-    daysElements.forEach(el => {
-        el.textContent = days;
-    });
-}
-
-// ============================================
-// ADJUST DAYS FUNCTION
-// ============================================
-
-/**
- * Increases or decreases the number of days
- * @param {number} change - Positive or negative number to adjust days
- */
-function adjustDays(change) {
-    const daysInput = document.getElementById('days');
-    if (!daysInput) return;
-
-    // Get current days
-    let currentDays = parseInt(daysInput.value) || 1;
-    
-    // Calculate new days with limits
-    let newDays = currentDays + change;
-    newDays = Math.max(1, Math.min(30, newDays)); // Keep between 1 and 30
-    
-    // Update input
-    daysInput.value = newDays;
-    
-    // Update total
-    updateTotal();
-    
-    // Optional: Add animation feedback
-    highlightDaysInput();
 }
 
 // ============================================
 // HIGHLIGHT DAYS INPUT (Visual Feedback)
 // ============================================
-
-/**
- * Provides visual feedback when days are adjusted
- */
 function highlightDaysInput() {
     const daysWrapper = document.querySelector('.days-input-wrapper');
     if (daysWrapper) {
@@ -848,13 +785,45 @@ function highlightDaysInput() {
 }
 
 // ============================================
+// SHOW DAYS LIMIT WARNING
+// ============================================
+function showDaysLimitWarning() {
+    // Check if warning already exists
+    let warningElement = document.getElementById('daysWarning');
+    
+    if (!warningElement) {
+        const daysSection = document.querySelector('.days-section');
+        if (!daysSection) return;
+        
+        warningElement = document.createElement('div');
+        warningElement.id = 'daysWarning';
+        warningElement.style.cssText = `
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #fee2e2;
+            border-radius: 8px;
+            text-align: center;
+        `;
+        warningElement.textContent = 'Maximum rental period is 30 days';
+        daysSection.appendChild(warningElement);
+    }
+    
+    // Show warning
+    warningElement.style.display = 'block';
+    
+    // Hide after 3 seconds
+    setTimeout(() => {
+        if (warningElement && warningElement.parentNode) {
+            warningElement.style.display = 'none';
+        }
+    }, 3000);
+}
+
+// ============================================
 // VALIDATE DAYS INPUT
 // ============================================
-
-/**
- * Validates the days input value
- * @param {HTMLElement} inputElement - The days input element
- */
 function validateDaysInput(inputElement) {
     if (!inputElement) return;
     
@@ -869,109 +838,37 @@ function validateDaysInput(inputElement) {
 }
 
 // ============================================
-// SHOW DAYS LIMIT WARNING
-// ============================================
-
-/**
- * Shows a warning when days exceed maximum limit
- */
-function showDaysLimitWarning() {
-    const warningElement = document.getElementById('daysWarning');
-    if (warningElement) {
-        warningElement.style.display = 'block';
-        setTimeout(() => {
-            warningElement.style.display = 'none';
-        }, 3000);
-    } else {
-        // Create warning if it doesn't exist
-        createDaysWarning();
-    }
-}
-
-// ============================================
-// CREATE DAYS WARNING ELEMENT
-// ============================================
-
-/**
- * Creates a warning element for days limit
- */
-function createDaysWarning() {
-    const daysSection = document.querySelector('.days-section');
-    if (!daysSection) return;
-    
-    const warning = document.createElement('div');
-    warning.id = 'daysWarning';
-    warning.style.cssText = `
-        color: #ef4444;
-        font-size: 0.85rem;
-        margin-top: 0.5rem;
-        padding: 0.5rem;
-        background: #fee2e2;
-        border-radius: 8px;
-        text-align: center;
-    `;
-    warning.textContent = 'Maximum rental period is 30 days';
-    
-    daysSection.appendChild(warning);
-    
-    setTimeout(() => {
-        if (warning.parentNode) {
-            warning.remove();
-        }
-    }, 3000);
-}
-
-// ============================================
-// FORMAT CURRENCY
-// ============================================
-
-/**
- * Formats a number as Indian Rupee currency
- * @param {number} amount - The amount to format
- * @returns {string} Formatted currency string
- */
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-IN', {
-        style: 'currency',
-        currency: 'INR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(amount).replace('INR', '₹');
-}
-
-// ============================================
 // INITIALIZE DAYS INPUT
 // ============================================
-
-/**
- * Sets up event listeners for days input
- */
 function initializeDaysInput() {
     const daysInput = document.getElementById('days');
     if (!daysInput) return;
     
     // Remove existing listeners to prevent duplicates
+    daysInput.removeEventListener('input', handleDaysInput);
     daysInput.removeEventListener('blur', handleDaysBlur);
     daysInput.removeEventListener('keypress', handleDaysKeyPress);
     
-    // Add blur event
+    // Add event listeners
+    daysInput.addEventListener('input', handleDaysInput);
     daysInput.addEventListener('blur', handleDaysBlur);
-    
-    // Add keypress event for Enter key
     daysInput.addEventListener('keypress', handleDaysKeyPress);
 }
 
-/**
- * Handles blur event on days input
- */
+function handleDaysInput() {
+    // Validate as user types
+    let value = parseInt(this.value);
+    if (!isNaN(value)) {
+        if (value < 1) this.value = 1;
+        if (value > 30) this.value = 30;
+    }
+}
+
 function handleDaysBlur() {
     validateDaysInput(this);
     updateTotal();
 }
 
-/**
- * Handles keypress event on days input
- */
 function handleDaysKeyPress(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
@@ -982,12 +879,116 @@ function handleDaysKeyPress(e) {
 }
 
 // ============================================
+// FORMAT CURRENCY
+// ============================================
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(amount).replace('INR', '₹');
+}
+
+// ============================================
+// CANCEL CHECKOUT
+// ============================================
+function cancelCheckout() {
+    if (confirm('Are you sure you want to cancel?')) {
+        localStorage.removeItem('checkoutItem');
+        window.location.href = 'products.html';
+    }
+}
+
+// ============================================
+// CONFIRM RENTAL
+// ============================================
+async function confirmRental() {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    const item = JSON.parse(localStorage.getItem('checkoutItem'));
+    
+    if (!token || !userId) {
+        alert('Please login first');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    if (!item) {
+        alert('No item to confirm');
+        return;
+    }
+    
+    // Disable confirm button to prevent double click
+    const confirmBtn = document.getElementById('confirmBtn');
+    if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<span>⏳</span> Processing...';
+    }
+    
+    try {
+        console.log("Sending rental data:", item);
+        
+        const rentalResponse = await fetch(`${API_URL}/api/rentals`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(item)
+        });
+        
+        const rentalData = await rentalResponse.json();
+        
+        if (rentalResponse.ok) {
+            const paymentResponse = await fetch(`${API_URL}/api/payments/create-checkout-session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    cartItems: [{
+                        _id: item.productId,
+                        name: item.productName,
+                        price: item.pricePerDay,
+                        quantity: item.days
+                    }]
+                })
+            });
+            
+            const paymentData = await paymentResponse.json();
+            
+            if (paymentResponse.ok && paymentData.id) {
+                const stripe = Stripe("pk_test_51T1VYnEl5zU5gb2fLCMzHZS2PV71rZFiXORD2i89E9v4qPemWAvOhRoxE9U0MZrtWgtesUNOPJ1lmvR1Gh78Nug000Gj0MEM7M");
+                await stripe.redirectToCheckout({ sessionId: paymentData.id });
+            } else {
+                alert('Payment failed: ' + (paymentData.message || 'Unknown error'));
+                if (confirmBtn) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = '<span>✅</span> Confirm & Pay';
+                }
+            }
+        } else {
+            alert('Error: ' + (rentalData.message || 'Failed to confirm rental'));
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<span>✅</span> Confirm & Pay';
+            }
+        }
+    } catch (error) {
+        console.error('Checkout error:', error);
+        alert('Server error. Please try again.');
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = '<span>✅</span> Confirm & Pay';
+        }
+    }
+}
+
+// ============================================
 // RESET TO DEFAULT
 // ============================================
-
-/**
- * Resets days to default value (1)
- */
 function resetToDefault() {
     const daysInput = document.getElementById('days');
     if (daysInput) {
@@ -995,35 +996,4 @@ function resetToDefault() {
         updateTotal();
     }
 }
-
-// ============================================
-// BULK UPDATE FUNCTIONS
-// ============================================
-
-/**
- * Updates multiple days inputs at once
- * @param {number} days - Number of days to set
- */
-function setDays(days) {
-    const daysInput = document.getElementById('days');
-    if (!daysInput) return;
-    
-    days = Math.max(1, Math.min(30, parseInt(days) || 1));
-    daysInput.value = days;
-    updateTotal();
-}
-
-// ============================================
-// EXPORT FUNCTIONS (if using modules)
-// ============================================
-// Uncomment if using ES6 modules
-/*
-export {
-    updateTotal,
-    adjustDays,
-    setDays,
-    resetToDefault,
-    formatCurrency,
-    initializeDaysInput
-};
-*/
+</script>
