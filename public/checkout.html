@@ -707,6 +707,71 @@
             flex: 1 1 calc(25% - 15px) !important;
         }
     }
+    /* ============================================
+   ADD THESE FIXES AT THE VERY END
+   ============================================ */
+
+/* Force all form elements to be visible */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: white !important;
+    color: #1f2937 !important;
+    border: 2px solid #e5e7eb !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Fix for select dropdown arrow */
+.form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234158D0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 1rem center !important;
+    padding-right: 2.5rem !important;
+}
+
+/* Fix for delivery options on laptop */
+@media screen and (min-width: 769px) {
+    .delivery-option {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        padding: 1rem !important;
+    }
+    
+    .delivery-option .option-details {
+        flex: 1 !important;
+    }
+    
+    .delivery-option .option-price {
+        flex-shrink: 0 !important;
+    }
+}
+
+/* Fix for State select specifically */
+#state {
+    color: #1f2937 !important;
+    background-color: white !important;
+}
+
+#state option {
+    color: #1f2937 !important;
+    background: white !important;
+}
+
+/* Fix for any hover states that might hide text */
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    background: white !important;
+    color: #1f2937 !important;
+    border-color: #4158D0 !important;
+}
 </style>
 <body>
     <div class="checkout-container">
@@ -1303,6 +1368,28 @@ window.addEventListener('resize', function() {
 // Call this after loading address form
 // Add this line at the end of your showAddressForm function:
 // setTimeout(ensureFormVisibility, 100);
+// Add to your checkout.js file
+function fixLaptopDisplay() {
+    if (window.innerWidth >= 769) {
+        // Force all form fields to be visible
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.style.backgroundColor = 'white';
+            el.style.color = '#1f2937';
+            el.style.border = '2px solid #e5e7eb';
+            el.style.opacity = '1';
+            el.style.visibility = 'visible';
+        });
+        
+        console.log('✅ Laptop display fixed');
+    }
+}
+
+// Run after address form loads
+// Add this line at the end of your showAddressForm function:
+// setTimeout(fixLaptopDisplay, 300);
+
+// Also run on window resize
+window.addEventListener('resize', fixLaptopDisplay);
 </script>
 </body>
 </html>
