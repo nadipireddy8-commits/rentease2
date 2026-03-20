@@ -729,6 +729,172 @@
         margin-bottom: 25px;
     }
 }
+/* ============================================
+   FIX FOR LAPTOP VIEW - CHECKOUT PAGE
+   ============================================ */
+
+/* Force all form elements to be visible on laptop */
+@media screen and (min-width: 769px) {
+    /* Make sure form containers are visible */
+    .address-form,
+    .form-group,
+    .delivery-option,
+    .product-summary {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Fix form row layout for laptop */
+    .form-row {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 20px !important;
+        margin-bottom: 20px !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Each form group should take equal width */
+    .form-group {
+        flex: 1 1 calc(33.333% - 14px) !important;
+        min-width: 200px !important;
+        margin-bottom: 15px !important;
+    }
+
+    /* Full width form groups */
+    .form-group.full-width {
+        flex: 1 1 100% !important;
+    }
+
+    /* Style inputs for laptop */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100% !important;
+        padding: 12px 15px !important;
+        border: 2px solid #e5e7eb !important;
+        border-radius: 12px !important;
+        font-size: 15px !important;
+        color: #1f2937 !important;
+        background: white !important;
+        margin-top: 5px !important;
+        display: block !important;
+    }
+
+    /* Labels should be visible */
+    .form-group label {
+        display: block !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: #374151 !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* Fix select dropdown arrow */
+    .form-group select {
+        appearance: auto !important;
+        -webkit-appearance: auto !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234158D0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 15px center !important;
+        padding-right: 40px !important;
+    }
+
+    /* Delivery options layout */
+    .delivery-option {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 15px !important;
+        padding: 15px !important;
+        border: 2px solid #e5e7eb !important;
+        border-radius: 12px !important;
+        margin-bottom: 10px !important;
+        cursor: pointer !important;
+    }
+
+    .delivery-option.selected {
+        border-color: #4158D0 !important;
+        background: #eef2ff !important;
+    }
+
+    .delivery-option input[type="radio"] {
+        width: 18px !important;
+        height: 18px !important;
+        accent-color: #4158D0 !important;
+    }
+
+    .delivery-option .option-details {
+        flex: 1 !important;
+    }
+
+    .delivery-option .option-name {
+        font-weight: 600 !important;
+        color: #1f2937 !important;
+    }
+
+    .delivery-option .option-desc {
+        font-size: 13px !important;
+        color: #6b7280 !important;
+    }
+
+    .delivery-option .option-price {
+        font-weight: 700 !important;
+        color: #4158D0 !important;
+        font-size: 16px !important;
+    }
+
+    /* Product summary layout */
+    .product-summary {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 20px !important;
+        padding: 20px !important;
+        background: #f9fafb !important;
+        border-radius: 16px !important;
+        margin-bottom: 25px !important;
+    }
+
+    .product-image {
+        width: 100px !important;
+        height: 100px !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+
+    .product-info {
+        flex: 1 !important;
+    }
+
+    .product-info h3 {
+        font-size: 1.3rem !important;
+        font-weight: 700 !important;
+        color: #1f2937 !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 15px !important;
+        margin-top: 25px !important;
+    }
+
+    .btn {
+        flex: 1 !important;
+        padding: 14px !important;
+        font-size: 16px !important;
+    }
+}
+
+/* Fix for very large screens */
+@media screen and (min-width: 1200px) {
+    .form-group {
+        flex: 1 1 calc(25% - 15px) !important;
+    }
+}
 </style>
 <body>
     <div class="checkout-container">
@@ -1292,6 +1458,35 @@ function ensureFormVisibility() {
         input.style.opacity = '1';
     });
 }
+// Add this function to force laptop layout
+function forceLaptopLayout() {
+    if (window.innerWidth >= 769) {
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach(group => {
+            group.style.display = 'block';
+            group.style.visibility = 'visible';
+            group.style.opacity = '1';
+        });
+        
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.style.display = 'block';
+            input.style.visibility = 'visible';
+            input.style.opacity = '1';
+        });
+    }
+}
+
+// Call this after loading address form
+// Add this line at the end of your showAddressForm function:
+// setTimeout(forceLaptopLayout, 200);
+
+// Also call on window resize
+window.addEventListener('resize', function() {
+    if (window.innerWidth >= 769) {
+        forceLaptopLayout();
+    }
+});
 
 // Call this after loading address form
 // Add this line at the end of your showAddressForm function:
