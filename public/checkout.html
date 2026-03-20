@@ -634,6 +634,101 @@
         font-size: 0.6rem;
     }
 }
+/* Fix for form fields visibility on laptop */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 16px;
+    color: #1f2937;
+    background: white;
+    margin-top: 5px;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 5px;
+}
+
+/* Fix for select dropdown */
+.form-group select {
+    appearance: auto;
+    -webkit-appearance: auto;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234158D0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
+}
+
+/* Fix for address section */
+.address-form {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+    display: block;
+}
+
+/* Fix for form rows */
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 250px;
+}
+
+/* Fix for delivery options */
+.delivery-option {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+}
+
+.delivery-option.selected {
+    border-color: #4158D0;
+    background: #eef2ff;
+}
+
+.delivery-option input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #4158D0;
+}
+
+/* Ensure all fields are visible on laptop */
+@media screen and (min-width: 1024px) {
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px;
+        padding: 14px 18px;
+    }
+    
+    .form-row {
+        margin-bottom: 25px;
+    }
+}
 </style>
 <body>
     <div class="checkout-container">
@@ -1181,6 +1276,26 @@ function showError(message) {
         </div>
     `;
 }
+// Add this to your checkout.js file
+function ensureFormVisibility() {
+    const forms = document.querySelectorAll('.address-form, .form-group');
+    forms.forEach(form => {
+        form.style.display = 'block';
+        form.style.visibility = 'visible';
+        form.style.opacity = '1';
+    });
+    
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.style.display = 'block';
+        input.style.visibility = 'visible';
+        input.style.opacity = '1';
+    });
+}
+
+// Call this after loading address form
+// Add this line at the end of your showAddressForm function:
+// setTimeout(ensureFormVisibility, 100);
 </script>
 </body>
 </html>
