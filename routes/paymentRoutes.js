@@ -2,18 +2,22 @@ const express = require("express");
 const router = express.Router();
 const Stripe = require("stripe");
 
+// Initialize Stripe with your secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const Order = require("../models/Order");
 const Rental = require("../models/Rental");
-const Product = require("../models/Product"); // Add this to fetch product details
+const Product = require("../models/Product");
 const auth = require("./auth");
 
-// Create Checkout Session
+// ============================================
+// CREATE CHECKOUT SESSION
+// ============================================
 router.post("/create-checkout-session", auth, async (req, res) => {
   try {
-    const { cartItems, address } = req.body; // Make sure address is received
+    const { cartItems, address } = req.body;
 
+    // Validate cart
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
       return res.status(400).json({ message: "Cart is empty or invalid" });
     }
@@ -38,7 +42,7 @@ router.post("/create-checkout-session", auth, async (req, res) => {
       })
     );
 
-    // Save order first with address
+    // Create order with pending status
     const order = await Order.create({
       user: req.user.id,
       items: itemsWithDetails.map((item) => ({
@@ -48,10 +52,10 @@ router.post("/create-checkout-session", auth, async (req, res) => {
       })),
       totalAmount,
       paymentStatus: "pending",
-      address: address || null // Save address if provided
+      address: address || null
     });
 
-    // Create Stripe session
+    // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: itemsWithDetails.map((item) => ({
@@ -61,13 +65,13 @@ router.post("/create-checkout-session", auth, async (req, res) => {
             name: item.name,
             images: item.productDetails?.image ? [item.productDetails.image] : [],
           },
-          unit_amount: Number(item.price) * 100,
+          unit_amount: Math.round(Number(item.price) * 100), // Convert to paise
         },
         quantity: Number(item.quantity),
       })),
       mode: "payment",
-      success_url: `${process.env.CLIENT_URL || 'https://rentease2-frontend.onrender.com'}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL}/checkout.html`,
+      success_url: `https://rentease2-frontend.onrender.com/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://rentease2-frontend.onrender.com/checkout.html`,
       metadata: {
         orderId: order._id.toString(),
         userId: req.user.id,
@@ -86,21 +90,22 @@ router.post("/create-checkout-session", auth, async (req, res) => {
   }
 });
 
-// Webhook to handle successful payments (MORE RELIABLE than confirm-payment)
+// ============================================
+// WEBHOOK - Handle successful payments
+// ============================================
 router.post("/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
 
   try {
-    // Use your webhook secret from environment variables
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
-    console.log(`Webhook signature verification failed.`, err.message);
+    console.log(`Webhook Error: ${err.message}`);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Handle the checkout.session.completed event
+  // Handle successful payment
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     
@@ -128,10 +133,10 @@ router.post("/webhook", express.raw({ type: 'application/json' }), async (req, r
           productName: product?.name || "Product",
           productImage: product?.image || "",
           pricePerDay: item.price,
-          days: item.quantity, // Using quantity as days
+          days: item.quantity,
           totalPrice: item.price * item.quantity,
           userId: order.user.toString(),
-          address: address // Save address to rental too
+          address: address
         });
 
         await rental.save();
@@ -148,16 +153,15 @@ router.post("/webhook", express.raw({ type: 'application/json' }), async (req, r
   res.json({ received: true });
 });
 
-// Keep confirm-payment for backward compatibility
+// ============================================
+// CONFIRM PAYMENT (Fallback)
+// ============================================
 router.put("/confirm-payment/:orderId", auth, async (req, res) => {
-  console.log("CONFIRM ROUTE HIT");
-
   try {
     const { orderId } = req.params;
-    const { address } = req.body; // Get address from request body
+    const { address } = req.body;
 
     const order = await Order.findById(orderId);
-
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
@@ -175,10 +179,10 @@ router.put("/confirm-payment/:orderId", auth, async (req, res) => {
         productName: product?.name || "Product",
         productImage: product?.image || "",
         pricePerDay: item.price,
-        days: item.quantity, // Using quantity as days
+        days: item.quantity,
         totalPrice: item.price * item.quantity,
         userId: order.user.toString(),
-        address: address || null // Save address if provided
+        address: address || null
       });
 
       await rental.save();
@@ -187,7 +191,7 @@ router.put("/confirm-payment/:orderId", auth, async (req, res) => {
     res.json({ message: "Payment confirmed & rentals created" });
 
   } catch (error) {
-    console.error(error);
+    console.error("Confirm payment error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
