@@ -17,4 +17,32 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// 🔹 Create new order (with auth middleware)
+router.post("/", auth, async (req, res) => {
+    try {
+        // Basic validation for required fields
+        if (!req.body.items || !req.body.totalAmount) {
+            return res.status(400).json({ message: "Items and total amount are required" });
+        }
+
+        const orderData = {
+            user: req.user.id,
+            items: req.body.items,
+            totalAmount: req.body.totalAmount,
+            paymentStatus: req.body.paymentStatus || "pending",
+            address: req.body.address || null,  // This saves the address
+            createdAt: new Date()
+        };
+        
+        const order = new Order(orderData);
+        await order.save();
+        
+        res.status(201).json(order);
+        
+    } catch (error) {
+        console.error("Error creating order:", error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router;
