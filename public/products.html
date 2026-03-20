@@ -644,6 +644,130 @@
 
     // Load products when page loads
     document.addEventListener('DOMContentLoaded', loadProducts);
+
+    
+// ============================================
+// MOBILE MENU BUTTON - AUTO CREATE & HANDLE
+// ============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Only run on mobile screens
+    if (window.innerWidth > 768) return;
+    
+    // Get navbar
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+    
+    // Check if menu button already exists
+    if (document.querySelector('.mobile-menu-btn')) return;
+    
+    // Create mobile menu button
+    const menuBtn = document.createElement('button');
+    menuBtn.className = 'mobile-menu-btn';
+    menuBtn.setAttribute('aria-label', 'Menu');
+    menuBtn.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
+    
+    // Add button to navbar
+    navbar.appendChild(menuBtn);
+    
+    // Create mobile menu panel
+    const mobileMenu = document.createElement('div');
+    mobileMenu.className = 'mobile-menu-panel';
+    
+    // Get navigation links from nav-right
+    const navRight = document.querySelector('.nav-right');
+    if (navRight) {
+        // Copy links to mobile menu
+        const links = navRight.querySelectorAll('a');
+        links.forEach(link => {
+            const newLink = document.createElement('a');
+            newLink.href = link.href;
+            newLink.className = 'mobile-nav-link';
+            newLink.innerHTML = link.innerHTML;
+            mobileMenu.appendChild(newLink);
+        });
+    } else {
+        // Fallback links
+        mobileMenu.innerHTML = `
+            <a href="products.html" class="mobile-nav-link">Products</a>
+            <a href="cart.html" class="mobile-nav-link">Cart</a>
+            <a href="rentals.html" class="mobile-nav-link">My Rentals</a>
+            <a href="login.html" class="mobile-nav-link">Login</a>
+            <a href="register.html" class="mobile-nav-link">Register</a>
+        `;
+    }
+    
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'mobile-menu-overlay';
+    
+    // Add elements to page
+    document.body.appendChild(mobileMenu);
+    document.body.appendChild(overlay);
+    
+    // Toggle menu function
+    function toggleMenu(show) {
+        if (show === undefined) {
+            menuBtn.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        } else if (show) {
+            menuBtn.classList.add('active');
+            mobileMenu.classList.add('active');
+            overlay.classList.add('active');
+        } else {
+            menuBtn.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+        
+        // Prevent body scroll
+        document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+    }
+    
+    // Menu button click
+    menuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleMenu();
+    });
+    
+    // Overlay click
+    overlay.addEventListener('click', function() {
+        toggleMenu(false);
+    });
+    
+    // Close menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+            toggleMenu(false);
+        });
+    });
+    
+    // Close on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+            toggleMenu(false);
+        }
+    });
+    
+    // Handle resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+                toggleMenu(false);
+            }
+        }, 250);
+    });
+    
+    console.log('✅ Mobile menu created and initialized');
+});
+
   </script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   
   <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   
 <style>
     /* ============================================
@@ -24,7 +24,7 @@
         min-height: 100vh;
     }
 
-    /* ========== NAVIGATION - MATCHING YOUR HTML ========== */
+    /* ========== NAVIGATION ========== */
     .navbar {
         background: white;
         box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
@@ -83,7 +83,7 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-        color: #1f2937;
+        color: #1f2937; /* Dark color for visibility */
     }
 
     .page-header h1 i {
@@ -92,8 +92,9 @@
     }
 
     .page-header p {
-        color: #6b7280;
+        color: #4b5563; /* Darker gray for visibility */
         font-size: 1rem;
+        font-weight: 400;
     }
 
     /* ========== SEARCH SECTION ========== */
@@ -114,7 +115,7 @@
     .search-title {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #1f2937;
+        color: #1f2937; /* Dark color */
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
@@ -142,7 +143,7 @@
         left: 1rem;
         top: 50%;
         transform: translateY(-50%);
-        color: #9ca3af;
+        color: #6b7280; /* Darker icon */
     }
 
     .date-input-wrapper input {
@@ -151,7 +152,12 @@
         border: 2px solid #e5e7eb;
         border-radius: 16px;
         font-size: 1rem;
+        color: #1f2937; /* Dark text */
         transition: all 0.3s;
+    }
+
+    .date-input-wrapper input::placeholder {
+        color: #9ca3af;
     }
 
     .date-input-wrapper input:focus {
@@ -178,6 +184,7 @@
         justify-content: center;
         gap: 0.5rem;
         flex: 1;
+        font-size: 0.95rem;
     }
 
     .btn-search {
@@ -192,7 +199,7 @@
 
     .btn-reset {
         background: white;
-        color: #6b7280;
+        color: #4b5563; /* Dark text */
         border: 2px solid #e5e7eb;
     }
 
@@ -243,7 +250,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: #6b7280;
+        color: #4b5563; /* Darker text */
         font-size: 0.9rem;
         margin-bottom: 0.3rem;
     }
@@ -257,14 +264,20 @@
         background: #f3f4f6;
         padding: 0.2rem 0.5rem;
         border-radius: 8px;
+        color: #1f2937; /* Dark text */
+        font-weight: 500;
     }
 
     .order-date {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: #9ca3af;
+        color: #6b7280; /* Darker gray */
         font-size: 0.9rem;
+    }
+
+    .order-date i {
+        color: #4158D0;
     }
 
     .status-badge {
@@ -279,33 +292,33 @@
 
     .status-pending {
         background: #fff3cd;
-        color: #856404;
+        color: #856404; /* Dark text for visibility */
     }
 
     .status-paid {
         background: #d4edda;
-        color: #155724;
+        color: #155724; /* Dark text for visibility */
     }
 
     .status-failed {
         background: #f8d7da;
-        color: #721c24;
+        color: #721c24; /* Dark text for visibility */
     }
 
     .status-processing {
         background: #cce5ff;
-        color: #004085;
+        color: #004085; /* Dark text for visibility */
     }
 
     .status-delivered {
         background: #d1e7dd;
-        color: #0f5132;
+        color: #0f5132; /* Dark text for visibility */
     }
 
     .order-items {
         background: #f9fafb;
         border-radius: 16px;
-        padding: 1rem;
+        padding: 1.2rem;
         margin: 1rem 0;
     }
 
@@ -313,16 +326,21 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: #4b5563;
+        color: #1f2937; /* Dark color */
         font-weight: 600;
-        margin-bottom: 0.8rem;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+    }
+
+    .items-title i {
+        color: #4158D0;
     }
 
     .item-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.5rem 0;
+        padding: 0.8rem 0;
         border-bottom: 1px solid #e5e7eb;
         flex-wrap: wrap;
         gap: 0.5rem;
@@ -336,8 +354,13 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: #1f2937;
+        color: #1f2937; /* Dark color */
         font-weight: 500;
+        font-size: 1rem;
+    }
+
+    .item-name i {
+        color: #4158D0;
     }
 
     .item-details {
@@ -347,10 +370,20 @@
 
     .item-details span {
         background: white;
-        padding: 0.2rem 0.8rem;
+        padding: 0.3rem 1rem;
         border-radius: 20px;
         font-size: 0.9rem;
         border: 1px solid #e5e7eb;
+        color: #1f2937; /* Dark text */
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .item-details span i {
+        color: #4158D0;
+        font-size: 0.8rem;
     }
 
     .order-total {
@@ -366,8 +399,12 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: #4b5563;
+        color: #1f2937; /* Dark color */
         font-weight: 600;
+    }
+
+    .total-label i {
+        color: #4158D0;
     }
 
     .total-amount {
@@ -394,8 +431,9 @@
     }
 
     .empty-state p {
-        color: #6b7280;
+        color: #4b5563; /* Dark text */
         margin-bottom: 1.5rem;
+        font-size: 1.1rem;
     }
 
     .empty-state-btn {
@@ -429,6 +467,10 @@
         flex-wrap: wrap;
     }
 
+    .filter-summary i {
+        color: white;
+    }
+
     .clear-filter {
         background: rgba(255, 255, 255, 0.2);
         border: none;
@@ -440,10 +482,15 @@
         display: flex;
         align-items: center;
         gap: 0.3rem;
+        font-weight: 500;
     }
 
     .clear-filter:hover {
         background: rgba(255, 255, 255, 0.3);
+    }
+
+    .clear-filter i {
+        font-size: 0.8rem;
     }
 
     /* ========== RESPONSIVE ========== */
@@ -462,6 +509,7 @@
 
         .nav-btn i {
             margin: 0;
+            font-size: 1.2rem;
         }
 
         .page-header {
@@ -484,6 +532,10 @@
             width: 100%;
         }
 
+        .btn-search, .btn-reset {
+            padding: 0.8rem;
+        }
+
         .order-header {
             flex-direction: column;
         }
@@ -491,11 +543,18 @@
         .item-row {
             flex-direction: column;
             align-items: flex-start;
+            gap: 0.5rem;
         }
 
         .item-details {
             width: 100%;
             justify-content: flex-start;
+        }
+
+        .order-total {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
         }
     }
 
@@ -504,6 +563,14 @@
             max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .search-title {
+            font-size: 1rem;
         }
     }
 
@@ -515,6 +582,7 @@
 
         .navbar, .search-section, .order-card, .empty-state {
             background: #1e1e2f;
+            border-color: #2d2d44;
         }
 
         .navbar h2 {
@@ -524,27 +592,70 @@
         }
 
         .page-header h1 {
-            color: #e5e7eb;
+            color: #f3f4f6;
         }
 
-        .page-header p, .search-title, .order-id, .order-date {
-            color: #9ca3af;
+        .page-header p {
+            color: #cbd5e1;
+        }
+
+        .search-title {
+            color: #f3f4f6;
+        }
+
+        .date-input-wrapper input {
+            background: #2d2d44;
+            border-color: #3d3d5c;
+            color: #f3f4f6;
+        }
+
+        .date-input-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        .btn-reset {
+            background: #2d2d44;
+            color: #f3f4f6;
+            border-color: #3d3d5c;
         }
 
         .order-items {
             background: #2d2d44;
         }
 
-        .item-details span {
-            background: #1e1e2f;
-            border-color: #3d3d5c;
+        .order-id {
             color: #cbd5e1;
         }
 
-        .btn-reset {
-            background: #2d2d44;
-            color: #cbd5e1;
+        .order-id span {
+            background: #1e1e2f;
+            color: #f3f4f6;
+        }
+
+        .order-date {
+            color: #94a3b8;
+        }
+
+        .item-name {
+            color: #f3f4f6;
+        }
+
+        .item-details span {
+            background: #1e1e2f;
             border-color: #3d3d5c;
+            color: #f3f4f6;
+        }
+
+        .total-label {
+            color: #f3f4f6;
+        }
+
+        .empty-state {
+            background: #1e1e2f;
+        }
+
+        .empty-state p {
+            color: #cbd5e1;
         }
     }
 </style>
