@@ -29,6 +29,19 @@ const rentalSchema = new mongoose.Schema(
     userId: {
       type: String,
       required: true
+    },
+    // ✅ ADD THIS ADDRESS FIELD
+    address: {
+      fullName: String,
+      phone: String,
+      email: String,
+      street: String,
+      city: String,
+      state: String,
+      pincode: String,
+      landmark: String,
+      deliveryType: String,
+      deliveryCharge: Number
     }
   },
   { timestamps: true }

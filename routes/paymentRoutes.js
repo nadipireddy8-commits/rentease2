@@ -66,7 +66,7 @@ router.post("/create-checkout-session", auth, async (req, res) => {
         quantity: Number(item.quantity),
       })),
       mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.CLIENT_URL || 'https://rentease2-frontend.onrender.com'}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.CLIENT_URL}/checkout.html`,
       metadata: {
         orderId: order._id.toString(),
