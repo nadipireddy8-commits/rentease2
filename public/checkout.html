@@ -8,17 +8,13 @@
     <style>
         /* ============================================
            RENTEASE CHECKOUT PAGE - MODERN APP DESIGN
-           Optimized for all devices
            ============================================ */
 
-        /* --------------------------------------------
-           1. CSS VARIABLES & THEME
-           -------------------------------------------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
 
         body {
@@ -28,9 +24,7 @@
             flex-direction: column;
         }
 
-        /* --------------------------------------------
-           2. MODERN NAVIGATION
-           -------------------------------------------- */
+        /* Modern Navigation */
         .navbar {
             background: white;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
@@ -73,16 +67,13 @@
             font-weight: 500;
             font-size: 0.95rem;
             transition: color 0.2s;
-            padding: 0.5rem 0;
         }
 
         .nav-links a:hover {
             color: #4158D0;
         }
 
-        /* --------------------------------------------
-           3. MAIN CONTAINER
-           -------------------------------------------- */
+        /* Main Container */
         .main-container {
             flex: 1;
             display: flex;
@@ -97,9 +88,7 @@
             margin: 0 auto;
         }
 
-        /* --------------------------------------------
-           4. CHECKOUT CARD
-           -------------------------------------------- */
+        /* Checkout Card */
         .checkout-card {
             background: white;
             border-radius: 32px;
@@ -109,14 +98,8 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Card Header */
@@ -164,218 +147,72 @@
             padding: 2rem;
         }
 
-        /* Product Detail Card */
-        .product-detail-card {
-            background: #f8fafc;
-            border-radius: 24px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(65, 88, 208, 0.1);
-            transition: all 0.3s;
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
         }
 
-        .product-detail-card:hover {
-            border-color: #4158D0;
-            box-shadow: 0 10px 25px -5px rgba(65, 88, 208, 0.1);
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #4158D0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
         }
 
-        .product-row {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .product-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        .loading-state p {
+            color: #6b7280;
+            margin-top: 1rem;
         }
 
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
+        .loading-state small {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 0.5rem;
         }
 
-        .product-image:hover img {
-            transform: scale(1.05);
+        /* Error State */
+        .error-state {
+            text-align: center;
+            padding: 3rem;
         }
 
-        .product-info {
-            flex: 1;
-            min-width: 200px;
+        .error-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
 
-        .product-info h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1f2937;
+        .error-state h3 {
+            color: #ef4444;
+            font-size: 1.3rem;
             margin-bottom: 0.5rem;
         }
 
-        .product-price {
-            display: inline-block;
-            background: linear-gradient(135deg, #4158D0, #C850C0);
-            color: white;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Days Input Section */
-        .days-section {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid #e5e7eb;
-        }
-
-        .days-label {
-            display: block;
-            color: #4b5563;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .days-input-group {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .days-input-wrapper {
-            display: flex;
-            align-items: center;
-            background: #f3f4f6;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 2px solid #e5e7eb;
-            transition: all 0.2s;
-        }
-
-        .days-input-wrapper:focus-within {
-            border-color: #4158D0;
-            box-shadow: 0 0 0 3px rgba(65, 88, 208, 0.1);
-        }
-
-        .days-input-wrapper button {
-            background: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #4158D0;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .days-input-wrapper button:hover {
-            background: #4158D0;
-            color: white;
-        }
-
-        .days-input-wrapper input {
-            width: 60px;
-            height: 40px;
-            border: none;
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: 600;
-            background: transparent;
-            color: #1f2937;
-        }
-
-        .days-input-wrapper input:focus {
-            outline: none;
-        }
-
-        .days-hint {
+        .error-state p {
             color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        /* Price Breakdown */
-        .price-breakdown {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid #e5e7eb;
-        }
-
-        .price-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 0;
-            border-bottom: 1px dashed #e5e7eb;
-        }
-
-        .price-row:last-child {
-            border-bottom: none;
-        }
-
-        .price-label {
-            color: #6b7280;
-            font-size: 1rem;
-        }
-
-        .price-value {
-            font-weight: 600;
-            color: #1f2937;
-            font-size: 1.1rem;
-        }
-
-        .total-row {
-            padding: 1rem 0 0;
-            margin-top: 0.5rem;
-            border-top: 2px solid #4158D0;
-        }
-
-        .total-label {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1f2937;
-        }
-
-        .total-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #4158D0, #C850C0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .btn {
-            flex: 1;
-            padding: 1rem 1.5rem;
-            border-radius: 16px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
             border: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
+            text-decoration: none;
         }
 
         .btn-primary {
@@ -400,18 +237,14 @@
             color: #4158D0;
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 3rem 2rem;
+            padding: 3rem;
         }
 
-        .empty-state-icon {
-            font-size: 4rem;
+        .empty-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
             opacity: 0.5;
         }
@@ -424,313 +257,202 @@
 
         .empty-state p {
             color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Product Detail Card */
+        .product-detail-card {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 1.5rem;
             margin-bottom: 2rem;
+            border: 1px solid rgba(65, 88, 208, 0.1);
         }
 
-        /* Loading State */
-        .loading-state {
+        .product-row {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-info h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            display: inline-block;
+            background: linear-gradient(135deg, #4158D0, #C850C0);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Days Input */
+        .days-section {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .days-label {
+            display: block;
+            color: #4b5563;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .days-input-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .days-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f3f4f6;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+        }
+
+        .days-btn {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4158D0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .days-btn:hover {
+            background: #4158D0;
+            color: white;
+        }
+
+        .days-input-wrapper input {
+            width: 60px;
+            height: 40px;
+            border: none;
             text-align: center;
-            padding: 3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background: transparent;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #e5e7eb;
-            border-top-color: #4158D0;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 1rem;
+        .days-input-wrapper input:focus {
+            outline: none;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .days-hint {
+            color: #6b7280;
+            font-size: 0.9rem;
         }
 
-        /* --------------------------------------------
-           5. RESPONSIVE DESIGN
-           -------------------------------------------- */
+        /* Price Breakdown */
+        .price-breakdown {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+        }
 
-        /* Tablet */
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+        .total-row {
+            border-top: 2px solid #4158D0;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+        }
+
+        .total-label {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .total-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4158D0, #C850C0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        /* Responsive */
         @media screen and (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-            }
-
-            .nav-links a {
-                font-size: 0.9rem;
-            }
-
-            .checkout-header {
-                padding: 1.5rem;
-            }
-
-            .checkout-header h2 {
-                font-size: 1.8rem;
-            }
-
-            .checkout-content {
-                padding: 1.5rem;
-            }
-
-            .product-row {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .product-image {
-                width: 150px;
-                height: 150px;
-            }
-
-            .days-input-group {
-                justify-content: center;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
+            .navbar { padding: 1rem; }
+            .nav-links { gap: 1rem; }
+            .nav-links a { font-size: 0.9rem; }
+            
+            .checkout-header { padding: 1.5rem; }
+            .checkout-header h2 { font-size: 1.8rem; }
+            .checkout-content { padding: 1.5rem; }
+            
+            .product-row { flex-direction: column; text-align: center; }
+            .action-buttons { flex-direction: column; }
         }
 
-        /* Mobile */
         @media screen and (max-width: 480px) {
-            .navbar {
-                padding: 0.8rem;
-            }
-
-            .logo {
-                font-size: 1.5rem;
-            }
-
-            .nav-links {
-                gap: 0.8rem;
-            }
-
-            .nav-links a {
-                font-size: 0.8rem;
-            }
-
-            .checkout-header h2 {
-                font-size: 1.5rem;
-            }
-
-            .checkout-header p {
-                font-size: 0.85rem;
-            }
-
-            .product-info h3 {
-                font-size: 1.3rem;
-            }
-
-            .days-input-wrapper input {
-                width: 50px;
-            }
-
-            .days-hint {
-                width: 100%;
-                text-align: center;
-            }
-
-            .price-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.3rem;
-            }
-
-            .total-row {
-                flex-direction: row;
-                align-items: center;
-            }
-
-            .total-value {
-                font-size: 1.3rem;
-            }
+            .logo { font-size: 1.5rem; }
+            .checkout-header h2 { font-size: 1.5rem; }
+            .product-info h3 { font-size: 1.2rem; }
         }
-
-        /* Small Mobile */
-        @media screen and (max-width: 360px) {
-            .checkout-content {
-                padding: 1rem;
-            }
-
-            .product-detail-card {
-                padding: 1rem;
-            }
-
-            .product-image {
-                width: 120px;
-                height: 120px;
-            }
-
-            .product-info h3 {
-                font-size: 1.2rem;
-            }
-
-            .btn {
-                padding: 0.8rem;
-                font-size: 0.95rem;
-            }
-        }
-
-        /* Landscape Mode */
-        @media screen and (orientation: landscape) and (max-height: 600px) {
-            .main-container {
-                padding: 1rem;
-            }
-
-            .product-row {
-                flex-direction: row;
-            }
-
-            .product-image {
-                width: 100px;
-                height: 100px;
-            }
-        }
-
-        /* --------------------------------------------
-           6. DARK MODE SUPPORT
-           -------------------------------------------- */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            }
-
-            .navbar {
-                background: rgba(26, 26, 46, 0.95);
-            }
-
-            .logo {
-                background: linear-gradient(135deg, #8b9aff, #b794f4);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            .nav-links a {
-                color: #cbd5e1;
-            }
-
-            .checkout-card {
-                background: #1e1e2f;
-            }
-
-            .product-detail-card,
-            .days-section,
-            .price-breakdown {
-                background: #2d2d44;
-                border-color: #3d3d5c;
-            }
-
-            .product-info h3,
-            .price-label,
-            .days-label {
-                color: #e2e8f0;
-            }
-
-            .price-value {
-                color: #cbd5e1;
-            }
-
-            .days-input-wrapper {
-                background: #1a1a2e;
-                border-color: #3d3d5c;
-            }
-
-            .days-input-wrapper input {
-                color: white;
-            }
-
-            .btn-secondary {
-                background: #2d2d44;
-                color: #cbd5e1;
-                border-color: #3d3d5c;
-            }
-
-            .empty-state h3 {
-                color: #e2e8f0;
-            }
-
-            .empty-state p {
-                color: #94a3b8;
-            }
-        }
-        /* Additional styles for enhanced checkout */
-
-.price-icon {
-    margin-right: 0.5rem;
-    font-size: 1.1rem;
-}
-
-.subtotal-row, .tax-row {
-    background: #f9f9f9;
-    border-radius: 8px;
-    margin: 0.5rem 0;
-    padding: 0.8rem !important;
-}
-
-.deposit-info {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    background: #e8f0fe;
-    padding: 1rem;
-    border-radius: 12px;
-    margin: 1.5rem 0;
-    color: #4158D0;
-    font-size: 0.95rem;
-}
-
-.deposit-icon {
-    font-size: 1.3rem;
-}
-
-.days-btn {
-    background: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #4158D0;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.days-btn:hover {
-    background: #4158D0;
-    color: white;
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .subtotal-row, .tax-row {
-        background: #2d2d44;
-    }
-    
-    .deposit-info {
-        background: rgba(65, 88, 208, 0.2);
-        color: #8b9aff;
-    }
-    
-    .days-btn {
-        background: #2d2d44;
-        color: #8b9aff;
-    }
-    
-    .days-btn:hover {
-        background: #4158D0;
-        color: white;
-    }
-}
     </style>
 </head>
 <body>
-    <!-- Modern Navigation -->
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">RentEase</a>
@@ -752,278 +474,462 @@
                 </div>
                 
                 <div class="checkout-content" id="checkoutContent">
-                    <div class="loading-state">
-                        <div class="spinner"></div>
-                        <p>Loading checkout details...</p>
-                    </div>
+                    <!-- Loading state will be shown here -->
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+    // ============================================
+    // CHECKOUT PAGE - COMPLETE FIXED VERSION
+    // ============================================
+
+    const API_URL = "https://rentease3-backend.onrender.com";
+    let loadTimeout;
+
     document.addEventListener('DOMContentLoaded', function() {
+        // Clear any existing timeout
+        if (loadTimeout) clearTimeout(loadTimeout);
+        
+        // Set timeout for loading (5 seconds)
+        loadTimeout = setTimeout(() => {
+            showError('Loading timeout. Please try again.');
+        }, 5000);
+        
         loadCheckoutItem();
     });
 
     // ============================================
-// LOAD CHECKOUT ITEM FUNCTION
-// Handles loading and displaying checkout item
-// ============================================
+    // LOAD CHECKOUT ITEM
+    // ============================================
+    function loadCheckoutItem() {
+        const checkoutContent = document.getElementById('checkoutContent');
+        
+        if (!checkoutContent) {
+            console.error('Checkout container not found');
+            return;
+        }
 
-function loadCheckoutItem() {
-    // Get the checkout container element
-    const checkoutContent = document.getElementById('checkoutContent');
-    
-    // Check if container exists
-    if (!checkoutContent) {
-        console.error('Checkout container not found');
-        return;
+        // Clear timeout since we're loading
+        if (loadTimeout) clearTimeout(loadTimeout);
+
+        try {
+            // Get item from localStorage
+            const itemJson = localStorage.getItem('checkoutItem');
+            
+            if (!itemJson) {
+                showEmptyState(checkoutContent);
+                return;
+            }
+
+            const item = JSON.parse(itemJson);
+            
+            // Validate item
+            if (!item || !item.productName || !item.pricePerDay) {
+                showInvalidItemState(checkoutContent);
+                return;
+            }
+
+            // Display checkout item
+            displayCheckoutItem(checkoutContent, item);
+
+        } catch (error) {
+            console.error('Error loading checkout:', error);
+            showError('Failed to load checkout details');
+        }
     }
 
-    // Get item from localStorage
-    const item = JSON.parse(localStorage.getItem('checkoutItem'));
-    
-    // Empty state - no item in checkout
-    if (!item) {
-        checkoutContent.innerHTML = `
+    // ============================================
+    // DISPLAY CHECKOUT ITEM
+    // ============================================
+    function displayCheckoutItem(container, item) {
+        const subtotal = item.pricePerDay * item.days;
+        const tax = Math.round(subtotal * 0.18);
+        const total = subtotal + tax;
+
+        container.innerHTML = `
+            <!-- Product Detail Card -->
+            <div class="product-detail-card">
+                <div class="product-row">
+                    <div class="product-image">
+                        <img src="${item.productImage || 'https://via.placeholder.com/150'}" 
+                             alt="${item.productName}"
+                             onerror="this.src='https://via.placeholder.com/150'">
+                    </div>
+                    <div class="product-info">
+                        <h3>${item.productName}</h3>
+                        <span class="product-price">₹${item.pricePerDay}/day</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Days Selection -->
+            <div class="days-section">
+                <label class="days-label">Rental Duration</label>
+                <div class="days-input-group">
+                    <div class="days-input-wrapper">
+                        <button class="days-btn" onclick="adjustDays(-1)">−</button>
+                        <input type="number" id="days" value="${item.days}" min="1" max="30" onchange="updateTotal()">
+                        <button class="days-btn" onclick="adjustDays(1)">+</button>
+                    </div>
+                    <span class="days-hint">days (max 30)</span>
+                </div>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="price-breakdown">
+                <div class="price-row">
+                    <span>Price per day</span>
+                    <span>₹${item.pricePerDay}</span>
+                </div>
+                <div class="price-row">
+                    <span>Number of days</span>
+                    <span id="displayDays">${item.days}</span>
+                </div>
+                <div class="price-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹${subtotal}</span>
+                </div>
+                <div class="price-row">
+                    <span>GST (18%)</span>
+                    <span id="tax">₹${tax}</span>
+                </div>
+                <div class="price-row total-row">
+                    <span class="total-label">Total Amount</span>
+                    <span class="total-value" id="totalPrice">₹${total}</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button onclick="confirmRental()" class="btn btn-primary">
+                    <span>✅</span> Confirm & Pay
+                </button>
+                <button onclick="cancelCheckout()" class="btn btn-secondary">
+                    <span>✖️</span> Cancel
+                </button>
+            </div>
+        `;
+    }
+
+    // ============================================
+    // EMPTY STATE
+    // ============================================
+    function showEmptyState(container) {
+        container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">🛒</div>
+                <div class="empty-icon">🛒</div>
                 <h3>No item to checkout</h3>
                 <p>Looks like you haven't selected any product to rent yet</p>
                 <button onclick="window.location.href='products.html'" class="btn btn-primary">
-                    <span>🛍️</span> Browse Products
+                    Browse Products
                 </button>
             </div>
         `;
-        return;
     }
 
-    // Validate item has required properties
-    if (!item.productName || !item.pricePerDay || !item.days || !item.totalPrice) {
-        checkoutContent.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">⚠️</div>
+    // ============================================
+    // INVALID ITEM STATE
+    // ============================================
+    function showInvalidItemState(container) {
+        container.innerHTML = `
+            <div class="error-state">
+                <div class="error-icon">⚠️</div>
                 <h3>Invalid checkout item</h3>
                 <p>The product information is incomplete</p>
                 <button onclick="window.location.href='products.html'" class="btn btn-primary">
-                    <span>🛍️</span> Browse Products
+                    Browse Products
                 </button>
             </div>
         `;
+    }
+
+    // ============================================
+    // ERROR STATE
+    // ============================================
+    function showError(message) {
+        const container = document.getElementById('checkoutContent');
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="error-state">
+                <div class="error-icon">❌</div>
+                <h3>Something went wrong</h3>
+                <p>${message || 'Failed to load checkout details'}</p>
+                <button onclick="window.location.href='products.html'" class="btn btn-primary">
+                    Back to Products
+                </button>
+            </div>
+        `;
+    }
+
+    // ============================================
+    // ADJUST DAYS
+    // ============================================
+    function adjustDays(change) {
+        const daysInput = document.getElementById('days');
+        if (!daysInput) return;
+        
+        const currentDays = parseInt(daysInput.value) || 1;
+        const newDays = Math.max(1, Math.min(30, currentDays + change));
+        daysInput.value = newDays;
+        updateTotal();
+    }
+
+    // ============================================
+    // UPDATE TOTAL
+    // ============================================
+    // ============================================
+// UPDATE TOTAL FUNCTION - Complete Version
+// ============================================
+
+/**
+ * Updates the total price when days are changed
+ * Calculates subtotal, tax, and final total
+ */
+function updateTotal() {
+    // Get item from localStorage
+    const itemJson = localStorage.getItem('checkoutItem');
+    if (!itemJson) {
+        console.error('No checkout item found');
         return;
     }
 
-    // Display checkout item with all details
-    checkoutContent.innerHTML = `
-        <!-- Product Detail Card -->
-        <div class="product-detail-card">
-            <div class="product-row">
-                <div class="product-image">
-                    <img src="${item.productImage || 'https://via.placeholder.com/150'}" 
-                         alt="${item.productName}"
-                         onerror="this.src='https://via.placeholder.com/150'">
-                </div>
-                <div class="product-info">
-                    <h3>${item.productName}</h3>
-                    <span class="product-price">₹${item.pricePerDay}/day</span>
-                </div>
-            </div>
-        </div>
+    try {
+        const item = JSON.parse(itemJson);
+        
+        // Get days input value
+        const daysInput = document.getElementById('days');
+        if (!daysInput) {
+            console.error('Days input not found');
+            return;
+        }
 
-        <!-- Days Selection -->
-        <div class="days-section">
-            <label class="days-label">Rental Duration</label>
-            <div class="days-input-group">
-                <div class="days-input-wrapper">
-                    <button onclick="adjustDays(-1)" type="button" class="days-btn">−</button>
-                    <input type="number" id="days" value="${item.days}" min="1" max="30" onchange="updateTotal()">
-                    <button onclick="adjustDays(1)" type="button" class="days-btn">+</button>
-                </div>
-                <span class="days-hint">days (max 30)</span>
-            </div>
-        </div>
+        // Validate and parse days
+        let days = parseInt(daysInput.value);
+        if (isNaN(days) || days < 1) {
+            days = 1;
+            daysInput.value = 1;
+        }
+        if (days > 30) {
+            days = 30;
+            daysInput.value = 30;
+            alert('Maximum rental period is 30 days');
+        }
 
-        <!-- Price Breakdown -->
-        <div class="price-breakdown">
-            <div class="price-row">
-                <span class="price-label">
-                    <span class="price-icon">💰</span> Price per day
-                </span>
-                <span class="price-value">₹${item.pricePerDay}</span>
-            </div>
-            <div class="price-row">
-                <span class="price-label">
-                    <span class="price-icon">📅</span> Number of days
-                </span>
-                <span class="price-value" id="displayDays">${item.days}</span>
-            </div>
-            <div class="price-row subtotal-row">
-                <span class="price-label">
-                    <span class="price-icon">📊</span> Subtotal
-                </span>
-                <span class="price-value">₹${item.pricePerDay * item.days}</span>
-            </div>
-            <div class="price-row tax-row">
-                <span class="price-label">
-                    <span class="price-icon">🧾</span> Tax (18% GST)
-                </span>
-                <span class="price-value">₹${Math.round(item.pricePerDay * item.days * 0.18)}</span>
-            </div>
-            <div class="price-row total-row">
-                <span class="total-label">
-                    <span class="price-icon">💵</span> Total Amount
-                </span>
-                <span class="total-value" id="totalPrice">₹${item.totalPrice}</span>
-            </div>
-        </div>
+        // Calculate prices
+        const pricePerDay = parseFloat(item.pricePerDay) || 0;
+        const subtotal = pricePerDay * days;
+        const tax = Math.round(subtotal * 0.18); // 18% GST
+        const total = subtotal + tax;
 
-        <!-- Security Deposit Info -->
-        <div class="deposit-info">
-            <div class="deposit-icon">🔒</div>
-            <div class="deposit-text">
-                <strong>Security deposit:</strong> ₹${item.deposit || 2000} (refundable)
-            </div>
-        </div>
+        // Update all display elements
+        updateDisplayElements(days, subtotal, tax, total);
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button onclick="confirmRental()" class="btn btn-primary" id="confirmBtn">
-                <span>✅</span> Confirm & Pay
-            </button>
-            <button onclick="cancelCheckout()" class="btn btn-secondary">
-                <span>✖️</span> Cancel
-            </button>
-        </div>
-    `;
+        // Update localStorage with new values
+        item.days = days;
+        item.totalPrice = total;
+        localStorage.setItem('checkoutItem', JSON.stringify(item));
 
-    // Initialize event listeners for the new elements
-    initializeCheckoutEvents();
-}
+        console.log('Total updated:', { days, subtotal, tax, total });
 
-// ============================================
-// INITIALIZE CHECKOUT EVENTS
-// ============================================
-function initializeCheckoutEvents() {
-    // Add keyboard support for days input
-    const daysInput = document.getElementById('days');
-    if (daysInput) {
-        daysInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                updateTotal();
-            }
-        });
+    } catch (error) {
+        console.error('Error updating total:', error);
     }
-
-    // Update display days initially
-    updateDisplayDays();
 }
 
 // ============================================
-// UPDATE DISPLAY DAYS
+// UPDATE DISPLAY ELEMENTS
 // ============================================
-function updateDisplayDays() {
-    const daysInput = document.getElementById('days');
+
+/**
+ * Updates all price display elements on the page
+ */
+function updateDisplayElements(days, subtotal, tax, total) {
+    // Update days display
     const displayDays = document.getElementById('displayDays');
-    if (daysInput && displayDays) {
-        displayDays.textContent = daysInput.value;
+    if (displayDays) {
+        displayDays.textContent = days;
     }
+
+    // Update subtotal
+    const subtotalElement = document.getElementById('subtotal');
+    if (subtotalElement) {
+        subtotalElement.textContent = '₹' + subtotal;
+    }
+
+    // Update tax
+    const taxElement = document.getElementById('tax');
+    if (taxElement) {
+        taxElement.textContent = '₹' + tax;
+    }
+
+    // Update total
+    const totalElement = document.getElementById('totalPrice');
+    if (totalElement) {
+        totalElement.textContent = '₹' + total;
+    }
+
+    // Update any additional price rows if they exist
+    updateAdditionalPriceRows(days, subtotal, tax, total);
 }
 
 // ============================================
-// CANCEL CHECKOUT
+// UPDATE ADDITIONAL PRICE ROWS
 // ============================================
-function cancelCheckout() {
-    // Optional: Ask for confirmation
-    if (confirm('Are you sure you want to cancel checkout?')) {
-        // Clear checkout item from localStorage
-        localStorage.removeItem('checkoutItem');
-        // Redirect to products page
-        window.location.href = 'products.html';
+
+/**
+ * Updates any additional price rows that might be present
+ */
+function updateAdditionalPriceRows(days, subtotal, tax, total) {
+    // Update price per day row if it exists
+    const pricePerDayElement = document.querySelector('.price-per-day-value');
+    if (pricePerDayElement) {
+        const item = JSON.parse(localStorage.getItem('checkoutItem'));
+        if (item) {
+            pricePerDayElement.textContent = '₹' + item.pricePerDay;
+        }
     }
+
+    // Update days count in multiple places if needed
+    const daysElements = document.querySelectorAll('.days-count');
+    daysElements.forEach(el => {
+        el.textContent = days;
+    });
 }
 
 // ============================================
 // ADJUST DAYS FUNCTION
 // ============================================
+
+/**
+ * Increases or decreases the number of days
+ * @param {number} change - Positive or negative number to adjust days
+ */
 function adjustDays(change) {
     const daysInput = document.getElementById('days');
     if (!daysInput) return;
+
+    // Get current days
+    let currentDays = parseInt(daysInput.value) || 1;
     
-    const currentDays = parseInt(daysInput.value) || 1;
-    const newDays = Math.max(1, Math.min(30, currentDays + change)); // Limit between 1-30 days
+    // Calculate new days with limits
+    let newDays = currentDays + change;
+    newDays = Math.max(1, Math.min(30, newDays)); // Keep between 1 and 30
     
+    // Update input
     daysInput.value = newDays;
+    
+    // Update total
     updateTotal();
+    
+    // Optional: Add animation feedback
+    highlightDaysInput();
 }
 
 // ============================================
-// UPDATE TOTAL FUNCTION
+// HIGHLIGHT DAYS INPUT (Visual Feedback)
 // ============================================
-function updateTotal() {
-    const item = JSON.parse(localStorage.getItem('checkoutItem'));
-    if (!item) return;
 
-    const daysInput = document.getElementById('days');
-    const days = parseInt(daysInput.value) || 1;
-    
-    // Calculate new total
-    const subtotal = item.pricePerDay * days;
-    const tax = Math.round(subtotal * 0.18); // 18% GST
-    const newTotal = subtotal + tax;
-    
-    // Update display
-    document.getElementById('totalPrice').textContent = '₹' + newTotal;
-    document.getElementById('displayDays').textContent = days;
-    
-    // Update price breakdown rows
-    updatePriceBreakdown(subtotal, tax);
-    
-    // Update item in localStorage
-    item.days = days;
-    item.totalPrice = newTotal;
-    localStorage.setItem('checkoutItem', JSON.stringify(item));
-}
-
-// ============================================
-// UPDATE PRICE BREAKDOWN
-// ============================================
-function updatePriceBreakdown(subtotal, tax) {
-    const priceRows = document.querySelectorAll('.price-row');
-    if (priceRows.length >= 4) {
-        // Update subtotal (3rd row)
-        const subtotalRow = priceRows[2];
-        if (subtotalRow) {
-            subtotalRow.querySelector('.price-value').textContent = '₹' + subtotal;
-        }
+/**
+ * Provides visual feedback when days are adjusted
+ */
+function highlightDaysInput() {
+    const daysWrapper = document.querySelector('.days-input-wrapper');
+    if (daysWrapper) {
+        daysWrapper.style.transition = 'background-color 0.3s';
+        daysWrapper.style.backgroundColor = '#e0e7ff';
         
-        // Update tax (4th row)
-        const taxRow = priceRows[3];
-        if (taxRow) {
-            taxRow.querySelector('.price-value').textContent = '₹' + tax;
-        }
+        setTimeout(() => {
+            daysWrapper.style.backgroundColor = '';
+        }, 200);
     }
 }
 
 // ============================================
-// VALIDATE CHECKOUT ITEM
+// VALIDATE DAYS INPUT
 // ============================================
-function validateCheckoutItem(item) {
-    const requiredFields = ['productId', 'productName', 'pricePerDay', 'days', 'totalPrice', 'userId'];
-    const missingFields = requiredFields.filter(field => !item[field]);
+
+/**
+ * Validates the days input value
+ * @param {HTMLElement} inputElement - The days input element
+ */
+function validateDaysInput(inputElement) {
+    if (!inputElement) return;
     
-    if (missingFields.length > 0) {
-        console.error('Missing required fields:', missingFields);
-        return false;
+    let value = parseInt(inputElement.value);
+    
+    if (isNaN(value) || value < 1) {
+        inputElement.value = 1;
+    } else if (value > 30) {
+        inputElement.value = 30;
+        showDaysLimitWarning();
     }
+}
+
+// ============================================
+// SHOW DAYS LIMIT WARNING
+// ============================================
+
+/**
+ * Shows a warning when days exceed maximum limit
+ */
+function showDaysLimitWarning() {
+    const warningElement = document.getElementById('daysWarning');
+    if (warningElement) {
+        warningElement.style.display = 'block';
+        setTimeout(() => {
+            warningElement.style.display = 'none';
+        }, 3000);
+    } else {
+        // Create warning if it doesn't exist
+        createDaysWarning();
+    }
+}
+
+// ============================================
+// CREATE DAYS WARNING ELEMENT
+// ============================================
+
+/**
+ * Creates a warning element for days limit
+ */
+function createDaysWarning() {
+    const daysSection = document.querySelector('.days-section');
+    if (!daysSection) return;
     
-    return true;
+    const warning = document.createElement('div');
+    warning.id = 'daysWarning';
+    warning.style.cssText = `
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        background: #fee2e2;
+        border-radius: 8px;
+        text-align: center;
+    `;
+    warning.textContent = 'Maximum rental period is 30 days';
+    
+    daysSection.appendChild(warning);
+    
+    setTimeout(() => {
+        if (warning.parentNode) {
+            warning.remove();
+        }
+    }, 3000);
 }
 
 // ============================================
 // FORMAT CURRENCY
 // ============================================
+
+/**
+ * Formats a number as Indian Rupee currency
+ * @param {number} amount - The amount to format
+ * @returns {string} Formatted currency string
+ */
 function formatCurrency(amount) {
     return new Intl.NumberFormat('en-IN', {
         style: 'currency',
@@ -1034,33 +940,90 @@ function formatCurrency(amount) {
 }
 
 // ============================================
-// SAVE CHECKOUT ITEM
+// INITIALIZE DAYS INPUT
 // ============================================
-function saveCheckoutItem(item) {
-    if (!validateCheckoutItem(item)) {
-        throw new Error('Invalid checkout item');
+
+/**
+ * Sets up event listeners for days input
+ */
+function initializeDaysInput() {
+    const daysInput = document.getElementById('days');
+    if (!daysInput) return;
+    
+    // Remove existing listeners to prevent duplicates
+    daysInput.removeEventListener('blur', handleDaysBlur);
+    daysInput.removeEventListener('keypress', handleDaysKeyPress);
+    
+    // Add blur event
+    daysInput.addEventListener('blur', handleDaysBlur);
+    
+    // Add keypress event for Enter key
+    daysInput.addEventListener('keypress', handleDaysKeyPress);
+}
+
+/**
+ * Handles blur event on days input
+ */
+function handleDaysBlur() {
+    validateDaysInput(this);
+    updateTotal();
+}
+
+/**
+ * Handles keypress event on days input
+ */
+function handleDaysKeyPress(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        validateDaysInput(this);
+        updateTotal();
+        this.blur(); // Remove focus
     }
-    localStorage.setItem('checkoutItem', JSON.stringify(item));
 }
 
 // ============================================
-// CLEAR CHECKOUT
+// RESET TO DEFAULT
 // ============================================
-function clearCheckout() {
-    localStorage.removeItem('checkoutItem');
+
+/**
+ * Resets days to default value (1)
+ */
+function resetToDefault() {
+    const daysInput = document.getElementById('days');
+    if (daysInput) {
+        daysInput.value = 1;
+        updateTotal();
+    }
+}
+
+// ============================================
+// BULK UPDATE FUNCTIONS
+// ============================================
+
+/**
+ * Updates multiple days inputs at once
+ * @param {number} days - Number of days to set
+ */
+function setDays(days) {
+    const daysInput = document.getElementById('days');
+    if (!daysInput) return;
+    
+    days = Math.max(1, Math.min(30, parseInt(days) || 1));
+    daysInput.value = days;
+    updateTotal();
 }
 
 // ============================================
 // EXPORT FUNCTIONS (if using modules)
 // ============================================
-// If you're using ES6 modules, uncomment below:
-// export {
-//     loadCheckoutItem,
-//     adjustDays,
-//     updateTotal,
-//     cancelCheckout,
-//     validateCheckoutItem,
-//     saveCheckoutItem,
-//     clearCheckout,
-//     formatCurrency
-// };
+// Uncomment if using ES6 modules
+/*
+export {
+    updateTotal,
+    adjustDays,
+    setDays,
+    resetToDefault,
+    formatCurrency,
+    initializeDaysInput
+};
+*/
