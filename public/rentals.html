@@ -553,6 +553,65 @@
         color: #9ca3af;
       }
     }
+    /* ============================================
+   RENTALS PAGE HEADER WITH ORDERS BUTTON
+   ============================================ */
+
+/* Make the header row display items in a row */
+.container > h2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* Style for the Orders button in header */
+.container > h2 .nav-link {
+    background: linear-gradient(135deg, #4158D0, #C850C0);
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.container > h2 .nav-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(65, 88, 208, 0.4);
+}
+
+.container > h2 .nav-link:active {
+    transform: translateY(0);
+}
+
+/* Optional: Add an icon before Orders */
+.container > h2 .nav-link::before {
+    content: "📋";
+    font-size: 0.9rem;
+}
+
+/* Mobile responsive */
+@media screen and (max-width: 480px) {
+    .container > h2 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+    
+    .container > h2 .nav-link {
+        font-size: 0.85rem;
+        padding: 0.4rem 1rem;
+    }
+}
   </style>
 </head>
 <body>
@@ -560,6 +619,7 @@
     <h2>
       <i class="fas fa-box-open"></i>
       <span>My Active Rentals</span>
+      <a href="orders.html" class="nav-link">Orders</a>
     </h2>
     <div id="rentalsList">
       <div class="loading">
