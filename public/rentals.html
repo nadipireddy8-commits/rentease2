@@ -44,16 +44,18 @@
       }
     }
 
-    /* Header */
+    /* Header with Orders Button */
     .container h2 {
       background: linear-gradient(135deg, #4158D0, #C850C0);
       color: white;
-      padding: 1.8rem 2rem;
-      font-size: 1.8rem;
+      padding: 1.5rem 2rem;
+      font-size: 1.5rem;
       font-weight: 700;
       margin: 0;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
       gap: 1rem;
       position: relative;
       overflow: hidden;
@@ -75,15 +77,48 @@
       to { transform: rotate(360deg); }
     }
 
-    .container h2 i {
-      font-size: 2rem;
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       position: relative;
       z-index: 1;
     }
 
-    .container h2 span {
+    .header-left i {
+      font-size: 1.8rem;
+    }
+
+    .header-left span {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    /* Orders Button */
+    .orders-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       position: relative;
       z-index: 1;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .orders-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .orders-btn:active {
+      transform: translateY(0);
     }
 
     /* Rentals List Container */
@@ -167,10 +202,10 @@
     }
 
     .rental-title {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: #1f2937;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.5rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -182,20 +217,19 @@
     }
 
     .rental-id {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       color: #6b7280;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       background: #f3f4f6;
       padding: 0.3rem 1rem;
       border-radius: 30px;
-      display: inline-flex;
     }
 
     .rental-id i {
       color: #4158D0;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
     .rental-id span {
@@ -221,7 +255,7 @@
       align-items: center;
       gap: 0.5rem;
       color: #6b7280;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 0.3rem;
     }
 
@@ -231,17 +265,16 @@
     }
 
     .detail-value {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: #1f2937;
       margin-left: 1.8rem;
     }
 
     .detail-value small {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 400;
       color: #6b7280;
-      margin-left: 0.3rem;
     }
 
     /* Price Highlight */
@@ -252,7 +285,7 @@
       border-radius: 30px;
       display: inline-block;
       font-weight: 600;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     /* Cancel Button */
@@ -260,10 +293,10 @@
       background: white;
       color: #dc2626;
       border: 2px solid #dc2626;
-      padding: 0.8rem 2rem;
+      padding: 0.7rem 1.5rem;
       border-radius: 30px;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: all 0.3s;
       display: flex;
@@ -271,8 +304,8 @@
       justify-content: center;
       gap: 0.5rem;
       width: 100%;
-      max-width: 200px;
-      margin-top: 1rem;
+      max-width: 180px;
+      margin-top: 0.5rem;
     }
 
     .cancel-btn:hover {
@@ -282,10 +315,6 @@
       box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
     }
 
-    .cancel-btn i {
-      font-size: 1rem;
-    }
-
     .cancel-btn:active {
       transform: translateY(0);
     }
@@ -293,24 +322,24 @@
     /* Empty State */
     .empty-state {
       text-align: center;
-      padding: 4rem 2rem;
+      padding: 3rem 2rem;
     }
 
     .empty-state i {
-      font-size: 4rem;
+      font-size: 3.5rem;
       color: #9ca3af;
       margin-bottom: 1rem;
     }
 
     .empty-state p {
       color: #4b5563;
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
     }
 
     .empty-state a {
       display: inline-block;
-      padding: 1rem 2.5rem;
+      padding: 0.8rem 2rem;
       background: linear-gradient(135deg, #4158D0, #C850C0);
       color: white;
       text-decoration: none;
@@ -327,24 +356,24 @@
     /* Login Prompt */
     .login-prompt {
       text-align: center;
-      padding: 4rem 2rem;
+      padding: 3rem 2rem;
     }
 
     .login-prompt i {
-      font-size: 4rem;
+      font-size: 3.5rem;
       color: #9ca3af;
       margin-bottom: 1rem;
     }
 
     .login-prompt p {
       color: #4b5563;
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
     }
 
     .login-btn {
       display: inline-block;
-      padding: 1rem 2.5rem;
+      padding: 0.8rem 2rem;
       background: linear-gradient(135deg, #4158D0, #C850C0);
       color: white;
       text-decoration: none;
@@ -361,26 +390,26 @@
     /* Error State */
     .error-state {
       text-align: center;
-      padding: 4rem 2rem;
+      padding: 3rem 2rem;
     }
 
     .error-state i {
-      font-size: 4rem;
+      font-size: 3.5rem;
       color: #dc2626;
       margin-bottom: 1rem;
     }
 
     .error-state p {
       color: #4b5563;
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .retry-btn {
       background: linear-gradient(135deg, #4158D0, #C850C0);
       color: white;
       border: none;
-      padding: 1rem 2.5rem;
+      padding: 0.8rem 2rem;
       border-radius: 30px;
       font-weight: 600;
       cursor: pointer;
@@ -396,29 +425,41 @@
 
     /* Tablet */
     @media screen and (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+
       .container {
-        margin: 0 1rem;
+        margin: 0;
       }
 
       .container h2 {
-        padding: 1.5rem;
+        padding: 1.2rem 1.5rem;
+      }
+
+      .header-left i {
         font-size: 1.5rem;
+      }
+
+      .header-left span {
+        font-size: 1.3rem;
+      }
+
+      .orders-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
       }
 
       #rentalsList {
         padding: 1.5rem;
       }
 
-      .rental-header {
-        flex-direction: column;
+      .rental-card {
+        padding: 1.2rem;
       }
 
-      .rental-details {
-        gap: 1.5rem;
-      }
-
-      .cancel-btn {
-        max-width: 100%;
+      .rental-title {
+        font-size: 1.2rem;
       }
     }
 
@@ -429,12 +470,23 @@
       }
 
       .container h2 {
-        padding: 1.2rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        padding: 1rem 1.2rem;
+      }
+
+      .header-left i {
         font-size: 1.3rem;
       }
 
-      .container h2 i {
-        font-size: 1.5rem;
+      .header-left span {
+        font-size: 1.2rem;
+      }
+
+      .orders-btn {
+        width: 100%;
+        justify-content: center;
       }
 
       #rentalsList {
@@ -442,21 +494,27 @@
       }
 
       .rental-card {
-        padding: 1.2rem;
+        padding: 1rem;
       }
 
       .rental-title {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
       }
 
       .rental-id {
-        font-size: 0.75rem;
-        padding: 0.2rem 0.8rem;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+      }
+
+      .rental-id span {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .rental-details {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.8rem;
       }
 
       .detail-item {
@@ -464,50 +522,23 @@
       }
 
       .detail-label {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
       }
 
       .detail-value {
-        font-size: 1.2rem;
-        margin-left: 1.8rem;
+        font-size: 1rem;
+        margin-left: 1.5rem;
       }
 
       .price-highlight {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        padding: 0.15rem 0.8rem;
       }
 
       .cancel-btn {
-        padding: 0.7rem;
-        font-size: 0.95rem;
-      }
-
-      .empty-state i,
-      .login-prompt i,
-      .error-state i {
-        font-size: 3rem;
-      }
-
-      .empty-state p,
-      .login-prompt p,
-      .error-state p {
-        font-size: 1rem;
-      }
-    }
-
-    /* Small Mobile */
-    @media screen and (max-width: 360px) {
-      .container h2 {
-        font-size: 1.2rem;
-      }
-
-      .rental-title {
-        font-size: 1.1rem;
-      }
-
-      .rental-id span {
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        max-width: 100%;
+        padding: 0.6rem;
+        font-size: 0.9rem;
       }
     }
 
@@ -553,27 +584,58 @@
         color: #9ca3af;
       }
     }
-    /* ============================================
-   RENTALS PAGE HEADER WITH ORDERS BUTTON
-   ============================================ */
-
-/* Make the header row display items in a row */
-.container > h2 {
+    /* Rentals Page Header */
+.rentals-header {
+    background: linear-gradient(135deg, #4158D0, #C850C0);
+    padding: 1.5rem 2rem;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 2px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Style for the Orders button in header */
-.container > h2 .nav-link {
-    background: linear-gradient(135deg, #4158D0, #C850C0);
+.rentals-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.header-title i {
+    font-size: 1.8rem;
     color: white;
-    padding: 0.5rem 1.2rem;
+}
+
+.header-title h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    background: none;
+    -webkit-text-fill-color: white;
+    padding: 0;
+}
+
+/* Orders Button */
+.orders-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.6rem 1.2rem;
     border-radius: 30px;
     font-size: 0.9rem;
     font-weight: 600;
@@ -582,45 +644,51 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer;
 }
 
-.container > h2 .nav-link:hover {
+.orders-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(65, 88, 208, 0.4);
 }
 
-.container > h2 .nav-link:active {
-    transform: translateY(0);
-}
-
-/* Optional: Add an icon before Orders */
-.container > h2 .nav-link::before {
-    content: "📋";
-    font-size: 0.9rem;
-}
-
-/* Mobile responsive */
+/* Mobile Responsive */
 @media screen and (max-width: 480px) {
-    .container > h2 {
+    .rentals-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.8rem;
+        padding: 1rem 1.2rem;
     }
     
-    .container > h2 .nav-link {
-        font-size: 0.85rem;
-        padding: 0.4rem 1rem;
+    .orders-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .header-title h2 {
+        font-size: 1.2rem;
+    }
+    
+    .header-title i {
+        font-size: 1.3rem;
     }
 }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>
-      <i class="fas fa-box-open"></i>
-      <span>My Active Rentals</span>
-      <a href="orders.html" class="nav-link">Orders</a>
-    </h2>
+    <div class="rentals-header">
+        <div class="header-title">
+            <i class="fas fa-box-open"></i>
+            <h2>My Active Rentals</h2>
+        </div>
+        <a href="orders.html" class="orders-btn">
+            <i class="fas fa-shopping-bag"></i> Orders
+        </a>
+    </div>
     <div id="rentalsList">
       <div class="loading">
         <p>Loading your rentals...</p>
@@ -709,7 +777,7 @@
                 </h3>
                 <div class="rental-id">
                   <i class="fas fa-hashtag"></i>
-                  <span>${rental._id}</span>
+                  <span>${rental._id.slice(-8)}</span>
                 </div>
               </div>
             </div>
@@ -737,8 +805,7 @@
             </div>
 
             <button class="cancel-btn" onclick="cancelRental('${rental._id}')">
-              <i class="fas fa-times-circle"></i>
-              Cancel Rental
+              <i class="fas fa-times-circle"></i> Cancel Rental
             </button>
           `;
           
@@ -775,7 +842,7 @@
         return;
       }
 
-      // Find and disable the clicked button to prevent double clicks
+      // Find and disable the clicked button
       const buttons = document.querySelectorAll('.cancel-btn');
       let clickedButton = null;
       
@@ -825,6 +892,43 @@
 
     // Make cancelRental globally available
     window.cancelRental = cancelRental;
+    // ============================================
+// FIX FOR MOBILE ORDERS BUTTON
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure Orders button is clickable on mobile
+    const ordersBtn = document.querySelector('.orders-btn');
+    if (ordersBtn) {
+        // Remove any existing listeners to prevent duplicates
+        const newBtn = ordersBtn.cloneNode(true);
+        ordersBtn.parentNode.replaceChild(newBtn, ordersBtn);
+        
+        // Add click event
+        newBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Orders button clicked - navigating to orders.html');
+            window.location.href = 'orders.html';
+        });
+        
+        // For touch devices - ensure it works
+        newBtn.addEventListener('touchstart', function(e) {
+            console.log('Touch detected on Orders button');
+        });
+    }
+    
+    // Also ensure the button is visible and clickable
+    const style = document.createElement('style');
+    style.textContent = `
+        .orders-btn {
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+    `;
+    document.head.appendChild(style);
+});
   </script>
+
 </body>
 </html>
