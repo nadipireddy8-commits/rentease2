@@ -980,6 +980,7 @@ function goBackToAddress() {
 }
 
 // ========== PROCESS PAYMENT ==========
+// ========== PROCESS PAYMENT (FIXED - NO PRE-PAYMENT RENTAL) ==========
 async function processPayment() {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
@@ -999,27 +1000,9 @@ async function processPayment() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
     try {
-        // Create rental with address
-        const rentalData = {
-            ...checkoutItem,
-            totalPrice: total,
-            address: addressData
-        };
-
-        const rentalResponse = await fetch(`${API_URL}/api/rentals`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify(rentalData)
-        });
-
-        if (!rentalResponse.ok) {
-            throw new Error('Failed to create rental');
-        }
-
-        // Create payment session
+        // ✅ REMOVED the rental creation here - only create payment session
+        // The rental will be created AFTER payment is confirmed
+        
         const paymentResponse = await fetch(`${API_URL}/api/payments/create-checkout-session`, {
             method: 'POST',
             headers: {
@@ -1030,8 +1013,8 @@ async function processPayment() {
                 cartItems: [{
                     _id: checkoutItem.productId,
                     name: checkoutItem.productName,
-                    price: total,
-                    quantity: 1
+                    price: checkoutItem.pricePerDay,  // Use price per day, not total
+                    quantity: checkoutItem.days      // Use days as quantity
                 }],
                 address: addressData
             })
