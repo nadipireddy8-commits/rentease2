@@ -4,11 +4,11 @@
   <title>My Rentals - RentEase</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
   <style>
     /* ============================================
-       RENTEASE RENTALS PAGE - MODERN APP DESIGN
+       RENTALS PAGE SPECIFIC STYLES
        ============================================ */
-
     * {
       margin: 0;
       padding: 0;
@@ -22,7 +22,6 @@
       padding: 20px;
     }
 
-    /* Main Container */
     .container {
       max-width: 900px;
       margin: 0 auto;
@@ -34,34 +33,24 @@
     }
 
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Header with Orders Button */
-    .container h2 {
+    /* Rentals Header */
+    .rentals-header {
       background: linear-gradient(135deg, #4158D0, #C850C0);
-      color: white;
       padding: 1.5rem 2rem;
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin: 0;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
       position: relative;
       overflow: hidden;
     }
 
-    .container h2::before {
+    .rentals-header::before {
       content: '';
       position: absolute;
       top: -50%;
@@ -77,7 +66,7 @@
       to { transform: rotate(360deg); }
     }
 
-    .header-left {
+    .header-title {
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -85,16 +74,18 @@
       z-index: 1;
     }
 
-    .header-left i {
+    .header-title i {
       font-size: 1.8rem;
+      color: white;
     }
 
-    .header-left span {
+    .header-title h2 {
       font-size: 1.5rem;
       font-weight: 700;
+      color: white;
+      margin: 0;
     }
 
-    /* Orders Button */
     .orders-btn {
       background: rgba(255, 255, 255, 0.2);
       color: white;
@@ -110,6 +101,7 @@
       position: relative;
       z-index: 1;
       border: 1px solid rgba(255,255,255,0.3);
+      cursor: pointer;
     }
 
     .orders-btn:hover {
@@ -117,17 +109,11 @@
       transform: translateY(-2px);
     }
 
-    .orders-btn:active {
-      transform: translateY(0);
-    }
-
-    /* Rentals List Container */
     #rentalsList {
       padding: 2rem;
       min-height: 300px;
     }
 
-    /* Loading State */
     .loading {
       text-align: center;
       padding: 4rem 2rem;
@@ -156,7 +142,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Rental Card */
     .rental-card {
       background: #f9fafb;
       border-radius: 24px;
@@ -185,7 +170,6 @@
       border-radius: 3px 0 0 3px;
     }
 
-    /* Rental Header */
     .rental-header {
       display: flex;
       justify-content: space-between;
@@ -227,17 +211,11 @@
       border-radius: 30px;
     }
 
-    .rental-id i {
-      color: #4158D0;
-      font-size: 0.75rem;
-    }
-
     .rental-id span {
       font-family: monospace;
       font-weight: 500;
     }
 
-    /* Rental Details */
     .rental-details {
       display: flex;
       flex-wrap: wrap;
@@ -271,13 +249,6 @@
       margin-left: 1.8rem;
     }
 
-    .detail-value small {
-      font-size: 0.85rem;
-      font-weight: 400;
-      color: #6b7280;
-    }
-
-    /* Price Highlight */
     .price-highlight {
       background: linear-gradient(135deg, #4158D0, #C850C0);
       color: white;
@@ -288,7 +259,13 @@
       font-size: 1.1rem;
     }
 
-    /* Cancel Button */
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
     .cancel-btn {
       background: white;
       color: #dc2626;
@@ -296,398 +273,96 @@
       padding: 0.7rem 1.5rem;
       border-radius: 30px;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.3s;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      width: 100%;
-      max-width: 180px;
-      margin-top: 0.5rem;
     }
 
     .cancel-btn:hover {
       background: #dc2626;
       color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
     }
 
-    .cancel-btn:active {
-      transform: translateY(0);
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 3rem 2rem;
-    }
-
-    .empty-state i {
-      font-size: 3.5rem;
-      color: #9ca3af;
-      margin-bottom: 1rem;
-    }
-
-    .empty-state p {
-      color: #4b5563;
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .empty-state a {
-      display: inline-block;
-      padding: 0.8rem 2rem;
-      background: linear-gradient(135deg, #4158D0, #C850C0);
-      color: white;
-      text-decoration: none;
-      border-radius: 30px;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-
-    .empty-state a:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(65, 88, 208, 0.3);
-    }
-
-    /* Login Prompt */
-    .login-prompt {
-      text-align: center;
-      padding: 3rem 2rem;
-    }
-
-    .login-prompt i {
-      font-size: 3.5rem;
-      color: #9ca3af;
-      margin-bottom: 1rem;
-    }
-
-    .login-prompt p {
-      color: #4b5563;
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .login-btn {
-      display: inline-block;
-      padding: 0.8rem 2rem;
-      background: linear-gradient(135deg, #4158D0, #C850C0);
-      color: white;
-      text-decoration: none;
-      border-radius: 30px;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-
-    .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(65, 88, 208, 0.3);
-    }
-
-    /* Error State */
-    .error-state {
-      text-align: center;
-      padding: 3rem 2rem;
-    }
-
-    .error-state i {
-      font-size: 3.5rem;
-      color: #dc2626;
-      margin-bottom: 1rem;
-    }
-
-    .error-state p {
-      color: #4b5563;
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .retry-btn {
-      background: linear-gradient(135deg, #4158D0, #C850C0);
+    .maintenance-btn {
+      background: #f59e0b;
       color: white;
       border: none;
-      padding: 0.8rem 2rem;
+      padding: 0.7rem 1.5rem;
       border-radius: 30px;
       font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .retry-btn:hover {
+    .maintenance-btn:hover {
+      background: #d97706;
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(65, 88, 208, 0.3);
     }
 
-    /* ========== RESPONSIVE DESIGN ========== */
+    .return-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-    /* Tablet */
+    .return-btn:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
+    .empty-state, .login-prompt, .error-state {
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .empty-state i, .login-prompt i, .error-state i {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive */
     @media screen and (max-width: 768px) {
-      body {
-        padding: 15px;
-      }
-
-      .container {
-        margin: 0;
-      }
-
-      .container h2 {
-        padding: 1.2rem 1.5rem;
-      }
-
-      .header-left i {
-        font-size: 1.5rem;
-      }
-
-      .header-left span {
-        font-size: 1.3rem;
-      }
-
-      .orders-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-      }
-
-      #rentalsList {
-        padding: 1.5rem;
-      }
-
-      .rental-card {
-        padding: 1.2rem;
-      }
-
-      .rental-title {
-        font-size: 1.2rem;
-      }
+      body { padding: 15px; }
+      .rentals-header { padding: 1.2rem 1.5rem; }
+      #rentalsList { padding: 1.5rem; }
     }
 
-    /* Mobile */
     @media screen and (max-width: 480px) {
-      body {
-        padding: 10px;
-      }
-
-      .container h2 {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.8rem;
-        padding: 1rem 1.2rem;
-      }
-
-      .header-left i {
-        font-size: 1.3rem;
-      }
-
-      .header-left span {
-        font-size: 1.2rem;
-      }
-
-      .orders-btn {
-        width: 100%;
-        justify-content: center;
-      }
-
-      #rentalsList {
-        padding: 1rem;
-      }
-
-      .rental-card {
-        padding: 1rem;
-      }
-
-      .rental-title {
-        font-size: 1.1rem;
-      }
-
-      .rental-id {
-        font-size: 0.7rem;
-        padding: 0.2rem 0.6rem;
-      }
-
-      .rental-id span {
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .rental-details {
-        flex-direction: column;
-        gap: 0.8rem;
-      }
-
-      .detail-item {
-        min-width: 100%;
-      }
-
-      .detail-label {
-        font-size: 0.8rem;
-      }
-
-      .detail-value {
-        font-size: 1rem;
-        margin-left: 1.5rem;
-      }
-
-      .price-highlight {
-        font-size: 0.95rem;
-        padding: 0.15rem 0.8rem;
-      }
-
-      .cancel-btn {
-        max-width: 100%;
-        padding: 0.6rem;
-        font-size: 0.9rem;
-      }
+      body { padding: 10px; }
+      .rentals-header { flex-direction: column; align-items: flex-start; padding: 1rem 1.2rem; }
+      .orders-btn { width: 100%; justify-content: center; }
+      .button-group { flex-direction: column; }
+      .cancel-btn, .maintenance-btn, .return-btn { width: 100%; }
     }
-
-    /* Dark Mode */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      }
-
-      .container {
-        background: #1e1e2f;
-      }
-
-      .rental-card {
-        background: #2d2d44;
-        border-color: #3d3d5c;
-      }
-
-      .rental-title {
-        color: #f3f4f6;
-      }
-
-      .rental-id {
-        background: #1e1e2f;
-        color: #9ca3af;
-      }
-
-      .detail-label {
-        color: #9ca3af;
-      }
-
-      .detail-value {
-        color: #f3f4f6;
-      }
-
-      .loading p {
-        color: #9ca3af;
-      }
-
-      .empty-state p,
-      .login-prompt p,
-      .error-state p {
-        color: #9ca3af;
-      }
-    }
-    /* Rentals Page Header */
-.rentals-header {
-    background: linear-gradient(135deg, #4158D0, #C850C0);
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.rentals-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-}
-
-.header-title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    position: relative;
-    z-index: 1;
-}
-
-.header-title i {
-    font-size: 1.8rem;
-    color: white;
-}
-
-.header-title h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: white;
-    margin: 0;
-    background: none;
-    -webkit-text-fill-color: white;
-    padding: 0;
-}
-
-/* Orders Button */
-.orders-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 0.6rem 1.2rem;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    position: relative;
-    z-index: 1;
-    border: 1px solid rgba(255,255,255,0.3);
-    cursor: pointer;
-}
-
-.orders-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-}
-
-/* Mobile Responsive */
-@media screen and (max-width: 480px) {
-    .rentals-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1rem 1.2rem;
-    }
-    
-    .orders-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .header-title h2 {
-        font-size: 1.2rem;
-    }
-    
-    .header-title i {
-        font-size: 1.3rem;
-    }
-}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="rentals-header">
-        <div class="header-title">
-            <i class="fas fa-box-open"></i>
-            <h2>My Active Rentals</h2>
-        </div>
-        <a href="orders.html" class="orders-btn">
-            <i class="fas fa-shopping-bag"></i> Orders
-        </a>
+      <div class="header-title">
+        <i class="fas fa-box-open"></i>
+        <h2>My Active Rentals</h2>
+      </div>
+      <a href="orders.html" class="orders-btn">
+        <i class="fas fa-shopping-bag"></i> Orders
+      </a>
     </div>
     <div id="rentalsList">
       <div class="loading">
@@ -696,214 +371,281 @@
     </div>
   </div>
 
-  <script>
+  <script >
     // ============================================
-    // RENTALS PAGE - COMPLETE FUNCTIONALITY
-    // ============================================
+// RENTALS PAGE - COMPLETE FUNCTIONALITY
+// ============================================
 
-    const API_URL = "https://rentease3-backend.onrender.com";
+const API_URL = "https://rentease3-backend.onrender.com";
 
-    // Load rentals when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      loadRentals();
-    });
+// ============================================
+// LOAD RENTALS WHEN PAGE LOADS
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    loadRentals();
+    fixOrdersButton();
+});
 
-    // ============================================
-    // LOAD RENTALS FUNCTION
-    // ============================================
-    async function loadRentals() {
-      const rentalsList = document.getElementById('rentalsList');
-      
-      if (!rentalsList) return;
+// ============================================
+// LOAD RENTALS FUNCTION
+// ============================================
+async function loadRentals() {
+    const rentalsList = document.getElementById('rentalsList');
+    if (!rentalsList) return;
 
-      const userId = localStorage.getItem('userId');
-      const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
 
-      // Check if user is logged in
-      if (!userId || !token) {
+    // Check if user is logged in
+    if (!userId || !token) {
         rentalsList.innerHTML = `
-          <div class="login-prompt">
-            <i class="fas fa-sign-in-alt"></i>
-            <p>Please log in to view your rentals</p>
-            <a href="login.html" class="login-btn">
-              <i class="fas fa-arrow-right"></i> Go to Login
-            </a>
-          </div>
+            <div class="login-prompt">
+                <i class="fas fa-sign-in-alt"></i>
+                <p>Please log in to view your rentals</p>
+                <a href="login.html" class="login-btn" style="display:inline-block; padding:0.8rem 2rem; background:linear-gradient(135deg,#4158D0,#C850C0); color:white; text-decoration:none; border-radius:30px; font-weight:600;">
+                    <i class="fas fa-arrow-right"></i> Go to Login
+                </a>
+            </div>
         `;
         return;
-      }
+    }
 
-      try {
+    try {
         const response = await fetch(`${API_URL}/api/rentals?userId=${userId}`, {
-          headers: {
-            'Authorization': 'Bearer ' + token
-          }
+            headers: { 'Authorization': 'Bearer ' + token }
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch rentals');
-        }
+        if (!response.ok) throw new Error('Failed to fetch rentals');
 
         const rentals = await response.json();
-        
-        // Clear loading state
         rentalsList.innerHTML = '';
 
-        // Check if no rentals
         if (!rentals || rentals.length === 0) {
-          rentalsList.innerHTML = `
-            <div class="empty-state">
-              <i class="fas fa-box-open"></i>
-              <p>No active rentals found</p>
-              <a href="products.html">
-                <i class="fas fa-store"></i> Browse Products
-              </a>
-            </div>
-          `;
-          return;
+            rentalsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <p>No active rentals found</p>
+                    <a href="products.html" style="display:inline-block; padding:0.8rem 2rem; background:linear-gradient(135deg,#4158D0,#C850C0); color:white; text-decoration:none; border-radius:30px;">
+                        <i class="fas fa-store"></i> Browse Products
+                    </a>
+                </div>
+            `;
+            return;
         }
 
         // Display each rental
         rentals.forEach(rental => {
-          const rentalCard = document.createElement('div');
-          rentalCard.className = 'rental-card';
-          
-          rentalCard.innerHTML = `
-            <div class="rental-header">
-              <div class="rental-info">
-                <h3 class="rental-title">
-                  <i class="fas fa-tag"></i>
-                  ${rental.productName || 'Product'}
-                </h3>
-                <div class="rental-id">
-                  <i class="fas fa-hashtag"></i>
-                  <span>${rental._id.slice(-8)}</span>
+            const rentalCard = document.createElement('div');
+            rentalCard.className = 'rental-card';
+            
+            rentalCard.innerHTML = `
+                <div class="rental-header">
+                    <div class="rental-info">
+                        <h3 class="rental-title">
+                            <i class="fas fa-tag"></i>
+                            ${rental.productName || 'Product'}
+                        </h3>
+                        <div class="rental-id">
+                            <i class="fas fa-hashtag"></i>
+                            <span>${rental._id.slice(-8)}</span>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
 
-            <div class="rental-details">
-              <div class="detail-item">
-                <div class="detail-label">
-                  <i class="far fa-calendar-alt"></i>
-                  Rental Period
+                <div class="rental-details">
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="far fa-calendar-alt"></i>
+                            Rental Period
+                        </div>
+                        <div class="detail-value">
+                            ${rental.days || 0} <small>days</small>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-rupee-sign"></i>
+                            Total Price
+                        </div>
+                        <div class="detail-value price-highlight">
+                            ₹${rental.totalPrice || 0}
+                        </div>
+                    </div>
                 </div>
-                <div class="detail-value">
-                  ${rental.days || 0} <small>days</small>
-                </div>
-              </div>
 
-              <div class="detail-item">
-                <div class="detail-label">
-                  <i class="fas fa-rupee-sign"></i>
-                  Total Price
+                <div class="button-group">
+                    <button class="cancel-btn" onclick="cancelRental('${rental._id}')">
+                        <i class="fas fa-times-circle"></i> Cancel Rental
+                    </button>
+                    <button class="maintenance-btn" onclick="reportIssue('${rental._id}', '${rental.productName}')">
+                        <i class="fas fa-tools"></i> Report Issue
+                    </button>
+                    <button class="return-btn" onclick="scheduleReturn('${rental._id}', '${rental.productName}')">
+                        <i class="fas fa-calendar-alt"></i> Schedule Return
+                    </button>
                 </div>
-                <div class="detail-value price-highlight">
-                  ₹${rental.totalPrice || 0}
-                </div>
-              </div>
-            </div>
-
-            <button class="cancel-btn" onclick="cancelRental('${rental._id}')">
-              <i class="fas fa-times-circle"></i> Cancel Rental
-            </button>
-          `;
-          
-          rentalsList.appendChild(rentalCard);
+            `;
+            
+            rentalsList.appendChild(rentalCard);
         });
 
-      } catch (error) {
+    } catch (error) {
         console.error('Error loading rentals:', error);
         rentalsList.innerHTML = `
-          <div class="error-state">
-            <i class="fas fa-exclamation-circle"></i>
-            <p>Failed to load rentals. Please try again.</p>
-            <button onclick="loadRentals()" class="retry-btn">
-              <i class="fas fa-redo-alt"></i> Try Again
-            </button>
-          </div>
+            <div class="error-state">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Failed to load rentals. Please try again.</p>
+                <button onclick="loadRentals()" class="retry-btn" style="background:linear-gradient(135deg,#4158D0,#C850C0); color:white; border:none; padding:0.8rem 2rem; border-radius:30px; cursor:pointer;">
+                    <i class="fas fa-redo-alt"></i> Try Again
+                </button>
+            </div>
         `;
-      }
     }
+}
 
-    // ============================================
-    // CANCEL RENTAL FUNCTION
-    // ============================================
-    async function cancelRental(rentalId) {
-      if (!confirm('Are you sure you want to cancel this rental?')) {
-        return;
-      }
+// ============================================
+// CANCEL RENTAL FUNCTION
+// ============================================
+async function cancelRental(rentalId) {
+    if (!confirm('Are you sure you want to cancel this rental?')) return;
 
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
+    const token = localStorage.getItem('token');
+    if (!token) {
         alert('Please login first');
         window.location.href = 'login.html';
         return;
-      }
+    }
 
-      // Find and disable the clicked button
-      const buttons = document.querySelectorAll('.cancel-btn');
-      let clickedButton = null;
-      
-      buttons.forEach(btn => {
+    // Find and disable the clicked button
+    const buttons = document.querySelectorAll('.cancel-btn');
+    let clickedButton = null;
+    
+    buttons.forEach(btn => {
         if (btn.getAttribute('onclick')?.includes(rentalId)) {
-          clickedButton = btn;
-          btn.disabled = true;
-          btn.style.opacity = '0.5';
-          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
+            clickedButton = btn;
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cancelling...';
         }
-      });
+    });
 
-      try {
+    try {
         const response = await fetch(`${API_URL}/api/rentals/${rentalId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': 'Bearer ' + token
-          }
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token }
         });
 
         if (response.ok) {
-          alert('Rental cancelled successfully');
-          loadRentals(); // Reload the list
+            alert('Rental cancelled successfully');
+            loadRentals();
         } else {
-          const error = await response.json();
-          alert(error.message || 'Failed to cancel rental');
-          
-          // Re-enable button if failed
-          if (clickedButton) {
+            const error = await response.json();
+            alert(error.message || 'Failed to cancel rental');
+            if (clickedButton) {
+                clickedButton.disabled = false;
+                clickedButton.style.opacity = '1';
+                clickedButton.innerHTML = '<i class="fas fa-times-circle"></i> Cancel Rental';
+            }
+        }
+    } catch (error) {
+        console.error('Error cancelling rental:', error);
+        alert('Error cancelling rental. Please try again.');
+        if (clickedButton) {
             clickedButton.disabled = false;
             clickedButton.style.opacity = '1';
             clickedButton.innerHTML = '<i class="fas fa-times-circle"></i> Cancel Rental';
-          }
         }
-      } catch (error) {
-        console.error('Error cancelling rental:', error);
-        alert('Error cancelling rental. Please try again.');
-        
-        // Re-enable button if error
-        if (clickedButton) {
-          clickedButton.disabled = false;
-          clickedButton.style.opacity = '1';
-          clickedButton.innerHTML = '<i class="fas fa-times-circle"></i> Cancel Rental';
-        }
-      }
+    }
+}
+
+// ============================================
+// REPORT ISSUE (MAINTENANCE) FUNCTION
+// ============================================
+async function reportIssue(rentalId, productName) {
+    const issue = prompt(`Describe the issue with ${productName}:`);
+    if (!issue) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Please login first');
+        window.location.href = 'login.html';
+        return;
     }
 
-    // Make cancelRental globally available
-    window.cancelRental = cancelRental;
-    // ============================================
+    try {
+        const response = await fetch(`${API_URL}/api/maintenance`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                rentalId: rentalId,
+                productName: productName,
+                issue: issue,
+                status: 'pending'
+            })
+        });
+        
+        if (response.ok) {
+            alert('Maintenance request submitted successfully! Our team will contact you soon.');
+        } else {
+            alert('Failed to submit request. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error submitting request:', error);
+        alert('Error submitting request');
+    }
+}
+
+// ============================================
+// SCHEDULE RETURN FUNCTION
+// ============================================
+async function scheduleReturn(rentalId, productName) {
+    const today = new Date();
+    const minDate = today.toISOString().split('T')[0];
+    
+    const returnDate = prompt(`Enter return date for ${productName} (YYYY-MM-DD):`, minDate);
+    if (!returnDate) return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Please login first');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/api/rentals/schedule-return/${rentalId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ returnDate: returnDate })
+        });
+        
+        if (response.ok) {
+            alert(`Return scheduled for ${returnDate}. Our team will contact you for pickup.`);
+        } else {
+            alert('Failed to schedule return. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error scheduling return:', error);
+        alert('Error scheduling return');
+    }
+}
+
+// ============================================
 // FIX FOR MOBILE ORDERS BUTTON
 // ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    // Ensure Orders button is clickable on mobile
+function fixOrdersButton() {
     const ordersBtn = document.querySelector('.orders-btn');
     if (ordersBtn) {
-        // Remove any existing listeners to prevent duplicates
+        // Clone and replace to remove any existing listeners
         const newBtn = ordersBtn.cloneNode(true);
         ordersBtn.parentNode.replaceChild(newBtn, ordersBtn);
         
-        // Add click event
         newBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -911,13 +653,12 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'orders.html';
         });
         
-        // For touch devices - ensure it works
         newBtn.addEventListener('touchstart', function(e) {
             console.log('Touch detected on Orders button');
         });
     }
     
-    // Also ensure the button is visible and clickable
+    // Add CSS to ensure button is clickable
     const style = document.createElement('style');
     style.textContent = `
         .orders-btn {
@@ -927,8 +668,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
-});
-  </script>
+}
 
+// Make functions globally available
+window.cancelRental = cancelRental;
+window.reportIssue = reportIssue;
+window.scheduleReturn = scheduleReturn;
+window.loadRentals = loadRentals;
+  </script>
 </body>
 </html>
