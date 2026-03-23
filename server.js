@@ -26,7 +26,7 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/rentals", require("./routes/rentalRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
-
+app.use("/api/maintenance", require("./routes/maintenanceRoutes"));
 // Test Route
 app.get("/", (req, res) => {
   res.send("API is running...");
