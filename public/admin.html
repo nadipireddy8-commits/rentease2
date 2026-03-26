@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - RentEase</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -14,14 +14,20 @@
 
         body {
             background: #f3f4f6;
-            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Navigation */
-        .admin-nav {
-            background: #1f2937;
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #1f2937, #111827);
             color: white;
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -29,26 +35,18 @@
             gap: 1rem;
         }
 
-        .admin-nav h1 {
-            font-size: 1.5rem;
+        .admin-header h1 {
+            font-size: 1.8rem;
         }
 
-        .admin-nav a {
+        .admin-header a {
             color: white;
             text-decoration: none;
             padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.2);
             border-radius: 8px;
-            background: rgba(255,255,255,0.1);
         }
 
-        /* Dashboard Container */
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -59,47 +57,35 @@
         .stat-card {
             background: white;
             padding: 1.5rem;
-            border-radius: 20px;
+            border-radius: 16px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #4158D0, #C850C0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4158D0;
         }
 
         .stat-label {
             color: #6b7280;
             font-size: 0.9rem;
+            margin-top: 0.5rem;
         }
 
-        /* Section Styles */
         .section {
             background: white;
             border-radius: 20px;
             padding: 1.5rem;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .section h2 {
             margin-bottom: 1rem;
             font-size: 1.3rem;
             color: #1f2937;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Table Styles */
-        .table-responsive {
-            overflow-x: auto;
         }
 
         table {
@@ -108,7 +94,7 @@
         }
 
         th, td {
-            padding: 0.75rem;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
         }
@@ -116,376 +102,211 @@
         th {
             background: #f9fafb;
             font-weight: 600;
-            color: #374151;
         }
 
-        /* Buttons */
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s;
+        .status-pending { background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 20px; display: inline-block; }
+        .status-paid { background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 20px; display: inline-block; }
+        
+        .table-responsive {
+            overflow-x: auto;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #4158D0, #C850C0);
-            color: white;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
-
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 0.25rem 0.75rem;
-            font-size: 0.8rem;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 90%;
-        }
-
-        .modal-content h3 {
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 12px;
             margin-bottom: 1rem;
         }
 
-        .modal-content input,
-        .modal-content select {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        /* Status Badges */
-        .status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-paid { background: #d4edda; color: #155724; }
-        .status-delivered { background: #cce5ff; color: #004085; }
-
-        /* Responsive */
         @media screen and (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-            
-            th, td {
-                font-size: 0.85rem;
-                padding: 0.5rem;
-            }
+            body { padding: 10px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            th, td { font-size: 0.85rem; padding: 8px; }
         }
     </style>
 </head>
 <body>
-    <nav class="admin-nav">
-        <h1>🏢 RentEase Admin Dashboard</h1>
-        <div>
-            <a href="index.html">Home</a>
-            <a href="products.html">Products</a>
-            <a href="login.html">Logout</a>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
+            <a href="index.html"><i class="fas fa-home"></i> Back to Site</a>
         </div>
-    </nav>
 
-    <div class="dashboard-container">
-        <!-- Stats Cards -->
+        <div id="errorDisplay"></div>
+
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="totalUsers">0</div>
-                <div class="stat-label">Total Users</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalOrders">0</div>
-                <div class="stat-label">Total Orders</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalRentals">0</div>
-                <div class="stat-label">Active Rentals</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalProducts">0</div>
-                <div class="stat-label">Products</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalRevenue">₹0</div>
-                <div class="stat-label">Total Revenue</div>
-            </div>
+            <div class="stat-card"><div class="stat-number" id="totalUsers">0</div><div class="stat-label">Total Users</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalOrders">0</div><div class="stat-label">Total Orders</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalRentals">0</div><div class="stat-label">Active Rentals</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalProducts">0</div><div class="stat-label">Products</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalRevenue">₹0</div><div class="stat-label">Total Revenue</div></div>
         </div>
 
-        <!-- Products Management -->
         <div class="section">
-            <h2>📦 Products Management</h2>
-            <button class="btn btn-primary" onclick="openAddProductModal()">+ Add New Product</button>
-            <div class="table-responsive" style="margin-top: 1rem;">
-                <table id="productsTable">
-                    <thead>
-                        <tr><th>Name</th><th>Category</th><th>Rent/Day</th><th>Deposit</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+            <h2><i class="fas fa-shopping-cart"></i> Recent Orders</h2>
+            <div id="ordersList" class="table-responsive">Loading...</div>
         </div>
 
-        <!-- Recent Orders -->
         <div class="section">
-            <h2>📋 Recent Orders</h2>
-            <div class="table-responsive">
-                <table id="ordersTable">
-                    <thead>
-                        <tr><th>Order ID</th><th>User</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Maintenance Requests (NEW) -->
-        <div class="section">
-            <h2>🔧 Maintenance Requests</h2>
-            <div class="table-responsive">
-                <table id="maintenanceTable">
-                    <thead>
-                        <tr><th>Rental ID</th><th>User</th><th>Issue</th><th>Status</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Product Modal -->
-    <div id="addProductModal" class="modal">
-        <div class="modal-content">
-            <h3>Add New Product</h3>
-            <input type="text" id="productName" placeholder="Product Name">
-            <input type="text" id="productCategory" placeholder="Category">
-            <input type="number" id="productRent" placeholder="Rent per day (₹)">
-            <input type="number" id="productDeposit" placeholder="Security Deposit (₹)">
-            <input type="text" id="productImage" placeholder="Image URL">
-            <div class="modal-buttons">
-                <button class="btn btn-primary" onclick="addProduct()">Add</button>
-                <button class="btn" onclick="closeAddProductModal()">Cancel</button>
-            </div>
+            <h2><i class="fas fa-box"></i> Active Rentals</h2>
+            <div id="rentalsList" class="table-responsive">Loading...</div>
         </div>
     </div>
 
     <script>
         const API_URL = "https://rentease3-backend.onrender.com";
 
-        // Load all dashboard data
         async function loadDashboard() {
-            await loadStats();
-            await loadProducts();
-            await loadOrders();
-            await loadMaintenanceRequests();
-        }
-
-        // Load Stats
-        async function loadStats() {
-            try {
-                const [usersRes, ordersRes, rentalsRes, productsRes] = await Promise.all([
-                    fetch(`${API_URL}/api/users`),
-                    fetch(`${API_URL}/api/orders`),
-                    fetch(`${API_URL}/api/rentals`),
-                    fetch(`${API_URL}/api/products`)
-                ]);
-                
-                const users = await usersRes.json();
-                const orders = await ordersRes.json();
-                const rentals = await rentalsRes.json();
-                const products = await productsRes.json();
-                
-                const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-                
-                document.getElementById('totalUsers').textContent = users.length || 0;
-                document.getElementById('totalOrders').textContent = orders.length || 0;
-                document.getElementById('totalRentals').textContent = rentals.length || 0;
-                document.getElementById('totalProducts').textContent = products.length || 0;
-                document.getElementById('totalRevenue').textContent = '₹' + totalRevenue;
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
-        }
-
-        // Load Products
-        async function loadProducts() {
-            try {
-                const res = await fetch(`${API_URL}/api/products`);
-                const products = await res.json();
-                
-                const tbody = document.querySelector('#productsTable tbody');
-                tbody.innerHTML = '';
-                
-                products.forEach(product => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${product.name}</td>
-                            <td>${product.category || 'General'}</td>
-                            <td>₹${product.rent}</td>
-                            <td>₹${product.deposit || 0}</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm" onclick="deleteProduct('${product._id}')">Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch (error) {
-                console.error('Error loading products:', error);
-            }
-        }
-
-        // Delete Product
-        async function deleteProduct(id) {
-            if (confirm('Are you sure you want to delete this product?')) {
-                try {
-                    await fetch(`${API_URL}/api/products/${id}`, { method: 'DELETE' });
-                    loadProducts();
-                    loadStats();
-                } catch (error) {
-                    alert('Error deleting product');
-                }
-            }
-        }
-
-        // Add Product
-        async function addProduct() {
-            const product = {
-                name: document.getElementById('productName').value,
-                category: document.getElementById('productCategory').value,
-                rent: parseInt(document.getElementById('productRent').value),
-                deposit: parseInt(document.getElementById('productDeposit').value),
-                image: document.getElementById('productImage').value
-            };
+            const token = localStorage.getItem('token');
+            const errorDisplay = document.getElementById('errorDisplay');
             
+            if (!token) {
+                errorDisplay.innerHTML = '<div class="error-message">⚠️ Please login first. <a href="login.html">Go to Login</a></div>';
+                document.getElementById('ordersList').innerHTML = '<p>Please login to view dashboard</p>';
+                return;
+            }
+
             try {
-                const res = await fetch(`${API_URL}/api/products`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(product)
+                errorDisplay.innerHTML = '';
+
+                // Fetch users
+                console.log("Fetching users...");
+                const usersRes = await fetch(`${API_URL}/api/users`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
                 });
-                
-                if (res.ok) {
-                    alert('Product added successfully!');
-                    closeAddProductModal();
-                    loadProducts();
-                    loadStats();
+                let users = [];
+                if (usersRes.ok) {
+                    users = await usersRes.json();
+                    users = Array.isArray(users) ? users : [];
+                    console.log("Users loaded:", users.length);
                 } else {
-                    alert('Error adding product');
+                    console.log("Users error:", usersRes.status);
+                    errorDisplay.innerHTML += `<div class="error-message">⚠️ Users API: ${usersRes.status} - ${usersRes.statusText}</div>`;
                 }
-            } catch (error) {
-                alert('Error adding product');
-            }
-        }
 
-        // Load Orders
-        async function loadOrders() {
-            try {
-                const res = await fetch(`${API_URL}/api/orders`);
-                const orders = await res.json();
-                
-                const tbody = document.querySelector('#ordersTable tbody');
-                tbody.innerHTML = '';
-                
-                orders.slice(0, 10).forEach(order => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${order._id.slice(-8)}</td>
-                            <td>${order.user?.email || 'N/A'}</td>
-                            <td>₹${order.totalAmount}</td>
-                            <td><span class="status status-${order.paymentStatus || 'pending'}">${order.paymentStatus || 'pending'}</span></td>
-                            <td>
-                                <button class="btn btn-warning btn-sm" onclick="markDelivered('${order._id}')">Mark Delivered</button>
-                            </td>
-                        </tr>
-                    `;
+                // Fetch orders
+                console.log("Fetching orders...");
+                const ordersRes = await fetch(`${API_URL}/api/orders`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
                 });
+                let orders = [];
+                if (ordersRes.ok) {
+                    orders = await ordersRes.json();
+                    orders = Array.isArray(orders) ? orders : [];
+                    console.log("Orders loaded:", orders.length);
+                } else {
+                    console.log("Orders error:", ordersRes.status);
+                    errorDisplay.innerHTML += `<div class="error-message">⚠️ Orders API: ${ordersRes.status} - ${ordersRes.statusText}</div>`;
+                }
+
+                // Fetch rentals
+                console.log("Fetching rentals...");
+                const rentalsRes = await fetch(`${API_URL}/api/rentals`);
+                let rentals = [];
+                if (rentalsRes.ok) {
+                    rentals = await rentalsRes.json();
+                    rentals = Array.isArray(rentals) ? rentals : [];
+                    console.log("Rentals loaded:", rentals.length);
+                } else {
+                    console.log("Rentals error:", rentalsRes.status);
+                    errorDisplay.innerHTML += `<div class="error-message">⚠️ Rentals API: ${rentalsRes.status} - ${rentalsRes.statusText}</div>`;
+                }
+
+                // Fetch products
+                console.log("Fetching products...");
+                const productsRes = await fetch(`${API_URL}/api/products`);
+                let products = [];
+                if (productsRes.ok) {
+                    products = await productsRes.json();
+                    products = Array.isArray(products) ? products : [];
+                    console.log("Products loaded:", products.length);
+                } else {
+                    console.log("Products error:", productsRes.status);
+                    errorDisplay.innerHTML += `<div class="error-message">⚠️ Products API: ${productsRes.status} - ${productsRes.statusText}</div>`;
+                }
+
+                // Calculate total revenue
+                const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+
+                // Update stats
+                document.getElementById('totalUsers').textContent = users.length;
+                document.getElementById('totalOrders').textContent = orders.length;
+                document.getElementById('totalRentals').textContent = rentals.length;
+                document.getElementById('totalProducts').textContent = products.length;
+                document.getElementById('totalRevenue').textContent = '₹' + totalRevenue;
+
+                // Display tables
+                displayOrders(orders);
+                displayRentals(rentals);
+
             } catch (error) {
-                console.error('Error loading orders:', error);
+                console.error('Error loading dashboard:', error);
+                errorDisplay.innerHTML = `<div class="error-message">❌ Error: ${error.message}</div>`;
+                document.getElementById('ordersList').innerHTML = '<p>Error loading data</p>';
             }
         }
 
-        // Mark Order as Delivered
-        async function markDelivered(orderId) {
-            try {
-                await fetch(`${API_URL}/api/orders/${orderId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: 'delivered' })
-                });
-                loadOrders();
-            } catch (error) {
-                alert('Error updating order');
+        function displayOrders(orders) {
+            const container = document.getElementById('ordersList');
+            
+            if (!orders || orders.length === 0) {
+                container.innerHTML = '<p>No orders found</p>';
+                return;
             }
+
+            let html = `<div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
+            
+            orders.slice(0, 10).forEach(order => {
+                const orderId = order._id ? order._id.slice(-8) : 'N/A';
+                const amount = order.totalAmount || 0;
+                const status = order.paymentStatus || 'pending';
+                const date = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
+                
+                html += `
+                    <tr>
+                        <td>${orderId}</td>
+                        <td>₹${amount}</td>
+                        <td><span class="status-${status}">${status}</span></td>
+                        <td>${date}</td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
         }
 
-        // Load Maintenance Requests
-        async function loadMaintenanceRequests() {
-            const tbody = document.querySelector('#maintenanceTable tbody');
-            tbody.innerHTML = `
-                <tr><td colspan="5" style="text-align: center;">No maintenance requests yet</td></tr>
-            `;
+        function displayRentals(rentals) {
+            const container = document.getElementById('rentalsList');
+            
+            if (!rentals || rentals.length === 0) {
+                container.innerHTML = '<p>No active rentals</p>';
+                return;
+            }
+
+            let html = `<div class="table-responsive"><table><thead><tr><th>Product</th><th>Days</th><th>Total</th><th>User ID</th></tr></thead><tbody>`;
+            
+            rentals.slice(0, 10).forEach(rental => {
+                const productName = rental.productName || 'Product';
+                const days = rental.days || 0;
+                const total = rental.totalPrice || 0;
+                const userId = rental.userId ? rental.userId.slice(-8) : 'N/A';
+                
+                html += `
+                    <tr>
+                        <td>${productName}</td>
+                        <td>${days}</td>
+                        <td>₹${total}</td>
+                        <td>${userId}</td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
         }
 
-        // Modal Functions
-        function openAddProductModal() {
-            document.getElementById('addProductModal').style.display = 'flex';
-        }
-
-        function closeAddProductModal() {
-            document.getElementById('addProductModal').style.display = 'none';
-            document.getElementById('productName').value = '';
-            document.getElementById('productCategory').value = '';
-            document.getElementById('productRent').value = '';
-            document.getElementById('productDeposit').value = '';
-            document.getElementById('productImage').value = '';
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', loadDashboard);
+        // Load dashboard
+        loadDashboard();
     </script>
 </body>
 </html>
