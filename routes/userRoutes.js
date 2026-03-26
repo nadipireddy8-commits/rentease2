@@ -15,7 +15,9 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await User.create({
       name,
@@ -32,18 +34,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// ✅ GET all users (ADMIN) - This endpoint needs auth
-router.get("/", auth, async (req, res) => {
-    try {
-        const users = await User.find().select('-password');
-        console.log("✅ Returning users:", users.length);
-        res.json(users);
-    } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({ message: error.message });
-    }
-});
-
 // LOGIN
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -54,7 +44,9 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
+        // Compare password
         const isMatch = await bcrypt.compare(password, user.password);
+        
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
@@ -72,6 +64,16 @@ router.post("/login", async (req, res) => {
     } catch (err) {
         console.error("Login error:", err);
         res.status(500).json({ message: "Server error" });
+    }
+});
+
+// GET all users (ADMIN)
+router.get("/", auth, async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 });
 
