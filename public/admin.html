@@ -405,451 +405,338 @@
             </div>
         </div>
     </div>
+<script>
+    const API_URL = "https://rentease3-backend.onrender.com";
+    let allAdminProducts = []; // Store all products for search
 
-    <script>
-        const API_URL = "https://rentease3-backend.onrender.com";
+    async function loadDashboard() {
+        const token = localStorage.getItem('token');
+        const errorDisplay = document.getElementById('errorDisplay');
+        
+        if (!token) {
+            errorDisplay.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Please login first. <a href="login.html" style="color:#dc2626;">Go to Login</a></div>';
+            document.getElementById('ordersList').innerHTML = '<p>Please login to view dashboard</p>';
+            document.getElementById('rentalsList').innerHTML = '<p>Please login to view dashboard</p>';
+            document.getElementById('usersList').innerHTML = '<p>Please login to view dashboard</p>';
+            return;
+        }
 
-        async function loadDashboard() {
-            const token = localStorage.getItem('token');
-            const errorDisplay = document.getElementById('errorDisplay');
-            
-            if (!token) {
-                errorDisplay.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Please login first. <a href="login.html" style="color:#dc2626;">Go to Login</a></div>';
-                document.getElementById('ordersList').innerHTML = '<p>Please login to view dashboard</p>';
-                document.getElementById('rentalsList').innerHTML = '<p>Please login to view dashboard</p>';
-                document.getElementById('usersList').innerHTML = '<p>Please login to view dashboard</p>';
-                return;
-            }
+        try {
+            errorDisplay.innerHTML = '';
 
+            // ========== FETCH PRODUCTS ==========
+            let products = [];
             try {
-                errorDisplay.innerHTML = '';
-
-                // ========== FETCH PRODUCTS (No auth needed) ==========
-                let products = [];
-                try {
-                    const productsRes = await fetch(`${API_URL}/api/products`);
-                    if (productsRes.ok) {
-                        products = await productsRes.json();
-                        products = Array.isArray(products) ? products : [];
-                        console.log("✅ Products loaded:", products.length);
-                    } else {
-                        console.log("Products API error:", productsRes.status);
-                    }
-                } catch (e) {
-                    console.error("Products fetch error:", e);
+                const productsRes = await fetch(`${API_URL}/api/products`);
+                if (productsRes.ok) {
+                    products = await productsRes.json();
+                    products = Array.isArray(products) ? products : [];
+                    allAdminProducts = products; // Store for search
+                    console.log("✅ Products loaded:", products.length);
                 }
-                document.getElementById('totalProducts').textContent = products.length;
-
-                // ========== FETCH RENTALS (No auth needed - modified endpoint) ==========
-                let rentals = [];
-                try {
-                    // Try to fetch all rentals (no userId needed)
-                    const rentalsRes = await fetch(`${API_URL}/api/rentals/all`);
-                    if (rentalsRes.ok) {
-                        rentals = await rentalsRes.json();
-                        rentals = Array.isArray(rentals) ? rentals : [];
-                        console.log("✅ Rentals loaded:", rentals.length);
-                        document.getElementById('totalRentals').textContent = rentals.length;
-                    } else {
-                        console.log("Rentals API error:", rentalsRes.status);
-                        errorDisplay.innerHTML += `<div class="warning-message"><i class="fas fa-exclamation-triangle"></i> Rentals API: ${rentalsRes.status} - ${rentalsRes.statusText}</div>`;
-                    }
-                } catch (e) {
-                    console.error("Rentals fetch error:", e);
-                }
-
-                // ========== FETCH ORDERS (With token) ==========
-                let orders = [];
-                try {
-                    const ordersRes = await fetch(`${API_URL}/api/orders`, {
-                        headers: { 'Authorization': 'Bearer ' + token }
-                    });
-                    if (ordersRes.ok) {
-                        orders = await ordersRes.json();
-                        orders = Array.isArray(orders) ? orders : [];
-                        console.log("✅ Orders loaded:", orders.length);
-                        document.getElementById('totalOrders').textContent = orders.length;
-                        
-                        // Calculate total revenue
-                        const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
-                        document.getElementById('totalRevenue').textContent = '₹' + totalRevenue.toLocaleString();
-                    } else {
-                        console.log("Orders API error:", ordersRes.status);
-                        errorDisplay.innerHTML += `<div class="warning-message"><i class="fas fa-exclamation-triangle"></i> Orders API: ${ordersRes.status} - ${ordersRes.statusText}</div>`;
-                    }
-                } catch (e) {
-                    console.error("Orders fetch error:", e);
-                }
-
-                // ========== FETCH USERS (With token) ==========
-                let users = [];
-                try {
-                    const usersRes = await fetch(`${API_URL}/api/users`, {
-                        headers: { 'Authorization': 'Bearer ' + token }
-                    });
-                    if (usersRes.ok) {
-                        users = await usersRes.json();
-                        users = Array.isArray(users) ? users : [];
-                        console.log("✅ Users loaded:", users.length);
-                        document.getElementById('totalUsers').textContent = users.length;
-                    } else {
-                        console.log("Users API error:", usersRes.status);
-                        errorDisplay.innerHTML += `<div class="warning-message"><i class="fas fa-exclamation-triangle"></i> Users API: ${usersRes.status} - This endpoint may not exist yet</div>`;
-                    }
-                } catch (e) {
-                    console.error("Users fetch error:", e);
-                }
-
-                // Display tables
-                displayOrders(orders);
-                displayRentals(rentals);
-                displayUsers(users);
-
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-                errorDisplay.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle"></i> Error: ${error.message}</div>`;
+            } catch (e) {
+                console.error("Products fetch error:", e);
             }
-        }
+            document.getElementById('totalProducts').textContent = products.length;
 
-        function displayOrders(orders) {
-            const container = document.getElementById('ordersList');
-            
-            if (!orders || orders.length === 0) {
-                container.innerHTML = '<p>No orders found</p>';
-                return;
+            // ========== FETCH RENTALS ==========
+            let rentals = [];
+            try {
+                const rentalsRes = await fetch(`${API_URL}/api/rentals/all`);
+                if (rentalsRes.ok) {
+                    rentals = await rentalsRes.json();
+                    rentals = Array.isArray(rentals) ? rentals : [];
+                    console.log("✅ Rentals loaded:", rentals.length);
+                    document.getElementById('totalRentals').textContent = rentals.length;
+                } else {
+                    console.log("Rentals API error:", rentalsRes.status);
+                }
+            } catch (e) {
+                console.error("Rentals fetch error:", e);
             }
 
-            let html = `<div class="table-responsive"> 能 <thead> 百 <th>Order ID</th> <th>User</th> <th>Amount</th> <th>Status</th> <th>Date</th> 貌 </thead> <tbody>`;
-            
-            orders.slice(0, 15).forEach(order => {
-                const orderId = order._id ? order._id.slice(-8) : 'N/A';
-                const userName = order.user?.email || order.userId?.slice(-8) || 'N/A';
-                const amount = order.totalAmount || 0;
-                const status = order.paymentStatus || 'pending';
-                const date = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
-                
-                html += `
-                    <tr>
-                        <td>${orderId}</td>
-                        <td>${userName}</td>
-                        <td>₹${amount}</td>
-                        <td><span class="status-${status}">${status}</span></td>
-                        <td>${date}</td>
-                    </tr>
-                `;
-            });
-            html += `</tbody> </table> </div>`;
-            container.innerHTML = html;
-        }
-
-        function displayRentals(rentals) {
-            const container = document.getElementById('rentalsList');
-            
-            if (!rentals || rentals.length === 0) {
-                container.innerHTML = '<p>No active rentals</p>';
-                return;
+            // ========== FETCH ORDERS ==========
+            let orders = [];
+            try {
+                const ordersRes = await fetch(`${API_URL}/api/orders`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (ordersRes.ok) {
+                    orders = await ordersRes.json();
+                    orders = Array.isArray(orders) ? orders : [];
+                    console.log("✅ Orders loaded:", orders.length);
+                    document.getElementById('totalOrders').textContent = orders.length;
+                    
+                    const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+                    document.getElementById('totalRevenue').textContent = '₹' + totalRevenue.toLocaleString();
+                }
+            } catch (e) {
+                console.error("Orders fetch error:", e);
             }
 
-            let html = `<div class="table-responsive"> 能 <thead> 百 <th>Product</th> <th>Days</th> <th>Total</th> <th>User ID</th> <th>Date</th> 貌 </thead> <tbody>`;
-            
-            rentals.slice(0, 15).forEach(rental => {
-                const productName = rental.productName || 'Product';
-                const days = rental.days || 0;
-                const total = rental.totalPrice || 0;
-                const userId = rental.userId ? rental.userId.slice(-8) : 'N/A';
-                const date = rental.createdAt ? new Date(rental.createdAt).toLocaleDateString() : 'N/A';
-                
-                html += `
-                    <tr>
-                        <td>${productName}</td>
-                        <td>${days}</td>
-                        <td>₹${total}</td>
-                        <td>${userId}</td>
-                        <td>${date}</td>
-                    </tr>
-                `;
-            });
-            html += `</tbody> </table> </div>`;
-            container.innerHTML = html;
-        }
-
-        function displayUsers(users) {
-            const container = document.getElementById('usersList');
-            
-            if (!users || users.length === 0) {
-                container.innerHTML = '<p>No users found. Add GET /api/users endpoint to your backend.</p>';
-                return;
+            // ========== FETCH USERS ==========
+            let users = [];
+            try {
+                const usersRes = await fetch(`${API_URL}/api/users`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (usersRes.ok) {
+                    users = await usersRes.json();
+                    users = Array.isArray(users) ? users : [];
+                    console.log("✅ Users loaded:", users.length);
+                    document.getElementById('totalUsers').textContent = users.length;
+                }
+            } catch (e) {
+                console.error("Users fetch error:", e);
             }
 
-            let html = `<div class="table-responsive"> 能 <thead> 百 <th>User ID</th> <th>Name</th> <th>Email</th> <th>Role</th> <th>Joined</th> 貌 </thead> <tbody>`;
-            
-            users.slice(0, 15).forEach(user => {
-                const userId = user._id ? user._id.slice(-8) : 'N/A';
-                const name = user.name || 'N/A';
-                const email = user.email || 'N/A';
-                const role = user.role || 'user';
-                const date = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A';
-                
-                html += `
-                    <tr>
-                        <td>${userId}</td>
-                        <td>${name}</td>
-                        <td>${email}</td>
-                        <td>${role}</td>
-                        <td>${date}</td>
-                    </tr>
-                `;
-            });
-            html += `</tbody> </table> </div>`;
-            container.innerHTML = html;
-        }
-        // ============================================
-// PRODUCT MANAGEMENT FUNCTIONS
-// ============================================
+            // Display tables
+            displayOrders(orders);
+            displayRentals(rentals);
+            displayUsers(users);
+            displayProductsTable();
 
-// Display Products Table
-async function displayProductsTable() {
-    const container = document.getElementById('productsTable');
-    
-    try {
-        const productsRes = await fetch(`${API_URL}/api/products`);
-        const products = await productsRes.json();
-        allAdminProducts=products;
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+            errorDisplay.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle"></i> Error: ${error.message}</div>`;
+        }
+    }
+
+    function displayOrders(orders) {
+        const container = document.getElementById('ordersList');
+        if (!orders || orders.length === 0) {
+            container.innerHTML = '<p>No orders found</p>';
+            return;
+        }
+
+        let html = `<div class="table-responsive"> 能 <thead> 百 <th>Order ID</th> <th>User</th> <th>Amount</th> <th>Status</th> <th>Date</th> 貌 </thead> <tbody>`;
+        orders.slice(0, 15).forEach(order => {
+            html += `
+                <tr>
+                    <td>${order._id?.slice(-8) || 'N/A'} 78
+                    <td>${order.user?.email || order.userId?.slice(-8) || 'N/A'} 78
+                    <td>₹${order.totalAmount || 0} 78
+                    <td><span class="status-${order.paymentStatus || 'pending'}">${order.paymentStatus || 'pending'}</span> 78
+                    <td>${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'} 78
+                 `
+        });
+        html += `</tbody>  </div>`;
+        container.innerHTML = html;
+    }
+
+    function displayRentals(rentals) {
+        const container = document.getElementById('rentalsList');
+        if (!rentals || rentals.length === 0) {
+            container.innerHTML = '<p>No active rentals</p>';
+            return;
+        }
+
+        let html = `<div class="table-responsive"> 能 <thead> 百 <th>Product</th> <th>Days</th> <th>Total</th> <th>User ID</th> <th>Date</th> 貌 </thead> <tbody>`;
+        rentals.slice(0, 15).forEach(rental => {
+            html += `
+                <tr>
+                    <td>${rental.productName || 'Product'} 78
+                    <td>${rental.days || 0} 78
+                    <td>₹${rental.totalPrice || 0} 78
+                    <td>${rental.userId?.slice(-8) || 'N/A'} 78
+                    <td>${rental.createdAt ? new Date(rental.createdAt).toLocaleDateString() : 'N/A'} 78
+                 `
+        });
+        html += `</tbody>  </div>`;
+        container.innerHTML = html;
+    }
+
+    function displayUsers(users) {
+        const container = document.getElementById('usersList');
+        if (!users || users.length === 0) {
+            container.innerHTML = '<p>No users found</p>';
+            return;
+        }
+
+        let html = `<div class="table-responsive"> 能 <thead> 百 <th>User ID</th> <th>Name</th> <th>Email</th> <th>Role</th> <th>Joined</th> 貌 </thead> <tbody>`;
+        users.slice(0, 15).forEach(user => {
+            html += `
+                <tr>
+                    <td>${user._id?.slice(-8) || 'N/A'} 78
+                    <td>${user.name || 'N/A'} 78
+                    <td>${user.email || 'N/A'} 78
+                    <td>${user.role || 'user'} 78
+                    <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'} 78
+                 `
+        });
+        html += `</tbody>  </div>`;
+        container.innerHTML = html;
+    }
+
+    // ========== PRODUCT MANAGEMENT FUNCTIONS ==========
+    function displayProductsTable() {
+        displayAdminProducts(allAdminProducts);
+    }
+
+    function displayAdminProducts(products) {
+        const container = document.getElementById('productsTable');
         
         if (!products || products.length === 0) {
             container.innerHTML = '<p>No products found</p>';
             return;
         }
 
-        let html = `<div class="table-responsive"> <table> <thead> <tr> <th>Image</th> <th>Name</th> <th>Category</th> <th>Rent/Day</th> <th>Deposit</th> <th>Actions</th> </tr> </thead> <tbody>`;
+        let html = `<div class="table-responsive"> 能 <thead> 百 <th>Image</th> <th>Name</th> <th>Category</th> <th>Rent/Day</th> <th>Deposit</th> <th>Actions</th> 貌 </thead> <tbody>`;
         
         products.forEach(product => {
             html += `
                 <tr>
-                    <td><img src="${product.image || 'https://via.placeholder.com/50'}" class="product-image-preview" onerror="this.src='https://via.placeholder.com/50'"></td>
-                    <td>${product.name}</td>
-                    <td>${product.category || 'General'}</td>
-                    <td>₹${product.rent}</td>
-                    <td>₹${product.deposit || 0}</td>
+                    <td><img src="${product.image || 'https://via.placeholder.com/50'}" class="product-image-preview" style="width:50px;height:50px;object-fit:cover;border-radius:8px;" onerror="this.src='https://via.placeholder.com/50'"> 78
+                    <td>${product.name} 78
+                    <td>${product.category || 'General'} 78
+                    <td>₹${product.rent} 78
+                    <td>₹${product.deposit || 0} 78
                     <td>
-                        <button class="btn-edit" onclick="editProduct('${product._id}')">Edit</button>
-                        <button class="btn-delete" onclick="deleteProduct('${product._id}')">Delete</button>
-                    </td>
-                </tr>
-            `;
+                        <button class="btn-edit" onclick="editProduct('${product._id}')" style="background:#f59e0b;color:white;border:none;padding:4px 8px;border-radius:6px;margin-right:5px;cursor:pointer;">Edit</button>
+                        <button class="btn-delete" onclick="deleteProduct('${product._id}')" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">Delete</button>
+                     ︎
+                 `
         });
-        
-        html += `</tbody> </table> </div>`;
+        html += `</tbody>  </div>`;
         container.innerHTML = html;
-        
-    } catch (error) {
-        console.error('Error loading products:', error);
-        container.innerHTML = '<p>Error loading products</p>';
     }
-}
 
-// Add Product
-async function addProduct() {
-    const name = document.getElementById('productName').value.trim();
-    const category = document.getElementById('productCategory').value.trim();
-    const rent = document.getElementById('productRent').value;
-    const deposit = document.getElementById('productDeposit').value;
-    const image = document.getElementById('productImage').value.trim();
-    
-    if (!name || !rent) {
-        alert('Please fill Product Name and Rent');
-        return;
-    }
-    
-    const token = localStorage.getItem('token');
-    
-    try {
-        const response = await fetch(`${API_URL}/api/products`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({
-                name,
-                category: category || 'General',
-                rent: parseInt(rent),
-                deposit: parseInt(deposit) || 0,
-                image: image || 'https://via.placeholder.com/300'
-            })
-        });
+    async function addProduct() {
+        const name = document.getElementById('productName').value.trim();
+        const category = document.getElementById('productCategory').value.trim();
+        const rent = document.getElementById('productRent').value;
+        const deposit = document.getElementById('productDeposit').value;
+        const image = document.getElementById('productImage').value.trim();
         
-        if (response.ok) {
-            alert('Product added successfully!');
-            // Clear form
-            document.getElementById('productName').value = '';
-            document.getElementById('productCategory').value = '';
-            document.getElementById('productRent').value = '';
-            document.getElementById('productDeposit').value = '';
-            document.getElementById('productImage').value = '';
-            // Refresh tables
-            displayProductsTable();
-            loadDashboard(); // Refresh stats
-        } else {
-            const error = await response.json();
-            alert('Error: ' + (error.message || 'Failed to add product'));
+        if (!name || !rent) {
+            alert('Please fill Product Name and Rent');
+            return;
         }
-    } catch (error) {
-        console.error('Error adding product:', error);
-        alert('Error adding product');
-    }
-}
-
-// Delete Product
-async function deleteProduct(productId) {
-    if (!confirm('Are you sure you want to delete this product?')) return;
-    
-    const token = localStorage.getItem('token');
-    
-    try {
-        const response = await fetch(`${API_URL}/api/products/${productId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + token
+        
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`${API_URL}/api/products`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    name,
+                    category: category || 'General',
+                    rent: parseInt(rent),
+                    deposit: parseInt(deposit) || 0,
+                    image: image || 'https://via.placeholder.com/300'
+                })
+            });
+            
+            if (response.ok) {
+                alert('Product added successfully!');
+                document.getElementById('productName').value = '';
+                document.getElementById('productCategory').value = '';
+                document.getElementById('productRent').value = '';
+                document.getElementById('productDeposit').value = '';
+                document.getElementById('productImage').value = '';
+                loadDashboard();
+            } else {
+                alert('Failed to add product');
             }
-        });
-        
-        if (response.ok) {
-            alert('Product deleted successfully');
-            displayProductsTable();
-            loadDashboard(); // Refresh stats
-        } else {
-            alert('Failed to delete product');
+        } catch (error) {
+            console.error('Error adding product:', error);
+            alert('Error adding product');
         }
-    } catch (error) {
-        console.error('Error deleting product:', error);
-        alert('Error deleting product');
     }
-}
 
-// Edit Product
-async function editProduct(productId) {
-    // First get current product details
-    const productsRes = await fetch(`${API_URL}/api/products`);
-    const products = await productsRes.json();
-    const product = products.find(p => p._id === productId);
-    
-    if (!product) return;
-    
-    const newName = prompt('Enter new product name:', product.name);
-    if (!newName) return;
-    
-    const newRent = prompt('Enter new rent per day:', product.rent);
-    if (!newRent) return;
-    
-    const token = localStorage.getItem('token');
-    
-    try {
-        const response = await fetch(`${API_URL}/api/products/${productId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({
-                ...product,
-                name: newName,
-                rent: parseInt(newRent)
-            })
-        });
+    async function deleteProduct(productId) {
+        if (!confirm('Are you sure you want to delete this product?')) return;
         
-        if (response.ok) {
-            alert('Product updated successfully');
-            displayProductsTable();
-            loadDashboard();
-        } else {
-            alert('Failed to update product');
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`${API_URL}/api/products/${productId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            
+            if (response.ok) {
+                alert('Product deleted successfully');
+                loadDashboard();
+            } else {
+                alert('Failed to delete product');
+            }
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            alert('Error deleting product');
         }
-    } catch (error) {
-        console.error('Error updating product:', error);
-        alert('Error updating product');
     }
-}
-// Store all products for search
-let allAdminProducts = [];
 
-// Update displayProductsTable to store products
-async function displayProductsTable() {
-    const container = document.getElementById('productsTable');
-    
-    try {
-        const productsRes = await fetch(`${API_URL}/api/products`);
-        const products = await productsRes.json();
-        allAdminProducts = products; // Store for search
+    async function editProduct(productId) {
+        const product = allAdminProducts.find(p => p._id === productId);
+        if (!product) return;
         
-        // ... rest of your existing displayProductsTable code
-    }
-}
-
-// Search function for admin
-function filterAdminProducts() {
-    const searchTerm = document.getElementById('adminSearchInput').value.toLowerCase().trim();
-    const clearBtn = document.querySelector('.admin-clear-search');
-    const countDiv = document.getElementById('adminSearchCount');
-    
-    if (searchTerm === '') {
-        clearBtn.classList.remove('show');
-        displayAdminProducts(allAdminProducts);
-        countDiv.innerHTML = '';
-        return;
-    }
-    
-    clearBtn.classList.add('show');
-    
-    const filtered = allAdminProducts.filter(product => 
-        product.name.toLowerCase().includes(searchTerm) ||
-        (product.category && product.category.toLowerCase().includes(searchTerm))
-    );
-    
-    displayAdminProducts(filtered);
-    
-    countDiv.innerHTML = `Found ${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
-}
-
-// Display filtered products
-function displayAdminProducts(products) {
-    const container = document.getElementById('productsTable');
-    
-    if (!products || products.length === 0) {
-        container.innerHTML = '<p>No products found</p>';
-        return;
+        const newName = prompt('Enter new product name:', product.name);
+        if (!newName) return;
+        
+        const newRent = prompt('Enter new rent per day:', product.rent);
+        if (!newRent) return;
+        
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`${API_URL}/api/products/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ ...product, name: newName, rent: parseInt(newRent) })
+            });
+            
+            if (response.ok) {
+                alert('Product updated successfully');
+                loadDashboard();
+            } else {
+                alert('Failed to update product');
+            }
+        } catch (error) {
+            console.error('Error updating product:', error);
+            alert('Error updating product');
+        }
     }
 
-    let html = `<div class="table-responsive"> 能 <thead> 百 <th>Image</th> <th>Name</th> <th>Category</th> <th>Rent/Day</th> <th>Deposit</th> <th>Actions</th> 貌 </thead> <tbody>`;
-    
-    products.forEach(product => {
-        html += `
-            <tr>
-                <td><img src="${product.image || 'https://via.placeholder.com/50'}" class="product-image-preview" onerror="this.src='https://via.placeholder.com/50'"> 78
-                <td>${product.name} 78
-                <td>${product.category || 'General'} 78
-                <td>₹${product.rent} 78
-                <td>₹${product.deposit || 0} 78
-                <td>
-                    <button class="btn-edit" onclick="editProduct('${product._id}')">Edit</button>
-                    <button class="btn-delete" onclick="deleteProduct('${product._id}')">Delete</button>
-                 ︎
-             `
-    });
-    
-    html += `</tbody>  </div>`;
-    container.innerHTML = html;
-}
+    // Search functions
+    function filterAdminProducts() {
+        const searchTerm = document.getElementById('adminSearchInput').value.toLowerCase().trim();
+        const clearBtn = document.querySelector('.admin-clear-search');
+        const countDiv = document.getElementById('adminSearchCount');
+        
+        if (searchTerm === '') {
+            clearBtn?.classList.remove('show');
+            displayAdminProducts(allAdminProducts);
+            if (countDiv) countDiv.innerHTML = '';
+            return;
+        }
+        
+        if (clearBtn) clearBtn.classList.add('show');
+        
+        const filtered = allAdminProducts.filter(product => 
+            product.name.toLowerCase().includes(searchTerm) ||
+            (product.category && product.category.toLowerCase().includes(searchTerm))
+        );
+        
+        displayAdminProducts(filtered);
+        if (countDiv) countDiv.innerHTML = `Found ${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
+    }
 
-// Clear search
-function clearAdminSearch() {
-    document.getElementById('adminSearchInput').value = '';
-    filterAdminProducts();
-}
+    function clearAdminSearch() {
+        const input = document.getElementById('adminSearchInput');
+        if (input) input.value = '';
+        filterAdminProducts();
+    }
 
-        // Load dashboard
-        loadDashboard();
-        displayProductsTable();
-    </script>
+    // Load dashboard
+    loadDashboard();
+</script>
 </body>
 </html>

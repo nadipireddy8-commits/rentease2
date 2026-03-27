@@ -607,45 +607,70 @@ body {
 
   <script>
     // ============================================
-// RENTEASE PRODUCTS PAGE - COMPLETE SCRIPT
-// ============================================
+    // RENTEASE PRODUCTS PAGE - COMPLETE SCRIPT
+    // ============================================
 
-// Live backend URL
-const API_URL = "https://rentease3-backend.onrender.com";
+    // Live backend URL
+    const API_URL = "https://rentease3-backend.onrender.com";
+    let allProducts = []; // Store all products for search
 
-// ============================================
-// LOAD PRODUCTS FUNCTION
-// ============================================
-async function loadProducts() {
-    try {
-        const container = document.getElementById("products");
-        if (!container) return;
-        
-        container.innerHTML = `
-            <div class="loading-state">
-                <div class="loading-spinner"></div>
-                <p>Loading amazing products...</p>
-            </div>
-        `;
-
-        const response = await fetch(`${API_URL}/api/products`);
-        const products = await response.json();
-
-        allProducts=products;
-
-        console.log("Products loaded:", products);
-
-        container.innerHTML = "";
-
-        if (!products || products.length === 0) {
+    // ============================================
+    // LOAD PRODUCTS FUNCTION
+    // ============================================
+    async function loadProducts() {
+        try {
+            const container = document.getElementById("products");
+            if (!container) return;
+            
             container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-box-open"></i>
-                    <h3>No products available</h3>
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading amazing products...</p>
                 </div>
             `;
-            return;
+
+            const response = await fetch(`${API_URL}/api/products`);
+            const products = await response.json();
+
+            allProducts = products; // Store for search
+
+            console.log("Products loaded:", products.length);
+
+            container.innerHTML = "";
+
+            if (!products || products.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No products available</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            displayProducts(products);
+
+        } catch (error) {
+            console.error("Error loading products:", error);
+            const container = document.getElementById("products");
+            if (container) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Failed to load products. Please try again.</h3>
+                        <button onclick="loadProducts()" class="retry-btn">Try Again</button>
+                    </div>
+                `;
+            }
         }
+    }
+
+    // ============================================
+    // DISPLAY PRODUCTS FUNCTION
+    // ============================================
+    function displayProducts(products) {
+        const container = document.getElementById("products");
+        container.innerHTML = "";
 
         products.forEach(product => {
             const productCard = document.createElement('div');
@@ -684,111 +709,145 @@ async function loadProducts() {
 
             container.appendChild(productCard);
         });
+    }
 
-    } catch (error) {
-        console.error("Error loading products:", error);
-        const container = document.getElementById("products");
-        if (container) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <h3>Failed to load products. Please try again.</h3>
-                    <button onclick="loadProducts()" class="retry-btn">Try Again</button>
-                </div>
-            `;
+    // ============================================
+    // SEARCH FUNCTIONS
+    // ============================================
+    function filterProducts() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        const clearBtn = document.querySelector('.clear-search');
+        
+        if (searchTerm === '') {
+            if (clearBtn) clearBtn.classList.remove('show');
+            displayProducts(allProducts);
+            document.getElementById('searchResultsCount').innerHTML = '';
+            return;
+        }
+        
+        if (clearBtn) clearBtn.classList.add('show');
+        
+        const filtered = allProducts.filter(product => 
+            product.name.toLowerCase().includes(searchTerm) ||
+            (product.category && product.category.toLowerCase().includes(searchTerm))
+        );
+        
+        displayProducts(filtered);
+        
+        const count = filtered.length;
+        document.getElementById('searchResultsCount').innerHTML = `Found ${count} product${count !== 1 ? 's' : ''}`;
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        filterProducts();
+    }
+
+    // ============================================
+    // RENT NOW FUNCTION
+    // ============================================
+    function rentNow(productId) {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
+        if (!token || !userId) {
+            alert("Please login first");
+            window.location.href = "login.html";
+            return;
+        }
+
+        fetch(`${API_URL}/api/products`)
+            .then(res => res.json())
+            .then(products => {
+                const product = products.find(p => p._id === productId);
+
+                if (product) {
+                    const days = prompt("Enter number of days to rent:", "3");
+
+                    if (days && !isNaN(days) && days > 0) {
+                        const totalPrice = product.rent * parseInt(days);
+
+                        const rental = {
+                            productId: product._id,
+                            productName: product.name,
+                            productImage: product.image,
+                            pricePerDay: product.rent,
+                            days: parseInt(days),
+                            totalPrice: totalPrice,
+                            userId: userId
+                        };
+
+                        localStorage.setItem("checkoutItem", JSON.stringify(rental));
+                        window.location.href = "checkout.html";
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching product:", err);
+                alert("Error processing request");
+            });
+    }
+
+    // ============================================
+    // MOBILE MENU FUNCTIONALITY
+    // ============================================
+    function toggleMobileMenu() {
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (!menuBtn || !navLinks) return;
+
+        menuBtn.classList.toggle('active');
+        navLinks.classList.toggle('active');
+
+        const spans = menuBtn.querySelectorAll('span');
+        if (menuBtn.classList.contains('active')) {
+            spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+            spans[1].style.opacity = '0';
+            spans[2].style.transform = 'rotate(-45deg) translate(7px, -7px)';
+            document.body.style.overflow = 'hidden';
+        } else {
+            spans[0].style.transform = 'none';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'none';
+            document.body.style.overflow = '';
         }
     }
-}
 
-// ============================================
-// RENT NOW FUNCTION
-// ============================================
-function rentNow(productId) {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+    // ============================================
+    // INITIALIZE MOBILE MENU
+    // ============================================
+    function initMobileMenu() {
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        if (!menuBtn) return;
 
-    if (!token || !userId) {
-        alert("Please login first");
-        window.location.href = "login.html";
-        return;
-    }
+        menuBtn.addEventListener('click', toggleMobileMenu);
 
-    fetch(`${API_URL}/api/products`)
-        .then(res => res.json())
-        .then(products => {
-            const product = products.find(p => p._id === productId);
-
-            if (product) {
-                const days = prompt("Enter number of days to rent:", "3");
-
-                if (days && !isNaN(days) && days > 0) {
-                    const totalPrice = product.rent * parseInt(days);
-
-                    const rental = {
-                        productId: product._id,
-                        productName: product.name,
-                        productImage: product.image,
-                        pricePerDay: product.rent,
-                        days: parseInt(days),
-                        totalPrice: totalPrice,
-                        userId: userId
-                    };
-
-                    localStorage.setItem("checkoutItem", JSON.stringify(rental));
-                    window.location.href = "checkout.html";
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const navLinksContainer = document.querySelector('.nav-links');
+                if (navLinksContainer?.classList.contains('active')) {
+                    menuBtn.classList.remove('active');
+                    navLinksContainer.classList.remove('active');
+                    
+                    const spans = menuBtn.querySelectorAll('span');
+                    spans[0].style.transform = 'none';
+                    spans[1].style.opacity = '1';
+                    spans[2].style.transform = 'none';
+                    
+                    document.body.style.overflow = '';
                 }
-            }
-        })
-        .catch(err => {
-            console.error("Error fetching product:", err);
-            alert("Error processing request");
+            });
         });
-}
 
-// ============================================
-// MOBILE MENU FUNCTIONALITY
-// ============================================
-function toggleMobileMenu() {
-    const menuBtn = document.querySelector('.mobile-menu-btn');
-    const navLinks = document.querySelector('.nav-links');
-    
-    if (!menuBtn || !navLinks) return;
-
-    menuBtn.classList.toggle('active');
-    navLinks.classList.toggle('active');
-
-    // Animate hamburger to X
-    const spans = menuBtn.querySelectorAll('span');
-    if (menuBtn.classList.contains('active')) {
-        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-        spans[1].style.opacity = '0';
-        spans[2].style.transform = 'rotate(-45deg) translate(7px, -7px)';
-        document.body.style.overflow = 'hidden';
-    } else {
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
-        document.body.style.overflow = '';
-    }
-}
-
-// ============================================
-// INITIALIZE MOBILE MENU
-// ============================================
-function initMobileMenu() {
-    const menuBtn = document.querySelector('.mobile-menu-btn');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    if (!menuBtn) return;
-
-    // Add click listener to menu button
-    menuBtn.addEventListener('click', toggleMobileMenu);
-
-    // Close menu when clicking on a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        document.addEventListener('click', function(e) {
             const navLinksContainer = document.querySelector('.nav-links');
-            if (navLinksContainer?.classList.contains('active')) {
+            
+            if (!navLinksContainer?.classList.contains('active')) return;
+            
+            if (!e.target.closest('.nav-links') && !e.target.closest('.mobile-menu-btn')) {
                 menuBtn.classList.remove('active');
                 navLinksContainer.classList.remove('active');
                 
@@ -800,105 +859,32 @@ function initMobileMenu() {
                 document.body.style.overflow = '';
             }
         });
-    });
 
-    // Close menu when clicking outside
-    document.addEventListener('click', function(e) {
-        const navLinksContainer = document.querySelector('.nav-links');
-        
-        if (!navLinksContainer?.classList.contains('active')) return;
-        
-        if (!e.target.closest('.nav-links') && !e.target.closest('.mobile-menu-btn')) {
-            menuBtn.classList.remove('active');
-            navLinksContainer.classList.remove('active');
+        window.addEventListener('resize', function() {
+            const navLinksContainer = document.querySelector('.nav-links');
             
-            const spans = menuBtn.querySelectorAll('span');
-            spans[0].style.transform = 'none';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'none';
-            
-            document.body.style.overflow = '';
-        }
-    });
-
-    // Handle window resize
-    window.addEventListener('resize', function() {
-        const navLinksContainer = document.querySelector('.nav-links');
-        
-        if (window.innerWidth > 768 && navLinksContainer?.classList.contains('active')) {
-            menuBtn.classList.remove('active');
-            navLinksContainer.classList.remove('active');
-            
-            const spans = menuBtn.querySelectorAll('span');
-            spans[0].style.transform = 'none';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'none';
-            
-            document.body.style.overflow = '';
-        }
-    });
-}
-
-// ============================================
-// PAGE INITIALIZATION
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    loadProducts();
-    initMobileMenu();
-    console.log('✅ Products page initialized');
-});
-let allProducts = [];
-
-// Store products when loaded
-async function loadProducts() {
-    // ... your existing loadProducts code ...
-    // After getting products, store them:
-    allProducts = products;
-}
-
-function filterProducts() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    const clearBtn = document.querySelector('.clear-search');
-    
-    if (searchTerm === '') {
-        clearBtn.classList.remove('show');
-        displayFilteredProducts(allProducts);
-        document.getElementById('searchResultsCount').innerHTML = '';
-        return;
+            if (window.innerWidth > 768 && navLinksContainer?.classList.contains('active')) {
+                menuBtn.classList.remove('active');
+                navLinksContainer.classList.remove('active');
+                
+                const spans = menuBtn.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+                
+                document.body.style.overflow = '';
+            }
+        });
     }
-    
-    clearBtn.classList.add('show');
-    
-    const filtered = allProducts.filter(product => 
-        product.name.toLowerCase().includes(searchTerm) ||
-        (product.category && product.category.toLowerCase().includes(searchTerm))
-    );
-    
-    displayFilteredProducts(filtered);
-    
-    const count = filtered.length;
-    document.getElementById('searchResultsCount').innerHTML = `Found ${count} product${count !== 1 ? 's' : ''}`;
-}
 
-function displayFilteredProducts(products) {
-    const container = document.getElementById('products');
-    container.innerHTML = '';
-    
-    if (products.length === 0) {
-        container.innerHTML = '<div class="empty-state"><h3>No products found</h3></div>';
-        return;
-    }
-    
-    products.forEach(product => {
-        // Your existing product card creation code here
-        // (copy the same code from your loadProducts function)
+    // ============================================
+    // PAGE INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        loadProducts();
+        initMobileMenu();
+        console.log('✅ Products page initialized');
     });
-}
-
-function clearSearch() {
-    document.getElementById('searchInput').value = '';
-    filterProducts();
-}
-  </script>
+</script>
 </body>
 </html>
