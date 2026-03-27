@@ -407,101 +407,73 @@
 </body>
 <script>
     const API_URL = "https://rentease3-backend.onrender.com";
-    let allAdminProducts = []; // Store all products for search
+    let allAdminProducts = [];
 
     async function loadDashboard() {
         const token = localStorage.getItem('token');
         const errorDisplay = document.getElementById('errorDisplay');
         
         if (!token) {
-            errorDisplay.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Please login first. <a href="login.html" style="color:#dc2626;">Go to Login</a></div>';
-            document.getElementById('ordersList').innerHTML = '<p>Please login to view dashboard</p>';
-            document.getElementById('rentalsList').innerHTML = '<p>Please login to view dashboard</p>';
-            document.getElementById('usersList').innerHTML = '<p>Please login to view dashboard</p>';
+            errorDisplay.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-circle"></i> Please login first. <a href="login.html">Go to Login</a></div>';
             return;
         }
 
         try {
             errorDisplay.innerHTML = '';
 
-            // ========== FETCH PRODUCTS ==========
+            // Fetch Products
             let products = [];
-            try {
-                const productsRes = await fetch(`${API_URL}/api/products`);
-                if (productsRes.ok) {
-                    products = await productsRes.json();
-                    products = Array.isArray(products) ? products : [];
-                    allAdminProducts = products; // Store for search
-                    console.log("✅ Products loaded:", products.length);
-                }
-            } catch (e) {
-                console.error("Products fetch error:", e);
+            const productsRes = await fetch(`${API_URL}/api/products`);
+            if (productsRes.ok) {
+                products = await productsRes.json();
+                allAdminProducts = Array.isArray(products) ? products : [];
+                document.getElementById('totalProducts').textContent = allAdminProducts.length;
+                displayProductsTable();
             }
-            document.getElementById('totalProducts').textContent = products.length;
 
-            // ========== FETCH RENTALS ==========
+            // Fetch Rentals
             let rentals = [];
-            try {
-                const rentalsRes = await fetch(`${API_URL}/api/rentals/all`);
-                if (rentalsRes.ok) {
-                    rentals = await rentalsRes.json();
-                    rentals = Array.isArray(rentals) ? rentals : [];
-                    console.log("✅ Rentals loaded:", rentals.length);
-                    document.getElementById('totalRentals').textContent = rentals.length;
-                } else {
-                    console.log("Rentals API error:", rentalsRes.status);
-                }
-            } catch (e) {
-                console.error("Rentals fetch error:", e);
+            const rentalsRes = await fetch(`${API_URL}/api/rentals/all`);
+            if (rentalsRes.ok) {
+                rentals = await rentalsRes.json();
+                rentals = Array.isArray(rentals) ? rentals : [];
+                document.getElementById('totalRentals').textContent = rentals.length;
+                displayRentals(rentals);
             }
 
-            // ========== FETCH ORDERS ==========
+            // Fetch Orders
             let orders = [];
-            try {
-                const ordersRes = await fetch(`${API_URL}/api/orders`, {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                if (ordersRes.ok) {
-                    orders = await ordersRes.json();
-                    orders = Array.isArray(orders) ? orders : [];
-                    console.log("✅ Orders loaded:", orders.length);
-                    document.getElementById('totalOrders').textContent = orders.length;
-                    
-                    const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
-                    document.getElementById('totalRevenue').textContent = '₹' + totalRevenue.toLocaleString();
-                }
-            } catch (e) {
-                console.error("Orders fetch error:", e);
+            const ordersRes = await fetch(`${API_URL}/api/orders`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (ordersRes.ok) {
+                orders = await ordersRes.json();
+                orders = Array.isArray(orders) ? orders : [];
+                document.getElementById('totalOrders').textContent = orders.length;
+                const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+                document.getElementById('totalRevenue').textContent = '₹' + totalRevenue.toLocaleString();
+                displayOrders(orders);
             }
 
-            // ========== FETCH USERS ==========
+            // Fetch Users
             let users = [];
-            try {
-                const usersRes = await fetch(`${API_URL}/api/users`, {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                if (usersRes.ok) {
-                    users = await usersRes.json();
-                    users = Array.isArray(users) ? users : [];
-                    console.log("✅ Users loaded:", users.length);
-                    document.getElementById('totalUsers').textContent = users.length;
-                }
-            } catch (e) {
-                console.error("Users fetch error:", e);
+            const usersRes = await fetch(`${API_URL}/api/users`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (usersRes.ok) {
+                users = await usersRes.json();
+                users = Array.isArray(users) ? users : [];
+                document.getElementById('totalUsers').textContent = users.length;
+                displayUsers(users);
             }
-
-            // Display tables
-            displayOrders(orders);
-            displayRentals(rentals);
-            displayUsers(users);
-           
 
         } catch (error) {
-            console.error('Error loading dashboard:', error);
-            errorDisplay.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-circle"></i> Error: ${error.message}</div>`;
+            console.error('Error:', error);
+            errorDisplay.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
         }
     }
 
+    // ========== DISPLAY FUNCTIONS ==========
     function displayOrders(orders) {
         const container = document.getElementById('ordersList');
         if (!orders || orders.length === 0) {
@@ -509,18 +481,34 @@
             return;
         }
 
-        let html = `<div class="table-responsive"> 能 <thead> 百 <th>Order ID</th> <th>User</th> <th>Amount</th> <th>Status</th> <th>Date</th> 貌 </thead> <tbody>`;
+        let html = `
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
         orders.slice(0, 15).forEach(order => {
             html += `
                 <tr>
-                    <td>${order._id?.slice(-8) || 'N/A'} 78
-                    <td>${order.user?.email || order.userId?.slice(-8) || 'N/A'} 78
-                    <td>₹${order.totalAmount || 0} 78
-                    <td><span class="status-${order.paymentStatus || 'pending'}">${order.paymentStatus || 'pending'}</span> 78
-                    <td>${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'} 78
-                 `
+                    <td>${order._id?.slice(-8) || 'N/A'}</td>
+                    <td>${order.user?.email || order.userId?.slice(-8) || 'N/A'}</td>
+                    <td>₹${order.totalAmount || 0}</td>
+                    <td><span class="status-${order.paymentStatus || 'pending'}">${order.paymentStatus || 'pending'}</span></td>
+                    <td>${order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</td>
+                </tr>
+            `;
         });
-        html += `</tbody>  </div>`;
+        
+        html += `</tbody></table></div>`;
         container.innerHTML = html;
     }
 
@@ -531,18 +519,34 @@
             return;
         }
 
-        let html = `<div class="table-responsive"> 能 <thead> 百 <th>Product</th> <th>Days</th> <th>Total</th> <th>User ID</th> <th>Date</th> 貌 </thead> <tbody>`;
+        let html = `
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Days</th>
+                            <th>Total</th>
+                            <th>User ID</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
         rentals.slice(0, 15).forEach(rental => {
             html += `
                 <tr>
-                    <td>${rental.productName || 'Product'} 78
-                    <td>${rental.days || 0} 78
-                    <td>₹${rental.totalPrice || 0} 78
-                    <td>${rental.userId?.slice(-8) || 'N/A'} 78
-                    <td>${rental.createdAt ? new Date(rental.createdAt).toLocaleDateString() : 'N/A'} 78
-                 `
+                    <td>${rental.productName || 'Product'}</td>
+                    <td>${rental.days || 0}</td>
+                    <td>₹${rental.totalPrice || 0}</td>
+                    <td>${rental.userId?.slice(-8) || 'N/A'}</td>
+                    <td>${rental.createdAt ? new Date(rental.createdAt).toLocaleDateString() : 'N/A'}</td>
+                </tr>
+            `;
         });
-        html += `</tbody>  </div>`;
+        
+        html += `</tbody></table></div>`;
         container.innerHTML = html;
     }
 
@@ -553,22 +557,38 @@
             return;
         }
 
-        let html = `<div class="table-responsive"> 能 <thead> 百 <th>User ID</th> <th>Name</th> <th>Email</th> <th>Role</th> <th>Joined</th> 貌 </thead> <tbody>`;
+        let html = `
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
         users.slice(0, 15).forEach(user => {
             html += `
                 <tr>
-                    <td>${user._id?.slice(-8) || 'N/A'} 78
-                    <td>${user.name || 'N/A'} 78
-                    <td>${user.email || 'N/A'} 78
-                    <td>${user.role || 'user'} 78
-                    <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'} 78
-                 `
+                    <td>${user._id?.slice(-8) || 'N/A'}</td>
+                    <td>${user.name || 'N/A'}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${user.role || 'user'}</td>
+                    <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</td>
+                </tr>
+            `;
         });
-        html += `</tbody>  </div>`;
+        
+        html += `</tbody></table></div>`;
         container.innerHTML = html;
     }
 
-    // ========== PRODUCT MANAGEMENT FUNCTIONS ==========
+    // ========== PRODUCT MANAGEMENT ==========
     function displayProductsTable() {
         displayAdminProducts(allAdminProducts);
     }
@@ -581,23 +601,39 @@
             return;
         }
 
-        let html = `<div class="table-responsive"> 能 <thead> 百 <th>Image</th> <th>Name</th> <th>Category</th> <th>Rent/Day</th> <th>Deposit</th> <th>Actions</th> 貌 </thead> <tbody>`;
+        let html = `
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Rent/Day</th>
+                            <th>Deposit</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
         
         products.forEach(product => {
             html += `
                 <tr>
-                    <td><img src="${product.image || 'https://via.placeholder.com/50'}" class="product-image-preview" style="width:50px;height:50px;object-fit:cover;border-radius:8px;" onerror="this.src='https://via.placeholder.com/50'"> 78
-                    <td>${product.name} 78
-                    <td>${product.category || 'General'} 78
-                    <td>₹${product.rent} 78
-                    <td>₹${product.deposit || 0} 78
+                    <td><img src="${product.image || 'https://via.placeholder.com/50'}" class="product-image-preview" onerror="this.src='https://via.placeholder.com/50'"></td>
+                    <td>${product.name}</td>
+                    <td>${product.category || 'General'}</td>
+                    <td>₹${product.rent}</td>
+                    <td>₹${product.deposit || 0}</td>
                     <td>
-                        <button class="btn-edit" onclick="editProduct('${product._id}')" style="background:#f59e0b;color:white;border:none;padding:4px 8px;border-radius:6px;margin-right:5px;cursor:pointer;">Edit</button>
-                        <button class="btn-delete" onclick="deleteProduct('${product._id}')" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;">Delete</button>
-                     ︎
-                 `
+                        <button class="btn-edit" onclick="editProduct('${product._id}')">Edit</button>
+                        <button class="btn-delete" onclick="deleteProduct('${product._id}')">Delete</button>
+                    </td>
+                </tr>
+            `;
         });
-        html += `</tbody>  </div>`;
+        
+        html += `</tbody></table></div>`;
         container.innerHTML = html;
     }
 
@@ -643,13 +679,13 @@
                 alert('Failed to add product');
             }
         } catch (error) {
-            console.error('Error adding product:', error);
+            console.error('Error:', error);
             alert('Error adding product');
         }
     }
 
     async function deleteProduct(productId) {
-        if (!confirm('Are you sure you want to delete this product?')) return;
+        if (!confirm('Delete this product?')) return;
         
         const token = localStorage.getItem('token');
         
@@ -660,13 +696,13 @@
             });
             
             if (response.ok) {
-                alert('Product deleted successfully');
+                alert('Product deleted');
                 loadDashboard();
             } else {
-                alert('Failed to delete product');
+                alert('Failed to delete');
             }
         } catch (error) {
-            console.error('Error deleting product:', error);
+            console.error('Error:', error);
             alert('Error deleting product');
         }
     }
@@ -675,10 +711,10 @@
         const product = allAdminProducts.find(p => p._id === productId);
         if (!product) return;
         
-        const newName = prompt('Enter new product name:', product.name);
+        const newName = prompt('New product name:', product.name);
         if (!newName) return;
         
-        const newRent = prompt('Enter new rent per day:', product.rent);
+        const newRent = prompt('New rent per day:', product.rent);
         if (!newRent) return;
         
         const token = localStorage.getItem('token');
@@ -694,25 +730,25 @@
             });
             
             if (response.ok) {
-                alert('Product updated successfully');
+                alert('Product updated');
                 loadDashboard();
             } else {
-                alert('Failed to update product');
+                alert('Failed to update');
             }
         } catch (error) {
-            console.error('Error updating product:', error);
+            console.error('Error:', error);
             alert('Error updating product');
         }
     }
 
-    // Search functions
+    // ========== SEARCH FUNCTIONS ==========
     function filterAdminProducts() {
         const searchTerm = document.getElementById('adminSearchInput').value.toLowerCase().trim();
         const clearBtn = document.querySelector('.admin-clear-search');
         const countDiv = document.getElementById('adminSearchCount');
         
         if (searchTerm === '') {
-            clearBtn?.classList.remove('show');
+            if (clearBtn) clearBtn.classList.remove('show');
             displayAdminProducts(allAdminProducts);
             if (countDiv) countDiv.innerHTML = '';
             return;
@@ -735,8 +771,51 @@
         filterAdminProducts();
     }
 
+    // Add this CSS for table styling
+    const style = document.createElement('style');
+    style.textContent = `
+        .table-responsive table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-responsive th, .table-responsive td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .table-responsive th {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+        .product-image-preview {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .status-pending { background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 20px; display: inline-block; }
+        .status-paid { background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 20px; display: inline-block; }
+    `;
+    document.head.appendChild(style);
+
     // Load dashboard
-     displayProductsTable();
     loadDashboard();
 </script>
 </body>
