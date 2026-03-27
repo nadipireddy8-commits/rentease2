@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const auth=require("./auth");
 
 // REGISTER
 router.post("/register", async (req, res) => {
@@ -57,6 +58,17 @@ router.post("/login", async (req, res) => {
 
     } catch (err) {
         res.status(500).json({ message: "Server error" });
+    }
+});
+// Add this endpoint to your userRoutes.js
+router.get("/", auth, async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        console.log(`✅ Found ${users.length} users`);
+        res.json(users);
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ message: error.message });
     }
 });
 

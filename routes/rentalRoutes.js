@@ -1,13 +1,11 @@
-
 const express = require("express");
 const router = express.Router();
 const Rental = require("../models/Rental");
 const auth = require("./auth");
 
-// ✅ GET rentals - ONLY for logged-in user
+// ✅ GET rentals for logged-in user (for user page)
 router.get("/", auth, async (req, res) => {
   try {
-    // Get userId from the token, NOT from request body
     const userId = req.user.id;
     const rentals = await Rental.find({ userId: userId });
     console.log(`✅ Found ${rentals.length} rentals for user ${userId}`);
@@ -18,11 +16,21 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// ✅ GET ALL rentals (for admin - NO AUTH)
+router.get("/all", async (req, res) => {
+  try {
+    const rentals = await Rental.find();
+    console.log(`✅ Found ${rentals.length} total rentals`);
+    res.json(rentals);
+  } catch (err) {
+    console.error("Error fetching all rentals:", err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // ✅ CREATE rental
 router.post("/", auth, async (req, res) => {
   try {
-    console.log("Creating rental:", req.body);
-    
     const rental = new Rental({
       productId: req.body.productId,
       productName: req.body.productName,
@@ -30,10 +38,9 @@ router.post("/", auth, async (req, res) => {
       pricePerDay: req.body.pricePerDay,
       days: req.body.days,
       totalPrice: req.body.totalPrice,
-      userId: req.user.id,  // ← Use userId from token, not from body
+      userId: req.user.id,
       address: req.body.address || null
     });
-
     await rental.save();
     res.status(201).json(rental);
   } catch (err) {
@@ -46,16 +53,12 @@ router.post("/", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   try {
     const rental = await Rental.findById(req.params.id);
-    
     if (!rental) {
       return res.status(404).json({ message: "Rental not found" });
     }
-    
-    // Check if user owns this rental
     if (rental.userId !== req.user.id) {
-      return res.status(403).json({ message: "You can only delete your own rentals" });
+      return res.status(403).json({ message: "Unauthorized" });
     }
-    
     await rental.deleteOne();
     res.json({ message: "Rental deleted successfully" });
   } catch (err) {
@@ -73,10 +76,8 @@ router.post("/schedule-return/:rentalId", auth, async (req, res) => {
         if (!rental) {
             return res.status(404).json({ message: "Rental not found" });
         }
-        
-        // Check if user owns this rental
         if (rental.userId !== req.user.id) {
-            return res.status(403).json({ message: "You can only schedule return for your own rentals" });
+            return res.status(403).json({ message: "Unauthorized" });
         }
         
         rental.returnScheduled = returnDate;

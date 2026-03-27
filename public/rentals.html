@@ -537,7 +537,7 @@ async function loadRentals() {
     }
 
     try {
-        const response = await fetch(`${API_URL}/api/rentals?userId=${userId}`, {
+        const response = await fetch(`${API_URL}/api/rentals`, {
             headers: { 'Authorization': 'Bearer ' + token }
         });
 
