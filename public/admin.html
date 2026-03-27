@@ -269,6 +269,60 @@
     object-fit: cover;
     border-radius: 8px;
 }
+/* Admin Search Styles */
+.admin-search {
+    margin-bottom: 1.5rem;
+}
+
+.admin-search-box {
+    position: relative;
+    max-width: 400px;
+}
+
+.admin-search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.admin-search-box input {
+    width: 100%;
+    padding: 10px 40px 10px 45px;
+    border: 2px solid #e5e7eb;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.admin-search-box input:focus {
+    outline: none;
+    border-color: #4158D0;
+    box-shadow: 0 0 0 3px rgba(65, 88, 208, 0.1);
+}
+
+.admin-clear-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    display: none;
+}
+
+.admin-clear-search.show {
+    display: block;
+}
+
+.admin-search-count {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
     </style>
 </head>
 <body>
@@ -313,6 +367,25 @@
 
 <div class="section">
     <h2><i class="fas fa-boxes"></i> Manage Products</h2>
+    <div id="productsTable" class="table-responsive">
+        <div class="loading">Loading products...</div>
+    </div>
+</div>
+<div class="section">
+    <h2><i class="fas fa-boxes"></i> Manage Products</h2>
+    
+    <!-- Add Search Bar Here -->
+    <div class="admin-search">
+        <div class="admin-search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="adminSearchInput" placeholder="Search products by name, category..." onkeyup="filterAdminProducts()">
+            <button onclick="clearAdminSearch()" class="admin-clear-search">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="adminSearchCount" class="admin-search-count"></div>
+    </div>
+    
     <div id="productsTable" class="table-responsive">
         <div class="loading">Loading products...</div>
     </div>
@@ -541,6 +614,7 @@ async function displayProductsTable() {
     try {
         const productsRes = await fetch(`${API_URL}/api/products`);
         const products = await productsRes.json();
+        allAdminProducts=products;
         
         if (!products || products.length === 0) {
             container.innerHTML = '<p>No products found</p>';
@@ -695,6 +769,82 @@ async function editProduct(productId) {
         console.error('Error updating product:', error);
         alert('Error updating product');
     }
+}
+// Store all products for search
+let allAdminProducts = [];
+
+// Update displayProductsTable to store products
+async function displayProductsTable() {
+    const container = document.getElementById('productsTable');
+    
+    try {
+        const productsRes = await fetch(`${API_URL}/api/products`);
+        const products = await productsRes.json();
+        allAdminProducts = products; // Store for search
+        
+        // ... rest of your existing displayProductsTable code
+    }
+}
+
+// Search function for admin
+function filterAdminProducts() {
+    const searchTerm = document.getElementById('adminSearchInput').value.toLowerCase().trim();
+    const clearBtn = document.querySelector('.admin-clear-search');
+    const countDiv = document.getElementById('adminSearchCount');
+    
+    if (searchTerm === '') {
+        clearBtn.classList.remove('show');
+        displayAdminProducts(allAdminProducts);
+        countDiv.innerHTML = '';
+        return;
+    }
+    
+    clearBtn.classList.add('show');
+    
+    const filtered = allAdminProducts.filter(product => 
+        product.name.toLowerCase().includes(searchTerm) ||
+        (product.category && product.category.toLowerCase().includes(searchTerm))
+    );
+    
+    displayAdminProducts(filtered);
+    
+    countDiv.innerHTML = `Found ${filtered.length} product${filtered.length !== 1 ? 's' : ''}`;
+}
+
+// Display filtered products
+function displayAdminProducts(products) {
+    const container = document.getElementById('productsTable');
+    
+    if (!products || products.length === 0) {
+        container.innerHTML = '<p>No products found</p>';
+        return;
+    }
+
+    let html = `<div class="table-responsive"> 能 <thead> 百 <th>Image</th> <th>Name</th> <th>Category</th> <th>Rent/Day</th> <th>Deposit</th> <th>Actions</th> 貌 </thead> <tbody>`;
+    
+    products.forEach(product => {
+        html += `
+            <tr>
+                <td><img src="${product.image || 'https://via.placeholder.com/50'}" class="product-image-preview" onerror="this.src='https://via.placeholder.com/50'"> 78
+                <td>${product.name} 78
+                <td>${product.category || 'General'} 78
+                <td>₹${product.rent} 78
+                <td>₹${product.deposit || 0} 78
+                <td>
+                    <button class="btn-edit" onclick="editProduct('${product._id}')">Edit</button>
+                    <button class="btn-delete" onclick="deleteProduct('${product._id}')">Delete</button>
+                 ︎
+             `
+    });
+    
+    html += `</tbody>  </div>`;
+    container.innerHTML = html;
+}
+
+// Clear search
+function clearAdminSearch() {
+    document.getElementById('adminSearchInput').value = '';
+    filterAdminProducts();
 }
 
         // Load dashboard

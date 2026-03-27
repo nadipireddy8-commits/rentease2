@@ -502,6 +502,63 @@ body {
 .product-card:nth-child(4) { animation-delay: 0.4s; }
 .product-card:nth-child(5) { animation-delay: 0.5s; }
 .product-card:nth-child(6) { animation-delay: 0.6s; }
+.search-container {
+    max-width: 1400px;
+    margin: 1rem auto;
+    padding: 0 2rem;
+}
+
+.search-box {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 40px 12px 45px;
+    border: 2px solid #e5e7eb;
+    border-radius: 50px;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #4158D0;
+    box-shadow: 0 0 0 3px rgba(65, 88, 208, 0.1);
+}
+
+.clear-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    display: none;
+}
+
+.clear-search.show {
+    display: block;
+}
+
+.search-count {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
 </style>
   
 </head>
@@ -533,6 +590,17 @@ body {
     <h1>Available Products</h1>
     <p>Choose from our wide range of furniture and appliances</p>
   </div>
+  <!-- Search Bar -->
+<div class="search-container">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search products by name, category..." onkeyup="filterProducts()">
+        <button onclick="clearSearch()" class="clear-search">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div id="searchResultsCount" class="search-count"></div>
+</div>
 
   <!-- Products Grid -->
   <div class="products-grid" id="products"></div>
@@ -562,6 +630,8 @@ async function loadProducts() {
 
         const response = await fetch(`${API_URL}/api/products`);
         const products = await response.json();
+
+        allProducts=products;
 
         console.log("Products loaded:", products);
 
@@ -777,6 +847,58 @@ document.addEventListener('DOMContentLoaded', function() {
     initMobileMenu();
     console.log('✅ Products page initialized');
 });
+let allProducts = [];
+
+// Store products when loaded
+async function loadProducts() {
+    // ... your existing loadProducts code ...
+    // After getting products, store them:
+    allProducts = products;
+}
+
+function filterProducts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const clearBtn = document.querySelector('.clear-search');
+    
+    if (searchTerm === '') {
+        clearBtn.classList.remove('show');
+        displayFilteredProducts(allProducts);
+        document.getElementById('searchResultsCount').innerHTML = '';
+        return;
+    }
+    
+    clearBtn.classList.add('show');
+    
+    const filtered = allProducts.filter(product => 
+        product.name.toLowerCase().includes(searchTerm) ||
+        (product.category && product.category.toLowerCase().includes(searchTerm))
+    );
+    
+    displayFilteredProducts(filtered);
+    
+    const count = filtered.length;
+    document.getElementById('searchResultsCount').innerHTML = `Found ${count} product${count !== 1 ? 's' : ''}`;
+}
+
+function displayFilteredProducts(products) {
+    const container = document.getElementById('products');
+    container.innerHTML = '';
+    
+    if (products.length === 0) {
+        container.innerHTML = '<div class="empty-state"><h3>No products found</h3></div>';
+        return;
+    }
+    
+    products.forEach(product => {
+        // Your existing product card creation code here
+        // (copy the same code from your loadProducts function)
+    });
+}
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    filterProducts();
+}
   </script>
 </body>
 </html>
