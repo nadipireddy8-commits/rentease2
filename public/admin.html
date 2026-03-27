@@ -342,55 +342,53 @@
             <div class="stat-card"><div class="stat-number" id="totalRevenue">₹0</div><div class="stat-label">Total Revenue</div></div>
         </div>
 
+        <!-- Recent Orders Section -->
         <div class="section">
             <h2><i class="fas fa-shopping-cart"></i> Recent Orders</h2>
             <div id="ordersList" class="table-responsive">
                 <div class="loading">Loading orders...</div>
             </div>
         </div>
-        <!-- Add this after Recent Orders section -->
-<div class="section">
-    <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
-    <div class="add-product-form">
-        <div class="form-grid">
-            <input type="text" id="productName" placeholder="Product Name" class="form-input">
-            <input type="text" id="productCategory" placeholder="Category (e.g., Electronics)" class="form-input">
-            <input type="number" id="productRent" placeholder="Rent per day (₹)" class="form-input">
-            <input type="number" id="productDeposit" placeholder="Security Deposit (₹)" class="form-input">
-            <input type="text" id="productImage" placeholder="Image URL" class="form-input">
-        </div>
-        <button onclick="addProduct()" class="btn-add">
-            <i class="fas fa-plus"></i> Add Product
-        </button>
-    </div>
-</div>
 
-<div class="section">
-    <h2><i class="fas fa-boxes"></i> Manage Products</h2>
-    <div id="productsTable" class="table-responsive">
-        <div class="loading">Loading products...</div>
-    </div>
-</div>
-<div class="section">
-    <h2><i class="fas fa-boxes"></i> Manage Products</h2>
-    
-    <!-- Add Search Bar Here -->
-    <div class="admin-search">
-        <div class="admin-search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="adminSearchInput" placeholder="Search products by name, category..." onkeyup="filterAdminProducts()">
-            <button onclick="clearAdminSearch()" class="admin-clear-search">
-                <i class="fas fa-times"></i>
-            </button>
+        <!-- Add New Product Section -->
+        <div class="section">
+            <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
+            <div class="add-product-form">
+                <div class="form-grid">
+                    <input type="text" id="productName" placeholder="Product Name" class="form-input">
+                    <input type="text" id="productCategory" placeholder="Category (e.g., Electronics)" class="form-input">
+                    <input type="number" id="productRent" placeholder="Rent per day (₹)" class="form-input">
+                    <input type="number" id="productDeposit" placeholder="Security Deposit (₹)" class="form-input">
+                    <input type="text" id="productImage" placeholder="Image URL" class="form-input">
+                </div>
+                <button onclick="addProduct()" class="btn-add">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </div>
         </div>
-        <div id="adminSearchCount" class="admin-search-count"></div>
-    </div>
-    
-    <div id="productsTable" class="table-responsive">
-        <div class="loading">Loading products...</div>
-    </div>
-</div>
 
+        <!-- Manage Products Section - ONLY ONE -->
+        <div class="section">
+            <h2><i class="fas fa-boxes"></i> Manage Products</h2>
+            
+            <!-- Search Bar -->
+            <div class="admin-search">
+                <div class="admin-search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="adminSearchInput" placeholder="Search products by name, category..." onkeyup="filterAdminProducts()">
+                    <button onclick="clearAdminSearch()" class="admin-clear-search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="adminSearchCount" class="admin-search-count"></div>
+            </div>
+            
+            <div id="productsTable" class="table-responsive">
+                <div class="loading">Loading products...</div>
+            </div>
+        </div>
+
+        <!-- Active Rentals Section -->
         <div class="section">
             <h2><i class="fas fa-box"></i> Active Rentals</h2>
             <div id="rentalsList" class="table-responsive">
@@ -398,6 +396,7 @@
             </div>
         </div>
 
+        <!-- Users List Section -->
         <div class="section">
             <h2><i class="fas fa-users"></i> Users List</h2>
             <div id="usersList" class="table-responsive">
@@ -405,6 +404,7 @@
             </div>
         </div>
     </div>
+</body>
 <script>
     const API_URL = "https://rentease3-backend.onrender.com";
     let allAdminProducts = []; // Store all products for search
