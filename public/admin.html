@@ -494,7 +494,7 @@
             displayOrders(orders);
             displayRentals(rentals);
             displayUsers(users);
-            displayProductsTable();
+           
 
         } catch (error) {
             console.error('Error loading dashboard:', error);
@@ -736,6 +736,7 @@
     }
 
     // Load dashboard
+     displayProductsTable();
     loadDashboard();
 </script>
 </body>
